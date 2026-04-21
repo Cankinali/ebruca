@@ -1,0 +1,80 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Product {
+  id            String      @id @default(cuid())
+  slug          String      @unique
+  name          String
+  brand         String      @default("Ebruca")
+  code          String
+  price         Float
+  originalPrice Float?
+  images        String      @default("[]")
+  category      String
+  subcategory   String?
+  sizes         String      @default("[]")
+  colors        String      @default("[]")
+  description   String      @default("")
+  measurements  String?
+  stock         String      @default("in_stock")
+  isNew         Boolean     @default(true)
+  isBestseller  Boolean     @default(false)
+  isFeatured    Boolean     @default(false)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model Order {
+  id            String      @id @default(cuid())
+  orderNo       String      @unique
+  // Durum: pending | confirmed | shipped | delivered | cancelled
+  status        String      @default("pending")
+
+  // Müşteri
+  firstName     String
+  lastName      String
+  email         String
+  phone         String
+
+  // Teslimat adresi
+  address       String
+  city          String
+  district      String
+  postalCode    String      @default("")
+
+  // Finansal
+  subtotal      Float
+  shippingFee   Float       @default(0)
+  total         Float
+
+  // Kargo
+  cargoCompany  String      @default("")
+  trackingNo    String      @default("")
+
+  // Not
+  note          String      @default("")
+
+  items         OrderItem[]
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model OrderItem {
+  id          String  @id @default(cuid())
+  orderId     String
+  order       Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId   String  @default("")
+  name        String
+  code        String  @default("")
+  price       Float
+  size        String
+  color       String
+  quantity    Int
+  image       String  @default("")
+}
