@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add *)",
+      "Bash(git commit -m 'fix: layout.tsx'\\\\''ten eski favicon.ico referansı kaldırıldı *)",
+      "Bash(git push *)"
+    ]
+  }
+}
