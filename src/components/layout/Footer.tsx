@@ -184,6 +184,19 @@ export default function Footer() {
           </div>
         </div>
       </div>
+
+      {/* KENLOP — Yazılım & Tasarım imzası */}
+      <div className="border-t border-white/10 py-3 flex items-center justify-center gap-2">
+        <span className="text-[9px] text-white/40 tracking-widest uppercase">Yazılım & Tasarım</span>
+        <a
+          href="https://kenlop.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-block px-3 py-0.5 rounded-full border border-cyan-500/30 bg-black/40 text-cyan-400 font-bold text-[10px] tracking-[2px] uppercase no-underline transition-all hover:border-cyan-400/80 hover:shadow-[0_0_12px_rgba(34,211,238,0.4)]"
+        >
+          KENLOP
+        </a>
+      </div>
     </footer>
   );
 }
