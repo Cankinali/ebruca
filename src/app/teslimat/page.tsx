@@ -22,7 +22,7 @@ export default function TeslimatPage() {
         <section>
           <h2 className="text-base font-bold mb-2">Kargo Ücreti</h2>
           <ul className="list-disc list-inside space-y-1 ml-2">
-            <li><strong>3.000 TL ve üzeri</strong> alışverişlerde kargo ücretsizdir.</li>
+            <li><strong>5.000 TL ve üzeri</strong> alışverişlerde kargo ücretsizdir.</li>
             <li>Standart kargo: 99 TL</li>
             <li>Ekspres kargo: 29 TL ek ücret (1-2 iş günü teslimat)</li>
           </ul>

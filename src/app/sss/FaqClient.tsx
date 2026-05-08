@@ -16,7 +16,7 @@ const faqs = [
       },
       {
         q: 'Ücretsiz kargo için minimum tutar nedir?',
-        a: '3.000 TL ve üzeri siparişlerde standart kargo ücretsizdir.',
+        a: '5.000 TL ve üzeri siparişlerde standart kargo ücretsizdir.',
       },
     ],
   },
@@ -29,7 +29,7 @@ const faqs = [
       },
       {
         q: 'Taksit imkanı var mı?',
-        a: '5.000 TL ve üzeri siparişlerde 3 taksit imkanı sunulmaktadır.',
+        a: '10.000 TL ve üzeri siparişlerde vade farksız 3 taksit imkanı sunulmaktadır.',
       },
       {
         q: 'Ödemem güvende mi?',

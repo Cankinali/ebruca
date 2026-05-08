@@ -25,7 +25,7 @@ export default function TrustBadges() {
         </svg>
       ),
       title: 'Ücretsiz Kargo',
-      subtitle: '3.000 TL üzeri',
+      subtitle: '5.000 TL üzeri',
     },
     {
       icon: (
@@ -34,7 +34,7 @@ export default function TrustBadges() {
         </svg>
       ),
       title: '3 Taksit',
-      subtitle: '5.000 TL üzeri',
+      subtitle: '10.000 TL üzeri',
     },
     {
       icon: (

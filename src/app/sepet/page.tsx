@@ -7,7 +7,7 @@ import { useCart } from '@/lib/cart-context';
 export default function CartPage() {
   const { items, removeItem, updateQuantity, totalItems, totalPrice } = useCart();
 
-  const shippingFee = totalPrice >= 3000 ? 0 : 99;
+  const shippingFee = totalPrice >= 5000 ? 0 : 99;
   const finalTotal = totalPrice + shippingFee;
 
   if (items.length === 0) {
@@ -127,7 +127,7 @@ export default function CartPage() {
               </div>
               {shippingFee > 0 && (
                 <p className="text-[10px] sm:text-xs text-gray-400 bg-gray-50 px-2 py-1.5">
-                  {(3000 - totalPrice).toLocaleString('tr-TR')} TL daha ekle, kargo ücretsiz olsun!
+                  {(5000 - totalPrice).toLocaleString('tr-TR')} TL daha ekle, kargo ücretsiz olsun!
                 </p>
               )}
               <div className="border-t border-gray-100 pt-2.5 flex justify-between font-bold">

@@ -38,7 +38,7 @@ export default function Footer() {
               </div>
               <div>
                 <p className="text-xs font-semibold tracking-wider">ÜCRETSİZ KARGO</p>
-                <p className="text-xs text-white/50 mt-0.5">3.000 TL üzeri</p>
+                <p className="text-xs text-white/50 mt-0.5">5.000 TL üzeri</p>
               </div>
             </div>
             <div className="flex flex-col items-center gap-2">
@@ -49,7 +49,7 @@ export default function Footer() {
               </div>
               <div>
                 <p className="text-xs font-semibold tracking-wider">3 TAKSİT</p>
-                <p className="text-xs text-white/50 mt-0.5">5.000 TL üzeri</p>
+                <p className="text-xs text-white/50 mt-0.5">10.000 TL üzeri</p>
               </div>
             </div>
           </div>
