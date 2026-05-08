@@ -34,7 +34,6 @@ const CATEGORIES = [
   { value: 'etek', label: 'Etek' },
   { value: 'pantolon', label: 'Pantolon' },
   { value: 'ust-giyim', label: 'Üst Giyim' },
-  { value: 'abiye', label: 'Abiye' },
 ];
 
 const STANDARD_SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'Standart'];

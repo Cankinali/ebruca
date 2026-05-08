@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import AdminLayoutClient from './AdminLayoutClient';
 
 export const metadata: Metadata = {
   title: 'Ebruca Admin',
@@ -6,9 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="min-h-screen bg-gray-50">
-      {children}
-    </div>
-  );
+  return <AdminLayoutClient>{children}</AdminLayoutClient>;
 }

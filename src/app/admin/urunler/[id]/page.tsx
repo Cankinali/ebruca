@@ -1,7 +1,6 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
-import AdminNav from '@/components/admin/AdminNav';
 import ProductForm from '@/components/admin/ProductForm';
 
 export const dynamic = 'force-dynamic';
@@ -33,17 +32,14 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <AdminNav />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <nav className="flex items-center gap-2 text-xs text-gray-400 mb-6">
-          <Link href="/admin/urunler" className="hover:text-black">Ürünler</Link>
-          <span>/</span>
-          <span className="text-black">{product.name}</span>
-        </nav>
-        <h1 className="text-xl font-bold mb-8">Ürünü Düzenle</h1>
-        <ProductForm mode="edit" initial={initial} />
-      </div>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <nav className="flex items-center gap-2 text-xs text-gray-400 mb-6">
+        <Link href="/admin/urunler" className="hover:text-black">Ürünler</Link>
+        <span>/</span>
+        <span className="text-black">{product.name}</span>
+      </nav>
+      <h1 className="text-xl font-bold mb-8">Ürünü Düzenle</h1>
+      <ProductForm mode="edit" initial={initial} />
     </div>
   );
 }

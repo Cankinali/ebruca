@@ -24,7 +24,6 @@ const menuItems = [
     ],
   },
   { label: 'Üst Giyim', href: '/kategori/ust-giyim' },
-  { label: 'Abiye', href: '/kategori/abiye' },
   { label: 'İletişim', href: '/iletisim' },
 ];
 

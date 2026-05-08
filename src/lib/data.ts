@@ -36,13 +36,6 @@ export const categories: Category[] = [
     slug: 'ust-giyim',
     image: 'https://images.unsplash.com/photo-1551232864-3f0890e580d9?w=600&q=80',
   },
-  {
-    id: '6',
-    name: 'Abiye',
-    slug: 'abiye',
-    image: 'https://res.cloudinary.com/dgwcd1hnd/image/upload/v1778272249/ebruca/categories/cat-abiye.jpg',
-    objectPosition: 'center 35%',
-  },
 ];
 
 // Örnek ürünler kaldırıldı — tüm ürünler veritabanından gelir

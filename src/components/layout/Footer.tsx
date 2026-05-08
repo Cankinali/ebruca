@@ -85,7 +85,7 @@ export default function Footer() {
           <div>
             <h4 className="text-sm font-semibold tracking-widest uppercase mb-4">Kategoriler</h4>
             <ul className="space-y-2">
-              {['Elbise', 'Takım', 'Alt Giyim', 'Üst Giyim', 'Abiye'].map(cat => (
+              {['Elbise', 'Takım', 'Alt Giyim', 'Üst Giyim'].map(cat => (
                 <li key={cat}>
                   <Link
                     href={`/kategori/${cat.toLowerCase().replace(/\s/g, '-').replace('&', 've').replace('ş', 's').replace('ü', 'u').replace('ğ', 'g').replace('ı', 'i').replace('ö', 'o').replace('ç', 'c')}`}

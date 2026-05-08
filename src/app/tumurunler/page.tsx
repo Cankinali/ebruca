@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = {
   title: 'Tüm Ürünler',
   description:
-    'Ebruca koleksiyonundaki tüm ürünleri keşfedin: Elbise, takım, abiye, alt-üst giyim ve daha fazlası. Filtre ve sıralama seçenekleriyle aradığınızı kolayca bulun.',
+    'Ebruca koleksiyonundaki tüm ürünleri keşfedin: Elbise, takım, alt-üst giyim ve daha fazlası. Filtre ve sıralama seçenekleriyle aradığınızı kolayca bulun.',
   alternates: { canonical: absoluteUrl('/tumurunler') },
   openGraph: {
     title: 'Tüm Ürünler — Ebruca',

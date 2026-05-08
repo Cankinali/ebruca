@@ -29,7 +29,7 @@ export default function HakkimizdaPage() {
         <section>
           <h2 className="text-base font-bold uppercase tracking-wider mb-3">Neler Sunuyoruz?</h2>
           <ul className="list-disc list-inside space-y-1.5 ml-2">
-            <li>Elbise, abiye, takım, alt-üst giyim</li>
+            <li>Elbise, takım, alt-üst giyim</li>
             <li>Modern ve klasik kesimler</li>
             <li>Geniş beden seçenekleri (XS&apos;ten 5 BEDEN&apos;e)</li>
             <li>Hızlı kargo ve güvenli ödeme</li>

@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { prisma } from '@/lib/prisma';
-import AdminNav from '@/components/admin/AdminNav';
 import DeleteButton from '@/components/admin/DeleteButton';
 
 export const dynamic = 'force-dynamic';
@@ -18,9 +17,7 @@ export default async function AdminProductsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <AdminNav />
-
+    <>
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8">
         <div className="flex items-center justify-between mb-4 sm:mb-6">
           <div>
@@ -197,6 +194,6 @@ export default async function AdminProductsPage() {
           </>
         )}
       </div>
-    </div>
+    </>
   );
 }
