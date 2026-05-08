@@ -36,8 +36,8 @@ export default async function CategoryCards() {
         <p className="text-gray-500 text-[11px] sm:text-sm font-light">Tarzınıza uygun koleksiyonu keşfedin</p>
       </div>
 
-      {/* 5 kategori: mobil 2+3, masaüstü 5 eşit sütun */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+      {/* 4 kategori: mobil 2'li, tablet 2'li, masaüstü 4 eşit sütun */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {featured.map(category => {
           const realCount = countMap[category.slug] ?? 0;
           return (
