@@ -41,3 +41,13 @@ yarn-error.log*
 next-env.d.ts
 
 /src/generated/prisma
+
+# Local-only data (production'a gitmez)
+/prisma/dev.db
+/prisma/dev.db-journal
+/dev.db
+/dev.db-journal
+/public/uploads/
+
+# .env.example commit edilebilir
+!.env.example

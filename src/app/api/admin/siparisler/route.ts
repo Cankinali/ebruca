@@ -69,5 +69,25 @@ export async function POST(request: Request) {
     include: { items: true },
   });
 
+  // Sipariş edilen her ürünün beden stoğunu düş
+  for (const item of body.items) {
+    if (!item.productId) continue;
+    const product = await prisma.product.findUnique({ where: { id: item.productId } });
+    if (!product) continue;
+    const sizeStock = JSON.parse(product.sizeStock || '{}') as Record<string, number>;
+    if (sizeStock[item.size] !== undefined) {
+      sizeStock[item.size] = Math.max(0, (sizeStock[item.size] ?? 0) - item.quantity);
+      // Tüm bedenler 0 ise out_of_stock yap
+      const totalStock = Object.values(sizeStock).reduce((a, b) => a + b, 0);
+      await prisma.product.update({
+        where: { id: item.productId },
+        data: {
+          sizeStock: JSON.stringify(sizeStock),
+          stock: totalStock === 0 ? 'out_of_stock' : totalStock <= 3 ? 'low_stock' : 'in_stock',
+        },
+      });
+    }
+  }
+
   return NextResponse.json(order, { status: 201 });
 }

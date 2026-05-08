@@ -1,3 +1,12 @@
+import type { Metadata } from 'next';
+import { absoluteUrl } from '@/lib/seo';
+
+export const metadata: Metadata = {
+  title: 'Gizlilik Politikası',
+  description: 'Ebruca olarak kişisel verilerinizi nasıl topluyor, kullanıyor ve koruyoruz. KVKK kapsamındaki haklarınız ve gizlilik ilkelerimiz.',
+  alternates: { canonical: absoluteUrl('/gizlilik') },
+};
+
 export default function PrivacyPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-14">

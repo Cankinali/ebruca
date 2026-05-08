@@ -14,6 +14,7 @@ export interface Product {
   description: string;
   measurements?: string;
   stock: 'in_stock' | 'low_stock' | 'out_of_stock';
+  sizeStock?: Record<string, number>; // { "S": 5, "1 BEDEN / 38/40": 3 }
   isFeatured?: boolean;
   isNew?: boolean;
   isBestseller?: boolean;

@@ -5,8 +5,9 @@ function mapProduct(p: {
   id: string; slug: string; name: string; brand: string; code: string;
   price: number; originalPrice: number | null; images: string; category: string;
   subcategory: string | null; sizes: string; colors: string; description: string;
-  measurements: string | null; stock: string; isNew: boolean; isBestseller: boolean;
-  isFeatured: boolean; createdAt: Date; updatedAt: Date;
+  measurements: string | null; stock: string; sizeStock: string;
+  isNew: boolean; isBestseller: boolean; isFeatured: boolean;
+  createdAt: Date; updatedAt: Date;
 }): Product {
   return {
     id: p.id,
@@ -24,6 +25,7 @@ function mapProduct(p: {
     description: p.description,
     measurements: p.measurements ?? undefined,
     stock: p.stock as Product['stock'],
+    sizeStock: JSON.parse(p.sizeStock || '{}') as Record<string, number>,
     isNew: p.isNew,
     isBestseller: p.isBestseller,
     isFeatured: p.isFeatured,
@@ -35,9 +37,23 @@ export async function dbGetAllProducts(): Promise<Product[]> {
   return rows.map(mapProduct);
 }
 
+// Üst kategori → alt kategori slug'ları
+const CATEGORY_CHILDREN: Record<string, string[]> = {
+  'alt-giyim': ['etek', 'pantolon'],
+  'takim':     ['etekli-takim', 'pantolonlu-takim'],
+};
+
 export async function dbGetProductsByCategory(category: string): Promise<Product[]> {
+  const children = CATEGORY_CHILDREN[category] ?? [];
+  const allSlugs = [category, ...children];
+
   const rows = await prisma.product.findMany({
-    where: { OR: [{ category }, { subcategory: category }] },
+    where: {
+      OR: allSlugs.flatMap(slug => [
+        { category: slug },
+        { subcategory: slug },
+      ]),
+    },
     orderBy: { createdAt: 'desc' },
   });
   return rows.map(mapProduct);

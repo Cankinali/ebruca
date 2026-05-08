@@ -29,9 +29,9 @@ function OrderSuccess() {
           className="px-8 py-3 bg-black text-white text-sm font-semibold tracking-widest uppercase hover:bg-gray-800 transition-colors">
           Alışverişe Devam
         </Link>
-        <Link href="/koleksiyon"
+        <Link href="/tumurunler"
           className="px-8 py-3 border border-gray-200 text-sm font-medium hover:border-black transition-colors">
-          Koleksiyona Dön
+          Tüm Ürünler
         </Link>
       </div>
     </div>

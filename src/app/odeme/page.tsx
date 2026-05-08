@@ -19,6 +19,8 @@ export default function CheckoutPage() {
     kartNo: '', sonKullanma: '', cvv: '', kartAd: '',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [agreedTerms, setAgreedTerms] = useState(false);
+  const [agreedSales, setAgreedSales] = useState(false);
 
   const shippingFee = form.kargo === 'ekspres' ? 29 : (totalPrice >= 3000 ? 0 : 99);
   const finalTotal = totalPrice + shippingFee;
@@ -60,6 +62,10 @@ export default function CheckoutPage() {
 
   const handleSubmit = async () => {
     if (!validatePayment()) return;
+    if (!agreedTerms || !agreedSales) {
+      setErrors({ submit: 'Devam etmek için sözleşmeleri okuyup onaylamanız gerekiyor.' });
+      return;
+    }
 
     setSubmitting(true);
     try {
@@ -257,11 +263,40 @@ export default function CheckoutPage() {
           {step === 'odeme' && (
             <div className="space-y-4">
               <h2 className="text-base sm:text-lg font-bold uppercase tracking-wide">Ödeme</h2>
+
+              {/* Iyzico + Visa + Mastercard logoları (Iyzico zorunlu) */}
+              <div className="flex items-center justify-between gap-3 p-4 border border-gray-200 bg-gradient-to-b from-gray-50 to-white">
+                <div className="flex items-center gap-2">
+                  {/* iyzico ile Öde rozeti */}
+                  <div className="flex items-center gap-1.5 bg-white border border-gray-200 rounded px-2.5 py-1.5">
+                    <svg viewBox="0 0 70 28" className="h-4 w-auto" aria-label="iyzico">
+                      <text x="0" y="20" fontSize="22" fontWeight="700" fill="#1E64FF" fontFamily="system-ui">iyzico</text>
+                    </svg>
+                    <span className="text-[10px] font-semibold text-gray-700 uppercase tracking-wider">ile Öde</span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <a href="https://www.visa.com" target="_blank" rel="noopener noreferrer" aria-label="Visa">
+                    <svg viewBox="0 0 50 16" className="h-5 w-auto" aria-hidden="true">
+                      <text x="0" y="13" fontSize="14" fontStyle="italic" fontWeight="900" fill="#1A1F71" fontFamily="system-ui">VISA</text>
+                    </svg>
+                  </a>
+                  <a href="https://www.mastercard.com" target="_blank" rel="noopener noreferrer" aria-label="Mastercard" className="flex items-center">
+                    <svg viewBox="0 0 36 22" className="h-5 w-auto" aria-hidden="true">
+                      <circle cx="13" cy="11" r="9" fill="#EB001B" />
+                      <circle cx="23" cy="11" r="9" fill="#F79E1B" />
+                      <path d="M18 4.2a8.95 8.95 0 010 13.6 8.95 8.95 0 010-13.6z" fill="#FF5F00" />
+                    </svg>
+                  </a>
+                  <span className="text-[10px] font-medium text-gray-500 uppercase tracking-wider hidden sm:inline">3D Secure</span>
+                </div>
+              </div>
+
               <div className="flex items-center gap-2 p-3 bg-green-50 border border-green-200 text-xs text-green-700">
                 <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </svg>
-                256 Bit SSL ile güvenli bağlantı · 3D Secure koruma aktif
+                256 Bit SSL ile güvenli bağlantı · 3D Secure koruma aktif · iyzico altyapısı
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1">Kart Numarası *</label>
@@ -292,6 +327,33 @@ export default function CheckoutPage() {
                   {errors.cvv && <p className="text-xs text-red-500 mt-1">{errors.cvv}</p>}
                 </div>
               </div>
+              {/* Yasal onaylar — Iyzico zorunlu */}
+              <div className="space-y-2.5 pt-2 border-t border-gray-100">
+                <label className="flex items-start gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={agreedSales}
+                    onChange={e => setAgreedSales(e.target.checked)}
+                    className="mt-0.5 w-4 h-4 accent-black flex-shrink-0"
+                  />
+                  <span className="text-xs text-gray-700 leading-relaxed">
+                    <Link href="/mesafeli-satis" target="_blank" className="underline font-medium">Mesafeli Satış Sözleşmesi</Link>&apos;ni okudum, onaylıyorum.
+                  </span>
+                </label>
+                <label className="flex items-start gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={agreedTerms}
+                    onChange={e => setAgreedTerms(e.target.checked)}
+                    className="mt-0.5 w-4 h-4 accent-black flex-shrink-0"
+                  />
+                  <span className="text-xs text-gray-700 leading-relaxed">
+                    <Link href="/teslimat" target="_blank" className="underline">Ön Bilgilendirme Formu</Link>&apos;nu (teslimat, iade, kargo) okudum,{' '}
+                    <Link href="/kvkk" target="_blank" className="underline">KVKK Aydınlatma Metni</Link>&apos;ni anladım ve kabul ediyorum.
+                  </span>
+                </label>
+              </div>
+
               {errors.submit && (
                 <p className="text-sm text-red-600 bg-red-50 border border-red-200 p-3">{errors.submit}</p>
               )}
@@ -302,16 +364,11 @@ export default function CheckoutPage() {
                 </button>
                 <button
                   onClick={handleSubmit}
-                  disabled={submitting}
-                  className="flex-1 bg-black text-white py-3.5 text-xs sm:text-sm font-semibold tracking-wider uppercase hover:bg-gray-800 transition-colors disabled:opacity-60 disabled:cursor-not-allowed">
+                  disabled={submitting || !agreedTerms || !agreedSales}
+                  className="flex-1 bg-black text-white py-3.5 text-xs sm:text-sm font-semibold tracking-wider uppercase hover:bg-gray-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
                   {submitting ? 'İşleniyor...' : `Siparişi Tamamla · ${finalTotal.toLocaleString('tr-TR')} TL`}
                 </button>
               </div>
-              <p className="text-[10px] sm:text-xs text-gray-400 text-center leading-relaxed">
-                Sipariş vererek{' '}
-                <Link href="/uyelik-sozlesmesi" className="underline">Üyelik Sözleşmesi</Link>&apos;ni ve{' '}
-                <Link href="/gizlilik" className="underline">Gizlilik Politikası</Link>&apos;nı kabul etmiş sayılırsınız.
-              </p>
             </div>
           )}
         </div>

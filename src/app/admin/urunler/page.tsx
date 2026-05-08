@@ -21,17 +21,17 @@ export default async function AdminProductsPage() {
     <div className="min-h-screen bg-gray-50">
       <AdminNav />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex items-center justify-between mb-6">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8">
+        <div className="flex items-center justify-between mb-4 sm:mb-6">
           <div>
-            <h1 className="text-xl font-bold">Ürünler</h1>
-            <p className="text-sm text-gray-500 mt-0.5">{products.length} ürün</p>
+            <h1 className="text-lg sm:text-xl font-bold">Ürünler</h1>
+            <p className="text-xs sm:text-sm text-gray-500 mt-0.5">{products.length} ürün</p>
           </div>
           <Link
             href="/admin/urunler/yeni"
-            className="bg-black text-white px-5 py-2.5 text-sm font-medium hover:bg-gray-800 transition-colors flex items-center gap-2"
+            className="bg-black text-white px-4 sm:px-5 py-2.5 text-sm font-medium hover:bg-gray-800 transition-colors flex items-center gap-1 min-h-[44px]"
           >
-            <span>+</span> Yeni Ürün
+            <span className="text-lg leading-none">+</span> <span className="hidden sm:inline">Yeni</span> Ürün
           </Link>
         </div>
 
@@ -44,7 +44,52 @@ export default async function AdminProductsPage() {
             </Link>
           </div>
         ) : (
-          <div className="bg-white border border-gray-100 overflow-hidden">
+          <>
+          {/* Mobil: kart görünümü */}
+          <div className="md:hidden space-y-2">
+            {products.map(product => {
+              const images = JSON.parse(product.images) as string[];
+              const stockInfo = stockLabels[product.stock] ?? stockLabels.in_stock;
+              return (
+                <div key={product.id} className="bg-white border border-gray-100 p-3 flex gap-3">
+                  <div className="relative w-16 h-20 bg-gray-100 overflow-hidden flex-shrink-0">
+                    {images[0] ? (
+                      <Image src={images[0]} alt={product.name} fill className="object-cover" sizes="64px" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-gray-300 text-2xl">👗</div>
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium truncate">{product.name}</p>
+                    <p className="text-xs text-gray-400">{product.code}</p>
+                    <div className="flex items-center gap-2 mt-1 flex-wrap">
+                      <span className="text-sm font-bold">{product.price.toLocaleString('tr-TR')} TL</span>
+                      {product.originalPrice && (
+                        <span className="text-xs text-gray-400 line-through">
+                          {product.originalPrice.toLocaleString('tr-TR')}
+                        </span>
+                      )}
+                      <span className={`text-[10px] px-1.5 py-0.5 ${stockInfo.class}`}>{stockInfo.text}</span>
+                    </div>
+                    <div className="flex gap-2 mt-2">
+                      <Link href={`/admin/urunler/${product.id}`}
+                        className="flex-1 text-xs text-center py-2 border border-gray-200 hover:border-black transition-colors min-h-[36px] flex items-center justify-center">
+                        Düzenle
+                      </Link>
+                      <Link href={`/urun/${product.slug}`} target="_blank"
+                        className="text-xs px-3 py-2 border border-gray-200 hover:border-black transition-colors min-h-[36px] flex items-center justify-center">
+                        Gör ↗
+                      </Link>
+                      <DeleteButton id={product.id} name={product.name} />
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Masaüstü: tablo görünümü */}
+          <div className="hidden md:block bg-white border border-gray-100 overflow-hidden">
             <table className="w-full">
               <thead>
                 <tr className="border-b border-gray-100 bg-gray-50">
@@ -149,6 +194,7 @@ export default async function AdminProductsPage() {
               </tbody>
             </table>
           </div>
+          </>
         )}
       </div>
     </div>

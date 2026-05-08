@@ -6,7 +6,7 @@ import Image from 'next/image';
 
 const slides = [
   {
-    image: '/uploads/hero-1.jpg',
+    image: 'https://res.cloudinary.com/dgwcd1hnd/image/upload/v1778272259/ebruca/hero/hero-1.jpg',
     posClass: '[object-position:center_40%] md:[object-position:center_65%]',
     title: 'Yeni Sezon',
     subtitle: 'Koleksiyonu',
@@ -15,7 +15,7 @@ const slides = [
     href: '/kategori/elbise',
   },
   {
-    image: '/uploads/hero-2.jpg',
+    image: 'https://res.cloudinary.com/dgwcd1hnd/image/upload/v1778272261/ebruca/hero/hero-2.jpg',
     posClass: '[object-position:center_18%] md:[object-position:center_12%]',
     title: 'Özel Tasarım',
     subtitle: 'Elbiseler',
@@ -24,13 +24,13 @@ const slides = [
     href: '/kategori/elbise',
   },
   {
-    image: '/uploads/hero-3.jpg',
+    image: 'https://res.cloudinary.com/dgwcd1hnd/image/upload/v1778272264/ebruca/hero/hero-3.jpg',
     posClass: '[object-position:58%_22%] md:[object-position:58%_35%]',
     title: 'Sokak Stili',
     subtitle: 'Koleksiyonu',
     description: 'Günlük şıklığın adresi Ebruca',
     cta: 'İncele',
-    href: '/kategori/dis-giyim',
+    href: '/tumurunler',
   },
 ];
 

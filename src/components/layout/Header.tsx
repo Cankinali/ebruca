@@ -24,9 +24,7 @@ const menuItems = [
     ],
   },
   { label: 'Üst Giyim', href: '/kategori/ust-giyim' },
-  { label: 'Dış Giyim', href: '/kategori/dis-giyim' },
   { label: 'Abiye', href: '/kategori/abiye' },
-  { label: 'Şal & Kemer', href: '/kategori/sal-kemer' },
   { label: 'İletişim', href: '/iletisim' },
 ];
 

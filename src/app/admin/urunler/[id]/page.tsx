@@ -26,6 +26,7 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
     description: product.description,
     measurements: product.measurements ?? '',
     stock: product.stock,
+    sizeStock: JSON.parse(product.sizeStock || '{}') as Record<string, number>,
     isNew: product.isNew,
     isBestseller: product.isBestseller,
     isFeatured: product.isFeatured,

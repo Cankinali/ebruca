@@ -1,3 +1,12 @@
+import type { Metadata } from 'next';
+import { absoluteUrl } from '@/lib/seo';
+
+export const metadata: Metadata = {
+  title: 'Üyelik Sözleşmesi',
+  description: 'Ebruca üyelik sözleşmesi koşulları ve kullanım şartları.',
+  alternates: { canonical: absoluteUrl('/uyelik-sozlesmesi') },
+};
+
 export default function MembershipAgreementPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-14">

@@ -23,6 +23,7 @@ model Product {
   description   String      @default("")
   measurements  String?
   stock         String      @default("in_stock")
+  sizeStock     String      @default("{}")
   isNew         Boolean     @default(true)
   isBestseller  Boolean     @default(false)
   isFeatured    Boolean     @default(false)
@@ -59,6 +60,15 @@ model Order {
 
   // Not
   note          String      @default("")
+
+  // Iyzico ödeme bilgileri
+  paymentId             String   @default("")
+  paymentToken          String   @default("")
+  conversationId        String   @default("")
+  basketId              String   @default("")
+  paymentTransactionId  String   @default("")
+  fraudStatus           Int      @default(0)
+  paymentStatus         String   @default("pending")
 
   items         OrderItem[]
   createdAt     DateTime    @default(now())

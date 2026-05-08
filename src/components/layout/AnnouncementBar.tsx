@@ -5,7 +5,6 @@ import { useState, useEffect } from 'react';
 const announcements = [
   '3.000 TL üzeri ÜCRETSİZ KARGO',
   '5.000 TL üzeri 3 TAKSİT',
-  'Yeni sezonda %10 İNDİRİM — Kod: YENI10',
 ];
 
 export default function AnnouncementBar() {

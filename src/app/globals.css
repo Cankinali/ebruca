@@ -31,6 +31,20 @@ body {
   transition-timing-function: ease-in-out;
 }
 
+/* iOS Safari: 16px altı input'larda otomatik zoom yapar — engelle */
+@media (max-width: 640px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="number"],
+  input[type="password"],
+  input[type="search"],
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
+
 /* Hero banner metin fade-in */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(8px); }
