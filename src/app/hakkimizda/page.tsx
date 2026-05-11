@@ -33,7 +33,6 @@ export default function HakkimizdaPage() {
             <li>Modern ve klasik kesimler</li>
             <li>Geniş beden seçenekleri (XS&apos;ten 5 BEDEN&apos;e)</li>
             <li>Hızlı kargo ve güvenli ödeme</li>
-            <li>14 gün içinde koşulsuz iade hakkı</li>
           </ul>
         </section>
 

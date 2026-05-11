@@ -7,7 +7,7 @@ export const SITE = {
   name: 'Ebruca',
   fullName: 'Ebruca | Modern Kadın Giyim',
   description:
-    'Ebruca ile modern kadın giyiminde şıklığı keşfedin. Elbise, takım, alt-üst giyim ve daha fazlası. Hızlı kargo, güvenli ödeme, 14 gün koşulsuz iade.',
+    'Ebruca ile modern kadın giyiminde şıklığı keşfedin. Elbise, takım, alt-üst giyim ve daha fazlası. Hızlı kargo ve güvenli ödeme.',
   shortDescription: 'Modern kadın giyimde şıklığın adresi',
   keywords: [
     'kadın giyim', 'elbise', 'takım', 'tesettür giyim',

@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const description =
     product.description?.slice(0, 160) ||
-    `${product.name} — ${product.brand}. Ebruca güvencesiyle hızlı kargo, 14 gün koşulsuz iade.`;
+    `${product.name} — ${product.brand}. Ebruca güvencesiyle hızlı kargo ve güvenli ödeme.`;
 
   const url = absoluteUrl(`/urun/${product.slug}`);
   const image = product.images[0]?.startsWith('http')

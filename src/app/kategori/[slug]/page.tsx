@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const name = category?.name ?? slug.replace(/-/g, ' ');
 
   const title = `${name} Modelleri`;
-  const description = `${name} koleksiyonumuzu keşfedin. Modern kesim, kaliteli kumaş, uygun fiyat. Ebruca güvencesiyle hızlı kargo ve 14 gün koşulsuz iade.`;
+  const description = `${name} koleksiyonumuzu keşfedin. Modern kesim, kaliteli kumaş, uygun fiyat. Ebruca güvencesiyle hızlı kargo ve güvenli ödeme.`;
   const url = absoluteUrl(`/kategori/${slug}`);
 
   return {
