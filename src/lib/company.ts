@@ -5,9 +5,10 @@
  * BAŞVURUDAN ÖNCE BURASINI DOLDUR ↓
  */
 export const COMPANY = {
-  legalName: 'EBRU CA',
+  legalName: 'EBRU ONAR',
   brand: 'Ebruca',
   address: 'İstiklal Mah. Köprü Sk. Kapalı Çarşı No: 10 İç Kapı No: 29 Biga / Çanakkale',
+  postalCode: '17200',
   district: 'Biga',
   city: 'Çanakkale',
   taxOffice: 'Biga',
