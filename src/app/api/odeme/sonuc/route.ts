@@ -2,6 +2,15 @@ import { NextRequest, NextResponse } from 'next/server';
 import { retrieveCheckout } from '@/lib/iyzico';
 import { prisma } from '@/lib/prisma';
 
+/**
+ * 303 See Other ile redirect — POST'tan GET'e dönüşür.
+ * Browser /siparis-tamamlandi'ya GET ile gider; aksi halde 307 ile
+ * POST korunur ve "INVALID_REQUEST_METHOD" hatası alırız.
+ */
+function redirect303(url: URL) {
+  return NextResponse.redirect(url, 303);
+}
+
 export async function POST(req: NextRequest) {
   const formData = await req.formData();
   const token = formData.get('token') as string | null;
@@ -9,7 +18,7 @@ export async function POST(req: NextRequest) {
   const orderId = searchParams.get('orderId');
 
   if (!token || !orderId) {
-    return NextResponse.redirect(new URL('/sepet?error=missing_token', req.url));
+    return redirect303(new URL('/sepet?error=missing_token', req.url));
   }
 
   try {
@@ -21,23 +30,31 @@ export async function POST(req: NextRequest) {
     });
 
     if (!order) {
-      return NextResponse.redirect(new URL('/sepet?error=order_not_found', req.url));
+      return redirect303(new URL('/sepet?error=order_not_found', req.url));
     }
 
-    // Iyzico'dan dönen conversationId ile DB'deki eşleşmeli — tampering kontrolü
+    // ConversationId tampering kontrolü
     if (result.conversationId && result.conversationId !== order.conversationId) {
-      console.error('ConversationId uyuşmazlığı', { orderId, expected: order.conversationId, got: result.conversationId });
-      return NextResponse.redirect(new URL('/sepet?error=mismatch', req.url));
+      console.error('ConversationId uyuşmazlığı', {
+        orderId,
+        expected: order.conversationId,
+        got: result.conversationId,
+      });
+      return redirect303(new URL('/sepet?error=mismatch', req.url));
     }
 
-    // Iyzico'nun raporladığı tutar DB'deki ile uyuşmalı
+    // Tutar tampering kontrolü
     if (result.paidPrice !== undefined && Math.abs(result.paidPrice - order.total) > 0.01) {
-      console.error('Tutar uyuşmazlığı', { orderId, expected: order.total, got: result.paidPrice });
+      console.error('Tutar uyuşmazlığı', {
+        orderId,
+        expected: order.total,
+        got: result.paidPrice,
+      });
       await prisma.order.update({
         where: { id: orderId },
         data: { paymentStatus: 'failure', status: 'cancelled' },
       });
-      return NextResponse.redirect(new URL('/sepet?error=amount_mismatch', req.url));
+      return redirect303(new URL('/sepet?error=amount_mismatch', req.url));
     }
 
     // Başarılı
@@ -76,9 +93,7 @@ export async function POST(req: NextRequest) {
         }
       }
 
-      return NextResponse.redirect(
-        new URL(`/siparis-tamamlandi?no=${order.orderNo}`, req.url)
-      );
+      return redirect303(new URL(`/siparis-tamamlandi?no=${order.orderNo}`, req.url));
     }
 
     // Fraud incelemede
@@ -87,9 +102,7 @@ export async function POST(req: NextRequest) {
         where: { id: orderId },
         data: { paymentStatus: 'pending', fraudStatus: 0 },
       });
-      return NextResponse.redirect(
-        new URL(`/siparis-tamamlandi?no=${order.orderNo}&pending=1`, req.url)
-      );
+      return redirect303(new URL(`/siparis-tamamlandi?no=${order.orderNo}&pending=1`, req.url));
     }
 
     // Başarısız
@@ -101,7 +114,7 @@ export async function POST(req: NextRequest) {
         fraudStatus: result.fraudStatus ?? -1,
       },
     });
-    return NextResponse.redirect(
+    return redirect303(
       new URL(
         `/sepet?error=payment_failed&msg=${encodeURIComponent(result.errorMessage ?? 'Ödeme başarısız')}`,
         req.url
@@ -109,7 +122,7 @@ export async function POST(req: NextRequest) {
     );
   } catch (err) {
     console.error('[POST /api/odeme/sonuc]', err);
-    return NextResponse.redirect(new URL('/sepet?error=server_error', req.url));
+    return redirect303(new URL('/sepet?error=server_error', req.url));
   }
 }
 
