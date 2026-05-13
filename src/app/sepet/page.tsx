@@ -7,7 +7,7 @@ import { useCart } from '@/lib/cart-context';
 export default function CartPage() {
   const { items, removeItem, updateQuantity, totalItems, totalPrice } = useCart();
 
-  const shippingFee = totalPrice >= 5000 ? 0 : 99;
+  const shippingFee = totalPrice >= 5000 ? 0 : 90;
   const finalTotal = totalPrice + shippingFee;
 
   if (items.length === 0) {

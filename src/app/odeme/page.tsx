@@ -22,7 +22,7 @@ export default function CheckoutPage() {
   const [agreedTerms, setAgreedTerms] = useState(false);
   const [agreedSales, setAgreedSales] = useState(false);
 
-  const shippingFee = form.kargo === 'ekspres' ? 1 : (totalPrice >= 5000 ? 0 : 99);
+  const shippingFee = totalPrice >= 5000 ? 0 : 90;
   const finalTotal = totalPrice + shippingFee;
 
   const steps: { key: Step; label: string }[] = [
@@ -229,8 +229,7 @@ export default function CheckoutPage() {
             <div className="space-y-4">
               <h2 className="text-base sm:text-lg font-bold uppercase tracking-wide">Kargo Seçimi</h2>
               {[
-                { value: 'standart', label: 'Standart Kargo', desc: '2-4 iş günü', price: totalPrice >= 5000 ? 0 : 99 },
-                { value: 'ekspres', label: 'Ekspres Kargo', desc: '1-2 iş günü', price: 1 },
+                { value: 'standart', label: 'Standart Kargo', desc: '2-4 iş günü', price: totalPrice >= 5000 ? 0 : 90 },
               ].map(option => (
                 <label key={option.value}
                   className={`flex items-center justify-between p-4 border cursor-pointer transition-colors ${

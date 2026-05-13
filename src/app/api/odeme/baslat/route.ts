@@ -70,13 +70,8 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // Kargo ücretini sunucuda hesapla
-    let serverShipping: number;
-    if (body.shippingMethod === 'ekspres') {
-      serverShipping = 1; // test modu — sonra 29 TL'ye çevrilecek
-    } else {
-      serverShipping = serverSubtotal >= 5000 ? 0 : 99;
-    }
+    // Kargo: 5000 TL üzeri ücretsiz, altı 90 TL
+    const serverShipping = serverSubtotal >= 5000 ? 0 : 90;
     const serverTotal = serverSubtotal + serverShipping;
 
     // 1. Sipariş kaydı (pending)
@@ -132,8 +127,9 @@ export async function POST(req: NextRequest) {
       paidPrice: serverTotal.toFixed(2),
       basketId,
       callbackUrl,
-      // enabledInstallments gönderilmez → Iyzico üye işyeri panel ayarlarını kullanır
-      // (kart BIN, banka, tutar limitlerine göre taksit otomatik seçilir)
+      // 5000 TL ALTI: sadece peşin (1 çekim). Taksit yok.
+      // 5000 TL ÜSTÜ: tüm taksit seçenekleri açık (Iyzico panel ayarlarına göre vade farksız).
+      enabledInstallments: serverTotal >= 5000 ? undefined : [1],
       buyer: {
         id: order.id,
         name: body.firstName,

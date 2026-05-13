@@ -8,7 +8,9 @@
       "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\('Deps:', list\\(d.get\\('dependencies', {}\\).keys\\(\\)\\)\\)\")",
       "Bash(npm uninstall *)",
       "Bash(git commit -m 'refactor: iyzipay paketi yerine kendi Iyzico REST client'\\\\''ı *)",
-      "Bash(git commit -m 'fix: taksit ayarlarını Iyzico üye işyeri paneline bırak *)"
+      "Bash(git commit -m 'fix: taksit ayarlarını Iyzico üye işyeri paneline bırak *)",
+      "Bash(npm install *)",
+      "Bash(git commit -m 'feat: kargo/taksit ayarları + email bildirimleri *)"
     ]
   }
 }

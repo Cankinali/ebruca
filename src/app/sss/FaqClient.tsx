@@ -8,7 +8,7 @@ const faqs = [
     items: [
       {
         q: 'Kargo kaç günde gelir?',
-        a: 'Standart kargo siparişler 2-4 iş günü içinde teslim edilir. Ekspres kargo seçeneğinde 1-2 iş günüdür.',
+        a: 'Standart kargo siparişler 2-4 iş günü içinde teslim edilir.',
       },
       {
         q: 'Siparişimi nasıl takip edebilirim?',

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireAdmin } from '@/lib/admin-auth';
+import { sendShippingNotification } from '@/lib/email';
 
 export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   const unauth = await requireAdmin();
@@ -20,6 +21,9 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
   const { id } = await params;
   const body = await request.json();
 
+  // Önceki durumu al — kargoya verme bildirimi yalnızca durum geçişinde gönderilmeli
+  const previous = await prisma.order.findUnique({ where: { id }, select: { status: true } });
+
   const order = await prisma.order.update({
     where: { id },
     data: {
@@ -30,6 +34,33 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     },
     include: { items: true },
   });
+
+  // Durum "shipped"a yeni geçtiyse müşteriye e-posta gönder
+  if (
+    body.status === 'shipped' &&
+    previous?.status !== 'shipped' &&
+    order.email
+  ) {
+    sendShippingNotification({
+      orderNo: order.orderNo,
+      firstName: order.firstName,
+      email: order.email,
+      total: order.total,
+      shippingFee: order.shippingFee,
+      address: order.address,
+      city: order.city,
+      district: order.district,
+      cargoCompany: order.cargoCompany,
+      trackingNo: order.trackingNo,
+      items: order.items.map(i => ({
+        name: i.name,
+        size: i.size,
+        color: i.color,
+        quantity: i.quantity,
+        price: i.price,
+      })),
+    }).catch(e => console.error('Email error:', e));
+  }
 
   return NextResponse.json(order);
 }

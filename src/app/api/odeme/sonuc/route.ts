@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { retrieveCheckout } from '@/lib/iyzico';
 import { prisma } from '@/lib/prisma';
+import { sendOrderConfirmation } from '@/lib/email';
 
 /**
  * 303 See Other ile redirect — POST'tan GET'e dönüşür.
@@ -92,6 +93,25 @@ export async function POST(req: NextRequest) {
           });
         }
       }
+
+      // E-posta gönder (asenkron, hata olsa bile akışı bozma)
+      sendOrderConfirmation({
+        orderNo: order.orderNo,
+        firstName: order.firstName,
+        email: order.email,
+        total: order.total,
+        shippingFee: order.shippingFee,
+        address: order.address,
+        city: order.city,
+        district: order.district,
+        items: order.items.map(i => ({
+          name: i.name,
+          size: i.size,
+          color: i.color,
+          quantity: i.quantity,
+          price: i.price,
+        })),
+      }).catch(e => console.error('Email error:', e));
 
       return redirect303(new URL(`/siparis-tamamlandi?no=${order.orderNo}`, req.url));
     }
