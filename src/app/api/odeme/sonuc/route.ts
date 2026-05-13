@@ -1,13 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import type Iyzipay from 'iyzipay';
-import { iyzipay } from '@/lib/iyzico';
+import { retrieveCheckout } from '@/lib/iyzico';
 import { prisma } from '@/lib/prisma';
 
-/**
- * Iyzico checkout sonrası buraya POST eder (callbackUrl).
- * Token'ı alıp result'ı sorgular, ödeme başarılıysa stok düşer,
- * kullanıcıyı siparis-tamamlandi sayfasına yönlendiririz.
- */
 export async function POST(req: NextRequest) {
   const formData = await req.formData();
   const token = formData.get('token') as string | null;
@@ -19,15 +13,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    // Token ile ödeme sonucunu sorgula
-    const result = await new Promise<Iyzipay.CheckoutFormRetrieveResponse>(
-      (resolve, reject) => {
-        iyzipay.checkoutForm.retrieve({ locale: 'tr', token }, (err, r) => {
-          if (err) reject(err);
-          else resolve(r);
-        });
-      }
-    );
+    const result = await retrieveCheckout(token);
 
     const order = await prisma.order.findUnique({
       where: { id: orderId },
@@ -38,13 +24,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.redirect(new URL('/sepet?error=order_not_found', req.url));
     }
 
-    // Başarılı ödeme?
+    // Başarılı
     if (
       result.status === 'success' &&
       result.paymentStatus === 'SUCCESS' &&
       result.fraudStatus !== -1
     ) {
-      // Güvenli, ödeme onaylı
       await prisma.order.update({
         where: { id: orderId },
         data: {
@@ -80,7 +65,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Fraud (-1) — askıya al
+    // Fraud incelemede
     if (result.fraudStatus === 0) {
       await prisma.order.update({
         where: { id: orderId },
@@ -112,7 +97,6 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// GET ile direkt erişilirse hata
 export async function GET() {
   return NextResponse.json({ error: 'POST request bekleniyor' }, { status: 405 });
 }

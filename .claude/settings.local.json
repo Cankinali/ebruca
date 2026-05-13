@@ -4,7 +4,10 @@
       "Bash(git add *)",
       "Bash(git commit -m 'fix: layout.tsx'\\\\''ten eski favicon.ico referansı kaldırıldı *)",
       "Bash(git push *)",
-      "Bash(npm run *)"
+      "Bash(npm run *)",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\('Deps:', list\\(d.get\\('dependencies', {}\\).keys\\(\\)\\)\\)\")",
+      "Bash(npm uninstall *)",
+      "Bash(git commit -m 'refactor: iyzipay paketi yerine kendi Iyzico REST client'\\\\''ı *)"
     ]
   }
 }

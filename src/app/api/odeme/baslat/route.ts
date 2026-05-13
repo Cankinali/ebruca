@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import type Iyzipay from 'iyzipay';
-import { iyzipay } from '@/lib/iyzico';
+import { initializeCheckout } from '@/lib/iyzico';
 import { prisma } from '@/lib/prisma';
 import { SITE } from '@/lib/seo';
 
@@ -24,7 +23,7 @@ interface Body {
   city: string;
   district: string;
   postalCode?: string;
-  identityNumber?: string; // TC kimlik (opsiyonel ama önerilir)
+  identityNumber?: string;
   items: CartItem[];
   subtotal: number;
   shippingFee: number;
@@ -40,7 +39,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Sepet boş.' }, { status: 400 });
     }
 
-    // 1. Önce siparişi DB'ye "pending" olarak kaydet
+    // 1. Sipariş kaydı (pending)
     const orderNo = 'EB' + Date.now().toString().slice(-8);
     const conversationId = orderNo + '-' + Math.random().toString(36).slice(2, 8);
     const basketId = orderNo;
@@ -80,21 +79,18 @@ export async function POST(req: NextRequest) {
       include: { items: true },
     });
 
-    // 2. Iyzico'ya gönderilecek payload
+    // 2. Iyzico request payload
     const buyerIp = req.headers.get('x-forwarded-for')?.split(',')[0] ||
                    req.headers.get('x-real-ip') || '85.34.78.112';
 
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || SITE.url;
     const callbackUrl = `${siteUrl}/api/odeme/sonuc?orderId=${order.id}`;
 
-    const request = {
-      locale: 'tr',
+    const result = await initializeCheckout({
       conversationId,
       price: body.subtotal.toFixed(2),
       paidPrice: body.total.toFixed(2),
-      currency: 'TRY',
       basketId,
-      paymentGroup: 'PRODUCT',
       callbackUrl,
       enabledInstallments: body.total >= 10000 ? [1, 2, 3] : [1],
       buyer: {
@@ -103,7 +99,7 @@ export async function POST(req: NextRequest) {
         surname: body.lastName,
         gsmNumber: body.phone.startsWith('+') ? body.phone : '+90' + body.phone.replace(/^0/, ''),
         email: body.email,
-        identityNumber: body.identityNumber || '11111111111', // TC zorunlu, yoksa default
+        identityNumber: body.identityNumber || '11111111111',
         registrationAddress: body.address,
         ip: buyerIp,
         city: body.city,
@@ -131,17 +127,7 @@ export async function POST(req: NextRequest) {
         itemType: 'PHYSICAL',
         price: (item.price * item.quantity).toFixed(2),
       })),
-    };
-
-    // 3. Iyzico checkout token oluştur
-    const result = await new Promise<Iyzipay.CheckoutFormInitializeResponse>(
-      (resolve, reject) => {
-        iyzipay.checkoutFormInitialize.create(request, (err, r) => {
-          if (err) reject(err);
-          else resolve(r);
-        });
-      }
-    );
+    });
 
     if (result.status !== 'success') {
       console.error('Iyzico hatası:', result);
@@ -150,12 +136,11 @@ export async function POST(req: NextRequest) {
         data: { paymentStatus: 'failure', status: 'cancelled' },
       });
       return NextResponse.json(
-        { error: result.errorMessage || 'Ödeme başlatılamadı.' },
+        { error: result.errorMessage || 'Ödeme başlatılamadı.', code: result.errorCode },
         { status: 400 }
       );
     }
 
-    // Token'ı kaydet
     await prisma.order.update({
       where: { id: order.id },
       data: { paymentToken: result.token ?? '' },
