@@ -17,6 +17,7 @@
     "better-sqlite3": "^12.8.0",
     "cloudinary": "^2.10.0",
     "dotenv": "^17.4.1",
+    "iyzipay": "^2.0.67",
     "next": "16.2.3",
     "prisma": "^7.7.0",
     "react": "19.2.4",

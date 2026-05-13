@@ -61,7 +61,6 @@ export default function CheckoutPage() {
   };
 
   const handleSubmit = async () => {
-    if (!validatePayment()) return;
     if (!agreedTerms || !agreedSales) {
       setErrors({ submit: 'Devam etmek için sözleşmeleri okuyup onaylamanız gerekiyor.' });
       return;
@@ -69,7 +68,8 @@ export default function CheckoutPage() {
 
     setSubmitting(true);
     try {
-      const res = await fetch('/api/admin/siparisler', {
+      // Iyzico ödeme oturumu başlat
+      const res = await fetch('/api/odeme/baslat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -97,13 +97,17 @@ export default function CheckoutPage() {
         }),
       });
 
-      if (!res.ok) throw new Error('Sipariş oluşturulamadı');
+      const data = await res.json().catch(() => ({}));
 
-      const order = await res.json();
+      if (!res.ok || !data.paymentPageUrl) {
+        throw new Error(data.error || 'Ödeme başlatılamadı');
+      }
+
+      // Sepeti temizle ve Iyzico ödeme sayfasına yönlendir
       clearCart();
-      router.push(`/siparis-tamamlandi?no=${order.orderNo}`);
-    } catch {
-      setErrors({ submit: 'Sipariş oluşturulurken bir hata oluştu. Lütfen tekrar deneyin.' });
+      window.location.href = data.paymentPageUrl;
+    } catch (err) {
+      setErrors({ submit: 'Ödeme başlatılamadı: ' + (err instanceof Error ? err.message : 'bilinmeyen hata') });
       setSubmitting(false);
     }
   };
@@ -292,40 +296,25 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 p-3 bg-green-50 border border-green-200 text-xs text-green-700">
-                <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="flex items-start gap-2 p-3 bg-green-50 border border-green-200 text-xs text-green-700">
+                <svg className="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </svg>
-                256 Bit SSL ile güvenli bağlantı · 3D Secure koruma aktif · iyzico altyapısı
+                <span>
+                  Kart bilgileriniz <strong>iyzico&apos;nun güvenli ödeme sayfasında</strong> alınır. 256 Bit SSL · 3D Secure · PCI-DSS uyumlu.
+                </span>
               </div>
-              <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Kart Numarası *</label>
-                <input name="kartNo" value={form.kartNo} onChange={handleChange}
-                  placeholder="1234 5678 9012 3456" maxLength={19}
-                  className={errors.kartNo ? inputErrCls : inputCls} />
-                {errors.kartNo && <p className="text-xs text-red-500 mt-1">{errors.kartNo}</p>}
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Kart Üzerindeki İsim *</label>
-                <input name="kartAd" value={form.kartAd} onChange={handleChange}
-                  className={errors.kartAd ? inputErrCls : inputCls} />
-                {errors.kartAd && <p className="text-xs text-red-500 mt-1">{errors.kartAd}</p>}
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-medium text-gray-600 mb-1">Son Kullanma *</label>
-                  <input name="sonKullanma" value={form.sonKullanma} onChange={handleChange}
-                    placeholder="AA/YY" maxLength={5}
-                    className={errors.sonKullanma ? inputErrCls : inputCls} />
-                  {errors.sonKullanma && <p className="text-xs text-red-500 mt-1">{errors.sonKullanma}</p>}
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-gray-600 mb-1">CVV *</label>
-                  <input name="cvv" value={form.cvv} onChange={handleChange}
-                    placeholder="123" maxLength={4} type="password"
-                    className={errors.cvv ? inputErrCls : inputCls} />
-                  {errors.cvv && <p className="text-xs text-red-500 mt-1">{errors.cvv}</p>}
-                </div>
+
+              <div className="bg-gray-50 border border-gray-100 p-4 text-sm">
+                <p className="text-gray-700">
+                  &quot;Ödemeyi Tamamla&quot; butonuna bastığınızda <strong>iyzico</strong>&apos;nun güvenli ödeme sayfasına yönlendirileceksiniz.
+                  Orada kart bilgilerinizi girip işlemi tamamlayabilirsiniz. Banka onayı sonrası bu sayfaya geri döndürüleceksiniz.
+                </p>
+                {finalTotal >= 10000 && (
+                  <p className="text-xs text-green-700 mt-2 font-medium">
+                    ✓ Bu siparişte <strong>vade farksız 3 taksit</strong> imkanı sunulmaktadır.
+                  </p>
+                )}
               </div>
               {/* Yasal onaylar — Iyzico zorunlu */}
               <div className="space-y-2.5 pt-2 border-t border-gray-100">
@@ -366,7 +355,7 @@ export default function CheckoutPage() {
                   onClick={handleSubmit}
                   disabled={submitting || !agreedTerms || !agreedSales}
                   className="flex-1 bg-black text-white py-3.5 text-xs sm:text-sm font-semibold tracking-wider uppercase hover:bg-gray-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
-                  {submitting ? 'İşleniyor...' : `Siparişi Tamamla · ${finalTotal.toLocaleString('tr-TR')} TL`}
+                  {submitting ? 'iyzico\'ya yönlendiriliyor...' : `Ödemeyi Tamamla · ${finalTotal.toLocaleString('tr-TR')} TL`}
                 </button>
               </div>
             </div>
