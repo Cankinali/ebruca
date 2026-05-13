@@ -132,7 +132,8 @@ export async function POST(req: NextRequest) {
       paidPrice: serverTotal.toFixed(2),
       basketId,
       callbackUrl,
-      enabledInstallments: serverTotal >= 10000 ? [1, 2, 3] : [1],
+      // enabledInstallments gönderilmez → Iyzico üye işyeri panel ayarlarını kullanır
+      // (kart BIN, banka, tutar limitlerine göre taksit otomatik seçilir)
       buyer: {
         id: order.id,
         name: body.firstName,
