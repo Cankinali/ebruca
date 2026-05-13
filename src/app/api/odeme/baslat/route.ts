@@ -25,9 +25,7 @@ interface Body {
   postalCode?: string;
   identityNumber?: string;
   items: CartItem[];
-  subtotal: number;
-  shippingFee: number;
-  total: number;
+  shippingMethod?: 'standart' | 'ekspres';
   note?: string;
 }
 
@@ -38,6 +36,48 @@ export async function POST(req: NextRequest) {
     if (!body.items?.length) {
       return NextResponse.json({ error: 'Sepet boş.' }, { status: 400 });
     }
+
+    // SUNUCU-TARAFLI FIYAT DOĞRULAMA — istemciden gelen fiyatlara güvenme!
+    let serverSubtotal = 0;
+    const verifiedItems: typeof body.items = [];
+    for (const item of body.items) {
+      if (!item.productId) {
+        return NextResponse.json({ error: 'Geçersiz ürün.' }, { status: 400 });
+      }
+      const product = await prisma.product.findUnique({ where: { id: item.productId } });
+      if (!product) {
+        return NextResponse.json({ error: `Ürün bulunamadı: ${item.name}` }, { status: 400 });
+      }
+      // Stok kontrolü
+      const sizeStock = JSON.parse(product.sizeStock || '{}') as Record<string, number>;
+      const availableStock = sizeStock[item.size];
+      if (Object.keys(sizeStock).length > 0 && (availableStock === undefined || availableStock < item.quantity)) {
+        return NextResponse.json({
+          error: `${product.name} (${item.size}) stokta yok veya yetersiz.`,
+        }, { status: 400 });
+      }
+      // Fiyatı DB'den al (kullanıcının gönderdiğini kabul etme!)
+      const realPrice = product.price;
+      const qty = Math.max(1, Math.min(99, Math.floor(item.quantity)));
+      serverSubtotal += realPrice * qty;
+      verifiedItems.push({
+        ...item,
+        price: realPrice,
+        quantity: qty,
+        name: product.name,
+        code: product.code,
+        image: JSON.parse(product.images || '[]')[0] || '',
+      });
+    }
+
+    // Kargo ücretini sunucuda hesapla
+    let serverShipping: number;
+    if (body.shippingMethod === 'ekspres') {
+      serverShipping = 1; // test modu — sonra 29 TL'ye çevrilecek
+    } else {
+      serverShipping = serverSubtotal >= 5000 ? 0 : 99;
+    }
+    const serverTotal = serverSubtotal + serverShipping;
 
     // 1. Sipariş kaydı (pending)
     const orderNo = 'EB' + Date.now().toString().slice(-8);
@@ -56,15 +96,15 @@ export async function POST(req: NextRequest) {
         city: body.city,
         district: body.district,
         postalCode: body.postalCode || '',
-        subtotal: body.subtotal,
-        shippingFee: body.shippingFee,
-        total: body.total,
+        subtotal: serverSubtotal,
+        shippingFee: serverShipping,
+        total: serverTotal,
         note: body.note || '',
         conversationId,
         basketId,
         paymentStatus: 'pending',
         items: {
-          create: body.items.map(item => ({
+          create: verifiedItems.map(item => ({
             productId: item.productId,
             name: item.name,
             code: item.code || '',
@@ -88,11 +128,11 @@ export async function POST(req: NextRequest) {
 
     const result = await initializeCheckout({
       conversationId,
-      price: body.subtotal.toFixed(2),
-      paidPrice: body.total.toFixed(2),
+      price: serverSubtotal.toFixed(2),
+      paidPrice: serverTotal.toFixed(2),
       basketId,
       callbackUrl,
-      enabledInstallments: body.total >= 10000 ? [1, 2, 3] : [1],
+      enabledInstallments: serverTotal >= 10000 ? [1, 2, 3] : [1],
       buyer: {
         id: order.id,
         name: body.firstName,
@@ -120,8 +160,8 @@ export async function POST(req: NextRequest) {
         address: body.address,
         zipCode: body.postalCode || '17200',
       },
-      basketItems: body.items.map((item, idx) => ({
-        id: `${item.productId || 'item'}-${idx}`,
+      basketItems: verifiedItems.map((item, idx) => ({
+        id: `${item.productId}-${idx}`,
         name: item.name,
         category1: 'Giyim',
         itemType: 'PHYSICAL',

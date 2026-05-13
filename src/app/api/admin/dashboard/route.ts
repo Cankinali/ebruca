@@ -1,7 +1,11 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { requireAdmin } from '@/lib/admin-auth';
 
 export async function GET() {
+  const unauth = await requireAdmin();
+  if (unauth) return unauth;
+
   const now = new Date();
   const year = now.getFullYear();
 

@@ -1,7 +1,10 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { requireAdmin } from '@/lib/admin-auth';
 
 export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const unauth = await requireAdmin();
+  if (unauth) return unauth;
   const { id } = await params;
   const order = await prisma.order.findUnique({
     where: { id },
@@ -12,6 +15,8 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
 }
 
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const unauth = await requireAdmin();
+  if (unauth) return unauth;
   const { id } = await params;
   const body = await request.json();
 

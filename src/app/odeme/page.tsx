@@ -69,6 +69,7 @@ export default function CheckoutPage() {
     setSubmitting(true);
     try {
       // Iyzico ödeme oturumu başlat
+      // Not: Fiyatları sunucu DB'den doğrulayacak, bu yüzden istemciden göndermiyoruz
       const res = await fetch('/api/odeme/baslat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -81,18 +82,17 @@ export default function CheckoutPage() {
           city: form.il,
           district: form.ilce,
           postalCode: form.postaKodu,
-          subtotal: totalPrice,
-          shippingFee,
-          total: finalTotal,
+          shippingMethod: form.kargo,
           items: items.map(item => ({
             productId: item.product.id,
-            name: item.product.name,
-            code: item.product.code || '',
-            price: item.product.price,
             size: item.size,
             color: item.color,
             quantity: item.quantity,
-            image: item.product.images?.[0] || '',
+            // name, price, code, image alanları sunucuda DB'den doldurulacak
+            name: '',
+            code: '',
+            price: 0,
+            image: '',
           })),
         }),
       });

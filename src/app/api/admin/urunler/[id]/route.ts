@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { requireAdmin } from '@/lib/admin-auth';
 
 // GET — tek ürün
 export async function GET(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const unauth = await requireAdmin();
+  if (unauth) return unauth;
   const { id } = await params;
   const product = await prisma.product.findUnique({ where: { id } });
   if (!product) return NextResponse.json({ error: 'Bulunamadı' }, { status: 404 });
@@ -11,6 +14,8 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ id: st
 
 // PUT — güncelle
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const unauth = await requireAdmin();
+  if (unauth) return unauth;
   try {
     const { id } = await params;
     const body = await req.json();
@@ -47,6 +52,8 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 
 // DELETE — sil
 export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const unauth = await requireAdmin();
+  if (unauth) return unauth;
   const { id } = await params;
   await prisma.product.delete({ where: { id } });
   return NextResponse.json({ ok: true });

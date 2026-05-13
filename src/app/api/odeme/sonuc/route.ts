@@ -24,6 +24,22 @@ export async function POST(req: NextRequest) {
       return NextResponse.redirect(new URL('/sepet?error=order_not_found', req.url));
     }
 
+    // Iyzico'dan dönen conversationId ile DB'deki eşleşmeli — tampering kontrolü
+    if (result.conversationId && result.conversationId !== order.conversationId) {
+      console.error('ConversationId uyuşmazlığı', { orderId, expected: order.conversationId, got: result.conversationId });
+      return NextResponse.redirect(new URL('/sepet?error=mismatch', req.url));
+    }
+
+    // Iyzico'nun raporladığı tutar DB'deki ile uyuşmalı
+    if (result.paidPrice !== undefined && Math.abs(result.paidPrice - order.total) > 0.01) {
+      console.error('Tutar uyuşmazlığı', { orderId, expected: order.total, got: result.paidPrice });
+      await prisma.order.update({
+        where: { id: orderId },
+        data: { paymentStatus: 'failure', status: 'cancelled' },
+      });
+      return NextResponse.redirect(new URL('/sepet?error=amount_mismatch', req.url));
+    }
+
     // Başarılı
     if (
       result.status === 'success' &&

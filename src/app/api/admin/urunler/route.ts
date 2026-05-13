@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { requireAdmin } from '@/lib/admin-auth';
 
 function slugify(text: string) {
   return text
@@ -12,6 +13,9 @@ function slugify(text: string) {
 
 // GET — tüm ürünler
 export async function GET() {
+  const unauth = await requireAdmin();
+  if (unauth) return unauth;
+
   const products = await prisma.product.findMany({
     orderBy: { createdAt: 'desc' },
   });
@@ -20,6 +24,8 @@ export async function GET() {
 
 // POST — yeni ürün ekle
 export async function POST(req: NextRequest) {
+  const unauth = await requireAdmin();
+  if (unauth) return unauth;
   try {
     const body = await req.json();
 

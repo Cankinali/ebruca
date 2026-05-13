@@ -1,7 +1,11 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { requireAdmin } from '@/lib/admin-auth';
 
 export async function GET(request: Request) {
+  const unauth = await requireAdmin();
+  if (unauth) return unauth;
+
   const { searchParams } = new URL(request.url);
   const status = searchParams.get('status') || '';
   const page = parseInt(searchParams.get('page') || '1');
@@ -25,6 +29,8 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  const unauth = await requireAdmin();
+  if (unauth) return unauth;
   const body = await request.json();
 
   const orderNo = 'EB' + Date.now().toString().slice(-8);
