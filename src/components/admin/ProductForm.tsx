@@ -37,7 +37,7 @@ const CATEGORIES = [
 ];
 
 const STANDARD_SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'Standart'];
-const NUMERIC_SIZES = ['38', '39', '40', '41', '42', '43', '44', '46', '47', '48'];
+const NUMERIC_SIZES = ['1', '2', '3', '38', '39', '40', '41', '42', '43', '44', '46', '47', '48'];
 
 const BEDEN_GROUPS: { group: string; sizes: string[] }[] = [
   { group: '0 BEDEN', sizes: ['38/40', '40/42', '42/44', '44/46', '46/48', '48/50'] },
