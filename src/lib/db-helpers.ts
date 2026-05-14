@@ -6,6 +6,9 @@ function mapProduct(p: {
   price: number; originalPrice: number | null; images: string; category: string;
   subcategory: string | null; sizes: string; colors: string; description: string;
   measurements: string | null; stock: string; sizeStock: string;
+  colorImages: string;
+  colorSizes: string;
+  colorSizeStock: string;
   isNew: boolean; isBestseller: boolean; isFeatured: boolean;
   createdAt: Date; updatedAt: Date;
 }): Product {
@@ -26,6 +29,9 @@ function mapProduct(p: {
     measurements: p.measurements ?? undefined,
     stock: p.stock as Product['stock'],
     sizeStock: JSON.parse(p.sizeStock || '{}') as Record<string, number>,
+    colorImages: JSON.parse(p.colorImages || '{}') as Record<string, string[]>,
+    colorSizes: JSON.parse(p.colorSizes || '{}') as Record<string, string[]>,
+    colorSizeStock: JSON.parse(p.colorSizeStock || '{}') as Record<string, Record<string, number>>,
     isNew: p.isNew,
     isBestseller: p.isBestseller,
     isFeatured: p.isFeatured,

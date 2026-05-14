@@ -75,23 +75,39 @@ export async function POST(req: NextRequest) {
         },
       });
 
-      // Stok düş
+      // Stok düş — varyant (renk) varsa o renkten, yoksa genel sizeStock'tan
       for (const item of order.items) {
         if (!item.productId) continue;
         const product = await prisma.product.findUnique({ where: { id: item.productId } });
         if (!product) continue;
+        const colorSizeStock = JSON.parse(product.colorSizeStock || '{}') as Record<string, Record<string, number>>;
+        const variant = item.color ? colorSizeStock[item.color] : undefined;
         const sizeStock = JSON.parse(product.sizeStock || '{}') as Record<string, number>;
-        if (sizeStock[item.size] !== undefined) {
+
+        // Renk varyantı dolu ise oradan düş
+        if (variant && variant[item.size] !== undefined) {
+          variant[item.size] = Math.max(0, (variant[item.size] ?? 0) - item.quantity);
+          colorSizeStock[item.color] = variant;
+        } else if (sizeStock[item.size] !== undefined) {
           sizeStock[item.size] = Math.max(0, (sizeStock[item.size] ?? 0) - item.quantity);
-          const totalStock = Object.values(sizeStock).reduce((a, b) => a + b, 0);
-          await prisma.product.update({
-            where: { id: item.productId },
-            data: {
-              sizeStock: JSON.stringify(sizeStock),
-              stock: totalStock === 0 ? 'out_of_stock' : totalStock <= 3 ? 'low_stock' : 'in_stock',
-            },
-          });
         }
+
+        // Toplam stok hesabı: tüm renklerin + genel sizeStock'un toplamı
+        const variantsTotal = Object.values(colorSizeStock).reduce(
+          (sum, v) => sum + Object.values(v).reduce((a, b) => a + b, 0),
+          0
+        );
+        const globalTotal = Object.values(sizeStock).reduce((a, b) => a + b, 0);
+        const totalStock = variantsTotal + globalTotal;
+
+        await prisma.product.update({
+          where: { id: item.productId },
+          data: {
+            sizeStock: JSON.stringify(sizeStock),
+            colorSizeStock: JSON.stringify(colorSizeStock),
+            stock: totalStock === 0 ? 'out_of_stock' : totalStock <= 3 ? 'low_stock' : 'in_stock',
+          },
+        });
       }
 
       // E-posta gönder (asenkron, hata olsa bile akışı bozma)

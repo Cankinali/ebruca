@@ -15,6 +15,9 @@ export interface Product {
   measurements?: string;
   stock: 'in_stock' | 'low_stock' | 'out_of_stock';
   sizeStock?: Record<string, number>; // { "S": 5, "1 BEDEN / 38/40": 3 }
+  colorImages?: Record<string, string[]>; // { "Kırmızı": ["url1.jpg"], "Mavi": [...] }
+  colorSizes?: Record<string, string[]>; // { "Kırmızı": ["S","M"], "Mavi": ["L"] }
+  colorSizeStock?: Record<string, Record<string, number>>; // { "Kırmızı": { S:5, M:3 } }
   isFeatured?: boolean;
   isNew?: boolean;
   isBestseller?: boolean;

@@ -24,6 +24,9 @@ model Product {
   measurements  String?
   stock         String      @default("in_stock")
   sizeStock     String      @default("{}")
+  colorImages   String      @default("{}")
+  colorSizes    String      @default("{}")
+  colorSizeStock String     @default("{}")
   isNew         Boolean     @default(true)
   isBestseller  Boolean     @default(false)
   isFeatured    Boolean     @default(false)

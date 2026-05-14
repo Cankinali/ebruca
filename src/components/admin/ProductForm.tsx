@@ -20,6 +20,9 @@ interface ProductFormData {
   measurements: string;
   stock: string;
   sizeStock: Record<string, number>;
+  colorImages: Record<string, string[]>;
+  colorSizes: Record<string, string[]>;
+  colorSizeStock: Record<string, Record<string, number>>;
   isNew: boolean;
   isBestseller: boolean;
   isFeatured: boolean;
@@ -50,12 +53,24 @@ const BEDEN_GROUPS: { group: string; sizes: string[] }[] = [
 
 // Seçilen değer: "1 BEDEN / 38/40" formatında saklanır
 const bedenValue = (group: string, size: string) => `${group} / ${size}`;
-const COLOR_OPTIONS = ['Siyah', 'Beyaz', 'Ekru', 'Camel', 'Lacivert', 'Bordo', 'Haki', 'Pudra', 'Gri', 'Pembe', 'Mavi', 'Yeşil', 'Bej'];
+const COLOR_OPTIONS = [
+  // Klasik nötrler
+  'Siyah', 'Beyaz', 'Krem', 'Ekru', 'Bej', 'Camel', 'Pudra',
+  // Koyular
+  'Gri', 'Lacivert', 'Kahverengi',
+  // Renkler
+  'Kırmızı', 'Bordo', 'Pembe', 'Mor', 'Mavi', 'Yeşil', 'Haki', 'Sarı', 'Turuncu',
+  // Metalik
+  'Gold', 'Gümüş',
+  // Özel
+  'Desenli', 'Çok Renkli',
+];
 
 const empty: ProductFormData = {
   name: '', brand: 'Ebruca', code: '', price: '', originalPrice: '',
   images: [], category: 'elbise', subcategory: '', sizes: [], colors: [],
   description: '', measurements: '', stock: 'in_stock', sizeStock: {},
+  colorImages: {}, colorSizes: {}, colorSizeStock: {},
   isNew: true, isBestseller: false, isFeatured: false,
 };
 
@@ -84,6 +99,16 @@ export default function ProductForm({ initial = empty, mode }: Props) {
     return 0;
   });
   const [error, setError] = useState('');
+
+  // Renk varyantı (her renge ayrı görsel/beden/stok) — default kapalı.
+  // Edit modunda mevcut veri varsa otomatik açık.
+  const [showColorVariants, setShowColorVariants] = useState(() => {
+    const hasImages = Object.values(initial.colorImages || {}).some(arr => arr.length > 0);
+    const hasSizes = Object.values(initial.colorSizes || {}).some(arr => arr.length > 0);
+    const hasStock = Object.values(initial.colorSizeStock || {}).some(o => Object.keys(o).length > 0);
+    return hasImages || hasSizes || hasStock;
+  });
+
   const galleryRef = useRef<HTMLInputElement>(null);
   const cameraRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
@@ -96,22 +121,92 @@ export default function ProductForm({ initial = empty, mode }: Props) {
       const arr = prev[key] as string[];
       const has = arr.includes(item);
       const newArr = has ? arr.filter(x => x !== item) : [...arr, item];
-      // Beden kaldırılınca sizeStock'tan da sil
+
       if (key === 'sizes' && has) {
         const newStock = { ...prev.sizeStock };
         delete newStock[item];
         return { ...prev, sizes: newArr, sizeStock: newStock };
       }
-      // Beden eklenince sizeStock'a 0 ile başlat (kullanıcı girecek)
       if (key === 'sizes' && !has) {
         return { ...prev, sizes: newArr, sizeStock: { ...prev.sizeStock, [item]: 0 } };
       }
+
+      // Renk kaldırılınca ona ait görseller, bedenler, stoklar da silinsin
+      if (key === 'colors' && has) {
+        const newCI = { ...prev.colorImages };
+        const newCS = { ...prev.colorSizes };
+        const newCSS = { ...prev.colorSizeStock };
+        delete newCI[item]; delete newCS[item]; delete newCSS[item];
+        return { ...prev, colors: newArr, colorImages: newCI, colorSizes: newCS, colorSizeStock: newCSS };
+      }
+      // Renk eklenince boş yapılarla başla
+      if (key === 'colors' && !has) {
+        return {
+          ...prev,
+          colors: newArr,
+          colorImages: { ...prev.colorImages, [item]: [] },
+          colorSizes: { ...prev.colorSizes, [item]: [] },
+          colorSizeStock: { ...prev.colorSizeStock, [item]: {} },
+        };
+      }
+
       return { ...prev, [key]: newArr };
     });
   };
 
   const setSizeStock = (size: string, qty: number) => {
     setForm(prev => ({ ...prev, sizeStock: { ...prev.sizeStock, [size]: qty } }));
+  };
+
+  const addColorImage = async (color: string, file: File) => {
+    const fd = new FormData();
+    fd.append('file', file);
+    const res = await fetch('/api/admin/upload', { method: 'POST', body: fd });
+    if (!res.ok) { setError('Görsel yüklenemedi'); return; }
+    const { url } = await res.json();
+    setForm(prev => ({
+      ...prev,
+      colorImages: {
+        ...prev.colorImages,
+        [color]: [...(prev.colorImages[color] || []), url],
+      },
+    }));
+  };
+
+  const removeColorImage = (color: string, index: number) => {
+    setForm(prev => {
+      const arr = (prev.colorImages[color] || []).filter((_, i) => i !== index);
+      return { ...prev, colorImages: { ...prev.colorImages, [color]: arr } };
+    });
+  };
+
+  const toggleColorSize = (color: string, size: string) => {
+    setForm(prev => {
+      const cur = prev.colorSizes[color] || [];
+      const has = cur.includes(size);
+      const newSizes = has ? cur.filter(s => s !== size) : [...cur, size];
+      const newStock = { ...(prev.colorSizeStock[color] || {}) };
+      if (has) {
+        delete newStock[size];
+      } else {
+        newStock[size] = newStock[size] ?? 0;
+      }
+      return {
+        ...prev,
+        colorSizes: { ...prev.colorSizes, [color]: newSizes },
+        colorSizeStock: { ...prev.colorSizeStock, [color]: newStock },
+      };
+    });
+  };
+
+  const setColorSizeStock = (color: string, size: string, qty: number) => {
+    setForm(prev => ({
+      ...prev,
+      colorSizeStock: {
+        ...prev.colorSizeStock,
+        [color]: { ...(prev.colorSizeStock[color] || {}), [size]: qty },
+      },
+    }));
   };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -171,6 +266,10 @@ export default function ProductForm({ initial = empty, mode }: Props) {
           ...form,
           price: salePrice,
           originalPrice: discountPct > 0 ? listPrice : null,
+          // Varyantlar kapalıysa veriyi göndermeyelim
+          colorImages: showColorVariants ? form.colorImages : {},
+          colorSizes: showColorVariants ? form.colorSizes : {},
+          colorSizeStock: showColorVariants ? form.colorSizeStock : {},
         }),
       });
 
@@ -541,6 +640,176 @@ export default function ProductForm({ initial = empty, mode }: Props) {
             ))}
           </div>
         </div>
+
+        {/* Renk varyantları açma butonu */}
+        {form.colors.length > 0 && !showColorVariants && (
+          <button
+            type="button"
+            onClick={() => setShowColorVariants(true)}
+            className="w-full border-2 border-dashed border-gray-300 px-4 py-3 text-sm text-gray-600 hover:border-black hover:text-black hover:bg-gray-50 transition-colors"
+          >
+            + Renkler için ayrı görsel/beden/stok ekle
+            <span className="block text-[11px] text-gray-400 mt-1">
+              Aynı üründe her rengin farklı fotoğrafı, bedeni veya stoğu varsa kullan
+            </span>
+          </button>
+        )}
+
+        {/* Renk varyantları: Her renk için görsel + beden + stok */}
+        {form.colors.length > 0 && showColorVariants && (
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <label className="block text-xs font-medium text-gray-600">
+                Renk Varyantları
+                <span className="text-gray-400 font-normal ml-1">
+                  — Her renk için ayrı görsel, beden ve stok
+                </span>
+              </label>
+              <button
+                type="button"
+                onClick={() => {
+                  if (confirm('Renk varyantlarını kapat? Girdiğin görseller/bedenler silinecek.')) {
+                    setShowColorVariants(false);
+                    set('colorImages', {});
+                    set('colorSizes', {});
+                    set('colorSizeStock', {});
+                  }
+                }}
+                className="text-xs text-gray-400 hover:text-red-500 underline"
+              >
+                Varyantları kapat
+              </button>
+            </div>
+            <div className="space-y-4">
+              {form.colors.map(color => {
+                const colorPics = form.colorImages[color] || [];
+                const colorSizesSelected = form.colorSizes[color] || [];
+                const colorStock = form.colorSizeStock[color] || {};
+                const totalColorStock = Object.values(colorStock).reduce((a, b) => a + b, 0);
+
+                return (
+                  <div key={color} className="border border-gray-200 bg-gray-50 p-4 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-sm font-bold uppercase tracking-wide">🎨 {color}</h3>
+                      <span className="text-xs text-gray-500">
+                        {colorPics.length} görsel · {colorSizesSelected.length} beden · {totalColorStock} adet
+                      </span>
+                    </div>
+
+                    {/* Görseller */}
+                    <div>
+                      <label className="block text-xs text-gray-500 mb-1.5">Görseller</label>
+                      <div className="flex flex-wrap gap-2">
+                        {colorPics.map((url, i) => (
+                          <div key={url + i} className="relative w-16 h-20 border border-gray-300 bg-white">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img src={url} alt="" className="w-full h-full object-cover" />
+                            <button
+                              type="button"
+                              onClick={() => removeColorImage(color, i)}
+                              className="absolute -top-2 -right-2 bg-red-500 text-white w-5 h-5 rounded-full text-xs hover:bg-red-600 flex items-center justify-center"
+                            >×</button>
+                          </div>
+                        ))}
+                        <label className="w-16 h-20 border border-dashed border-gray-300 bg-white flex items-center justify-center cursor-pointer hover:border-black text-2xl text-gray-400">
+                          +
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={async (e) => {
+                              const files = e.target.files;
+                              if (!files) return;
+                              for (const f of Array.from(files)) {
+                                await addColorImage(color, f);
+                              }
+                              e.target.value = '';
+                            }}
+                            multiple
+                          />
+                        </label>
+                      </div>
+                    </div>
+
+                    {/* Beden seçimi (per-color) */}
+                    <div>
+                      <label className="block text-xs text-gray-500 mb-1.5">Bedenler</label>
+                      <div className="space-y-1.5">
+                        {/* Standart */}
+                        <div className="flex flex-wrap gap-1.5">
+                          {STANDARD_SIZES.map(s => (
+                            <button key={s} type="button"
+                              onClick={() => toggleColorSize(color, s)}
+                              className={`px-2.5 py-1 text-xs border transition-colors ${
+                                colorSizesSelected.includes(s)
+                                  ? 'bg-black text-white border-black'
+                                  : 'border-gray-300 bg-white hover:border-gray-500'
+                              }`}>{s}</button>
+                          ))}
+                        </div>
+                        {/* Numara */}
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <span className="text-[10px] text-gray-400 w-14">Numara</span>
+                          {NUMERIC_SIZES.map(s => (
+                            <button key={s} type="button"
+                              onClick={() => toggleColorSize(color, s)}
+                              className={`px-2 py-1 text-[11px] border transition-colors ${
+                                colorSizesSelected.includes(s)
+                                  ? 'bg-black text-white border-black'
+                                  : 'border-gray-300 bg-white hover:border-gray-500'
+                              }`}>{s}</button>
+                          ))}
+                        </div>
+                        {/* Beden grupları */}
+                        {BEDEN_GROUPS.map(({ group, sizes }) => (
+                          <div key={group} className="flex items-center gap-1.5 flex-wrap">
+                            <span className="text-[10px] text-gray-400 w-14">{group}</span>
+                            {sizes.map(size => {
+                              const val = bedenValue(group, size);
+                              return (
+                                <button key={val} type="button"
+                                  onClick={() => toggleColorSize(color, val)}
+                                  className={`px-2 py-1 text-[11px] border transition-colors ${
+                                    colorSizesSelected.includes(val)
+                                      ? 'bg-black text-white border-black'
+                                      : 'border-gray-300 bg-white hover:border-gray-500'
+                                  }`}>{size}</button>
+                              );
+                            })}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Stok per size */}
+                    {colorSizesSelected.length > 0 && (
+                      <div>
+                        <label className="block text-xs text-gray-500 mb-1.5">Stok</label>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+                          {colorSizesSelected.map(size => (
+                            <div key={size} className="flex items-center gap-2 border border-gray-200 bg-white px-2 py-1">
+                              <span className="text-[11px] text-gray-700 flex-1 truncate">{size}</span>
+                              <input
+                                type="number" min="0"
+                                value={colorStock[size] ?? 0}
+                                onChange={e => setColorSizeStock(color, size, Math.max(0, parseInt(e.target.value) || 0))}
+                                className="w-12 border border-gray-200 px-1.5 py-0.5 text-xs text-center outline-none focus:border-black"
+                              />
+                              <span className="text-[9px] text-gray-400">adet</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+            <p className="text-xs text-gray-400 mt-2">
+              💡 Bir renk için görsel/beden girilmezse, müşteri o rengi seçince ürünün ana görselleri ve bedenleri gösterilir.
+            </p>
+          </div>
+        )}
       </section>
 
       {/* Açıklama */}

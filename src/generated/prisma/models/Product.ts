@@ -53,6 +53,9 @@ export type ProductMinAggregateOutputType = {
   measurements: string | null
   stock: string | null
   sizeStock: string | null
+  colorImages: string | null
+  colorSizes: string | null
+  colorSizeStock: string | null
   isNew: boolean | null
   isBestseller: boolean | null
   isFeatured: boolean | null
@@ -77,6 +80,9 @@ export type ProductMaxAggregateOutputType = {
   measurements: string | null
   stock: string | null
   sizeStock: string | null
+  colorImages: string | null
+  colorSizes: string | null
+  colorSizeStock: string | null
   isNew: boolean | null
   isBestseller: boolean | null
   isFeatured: boolean | null
@@ -101,6 +107,9 @@ export type ProductCountAggregateOutputType = {
   measurements: number
   stock: number
   sizeStock: number
+  colorImages: number
+  colorSizes: number
+  colorSizeStock: number
   isNew: number
   isBestseller: number
   isFeatured: number
@@ -137,6 +146,9 @@ export type ProductMinAggregateInputType = {
   measurements?: true
   stock?: true
   sizeStock?: true
+  colorImages?: true
+  colorSizes?: true
+  colorSizeStock?: true
   isNew?: true
   isBestseller?: true
   isFeatured?: true
@@ -161,6 +173,9 @@ export type ProductMaxAggregateInputType = {
   measurements?: true
   stock?: true
   sizeStock?: true
+  colorImages?: true
+  colorSizes?: true
+  colorSizeStock?: true
   isNew?: true
   isBestseller?: true
   isFeatured?: true
@@ -185,6 +200,9 @@ export type ProductCountAggregateInputType = {
   measurements?: true
   stock?: true
   sizeStock?: true
+  colorImages?: true
+  colorSizes?: true
+  colorSizeStock?: true
   isNew?: true
   isBestseller?: true
   isFeatured?: true
@@ -296,6 +314,9 @@ export type ProductGroupByOutputType = {
   measurements: string | null
   stock: string
   sizeStock: string
+  colorImages: string
+  colorSizes: string
+  colorSizeStock: string
   isNew: boolean
   isBestseller: boolean
   isFeatured: boolean
@@ -343,6 +364,9 @@ export type ProductWhereInput = {
   measurements?: Prisma.StringNullableFilter<"Product"> | string | null
   stock?: Prisma.StringFilter<"Product"> | string
   sizeStock?: Prisma.StringFilter<"Product"> | string
+  colorImages?: Prisma.StringFilter<"Product"> | string
+  colorSizes?: Prisma.StringFilter<"Product"> | string
+  colorSizeStock?: Prisma.StringFilter<"Product"> | string
   isNew?: Prisma.BoolFilter<"Product"> | boolean
   isBestseller?: Prisma.BoolFilter<"Product"> | boolean
   isFeatured?: Prisma.BoolFilter<"Product"> | boolean
@@ -367,6 +391,9 @@ export type ProductOrderByWithRelationInput = {
   measurements?: Prisma.SortOrderInput | Prisma.SortOrder
   stock?: Prisma.SortOrder
   sizeStock?: Prisma.SortOrder
+  colorImages?: Prisma.SortOrder
+  colorSizes?: Prisma.SortOrder
+  colorSizeStock?: Prisma.SortOrder
   isNew?: Prisma.SortOrder
   isBestseller?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
@@ -394,6 +421,9 @@ export type ProductWhereUniqueInput = Prisma.AtLeast<{
   measurements?: Prisma.StringNullableFilter<"Product"> | string | null
   stock?: Prisma.StringFilter<"Product"> | string
   sizeStock?: Prisma.StringFilter<"Product"> | string
+  colorImages?: Prisma.StringFilter<"Product"> | string
+  colorSizes?: Prisma.StringFilter<"Product"> | string
+  colorSizeStock?: Prisma.StringFilter<"Product"> | string
   isNew?: Prisma.BoolFilter<"Product"> | boolean
   isBestseller?: Prisma.BoolFilter<"Product"> | boolean
   isFeatured?: Prisma.BoolFilter<"Product"> | boolean
@@ -418,6 +448,9 @@ export type ProductOrderByWithAggregationInput = {
   measurements?: Prisma.SortOrderInput | Prisma.SortOrder
   stock?: Prisma.SortOrder
   sizeStock?: Prisma.SortOrder
+  colorImages?: Prisma.SortOrder
+  colorSizes?: Prisma.SortOrder
+  colorSizeStock?: Prisma.SortOrder
   isNew?: Prisma.SortOrder
   isBestseller?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
@@ -450,6 +483,9 @@ export type ProductScalarWhereWithAggregatesInput = {
   measurements?: Prisma.StringNullableWithAggregatesFilter<"Product"> | string | null
   stock?: Prisma.StringWithAggregatesFilter<"Product"> | string
   sizeStock?: Prisma.StringWithAggregatesFilter<"Product"> | string
+  colorImages?: Prisma.StringWithAggregatesFilter<"Product"> | string
+  colorSizes?: Prisma.StringWithAggregatesFilter<"Product"> | string
+  colorSizeStock?: Prisma.StringWithAggregatesFilter<"Product"> | string
   isNew?: Prisma.BoolWithAggregatesFilter<"Product"> | boolean
   isBestseller?: Prisma.BoolWithAggregatesFilter<"Product"> | boolean
   isFeatured?: Prisma.BoolWithAggregatesFilter<"Product"> | boolean
@@ -474,6 +510,9 @@ export type ProductCreateInput = {
   measurements?: string | null
   stock?: string
   sizeStock?: string
+  colorImages?: string
+  colorSizes?: string
+  colorSizeStock?: string
   isNew?: boolean
   isBestseller?: boolean
   isFeatured?: boolean
@@ -498,6 +537,9 @@ export type ProductUncheckedCreateInput = {
   measurements?: string | null
   stock?: string
   sizeStock?: string
+  colorImages?: string
+  colorSizes?: string
+  colorSizeStock?: string
   isNew?: boolean
   isBestseller?: boolean
   isFeatured?: boolean
@@ -522,6 +564,9 @@ export type ProductUpdateInput = {
   measurements?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stock?: Prisma.StringFieldUpdateOperationsInput | string
   sizeStock?: Prisma.StringFieldUpdateOperationsInput | string
+  colorImages?: Prisma.StringFieldUpdateOperationsInput | string
+  colorSizes?: Prisma.StringFieldUpdateOperationsInput | string
+  colorSizeStock?: Prisma.StringFieldUpdateOperationsInput | string
   isNew?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isBestseller?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -546,6 +591,9 @@ export type ProductUncheckedUpdateInput = {
   measurements?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stock?: Prisma.StringFieldUpdateOperationsInput | string
   sizeStock?: Prisma.StringFieldUpdateOperationsInput | string
+  colorImages?: Prisma.StringFieldUpdateOperationsInput | string
+  colorSizes?: Prisma.StringFieldUpdateOperationsInput | string
+  colorSizeStock?: Prisma.StringFieldUpdateOperationsInput | string
   isNew?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isBestseller?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -570,6 +618,9 @@ export type ProductCreateManyInput = {
   measurements?: string | null
   stock?: string
   sizeStock?: string
+  colorImages?: string
+  colorSizes?: string
+  colorSizeStock?: string
   isNew?: boolean
   isBestseller?: boolean
   isFeatured?: boolean
@@ -594,6 +645,9 @@ export type ProductUpdateManyMutationInput = {
   measurements?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stock?: Prisma.StringFieldUpdateOperationsInput | string
   sizeStock?: Prisma.StringFieldUpdateOperationsInput | string
+  colorImages?: Prisma.StringFieldUpdateOperationsInput | string
+  colorSizes?: Prisma.StringFieldUpdateOperationsInput | string
+  colorSizeStock?: Prisma.StringFieldUpdateOperationsInput | string
   isNew?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isBestseller?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -618,6 +672,9 @@ export type ProductUncheckedUpdateManyInput = {
   measurements?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stock?: Prisma.StringFieldUpdateOperationsInput | string
   sizeStock?: Prisma.StringFieldUpdateOperationsInput | string
+  colorImages?: Prisma.StringFieldUpdateOperationsInput | string
+  colorSizes?: Prisma.StringFieldUpdateOperationsInput | string
+  colorSizeStock?: Prisma.StringFieldUpdateOperationsInput | string
   isNew?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isBestseller?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -642,6 +699,9 @@ export type ProductCountOrderByAggregateInput = {
   measurements?: Prisma.SortOrder
   stock?: Prisma.SortOrder
   sizeStock?: Prisma.SortOrder
+  colorImages?: Prisma.SortOrder
+  colorSizes?: Prisma.SortOrder
+  colorSizeStock?: Prisma.SortOrder
   isNew?: Prisma.SortOrder
   isBestseller?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
@@ -671,6 +731,9 @@ export type ProductMaxOrderByAggregateInput = {
   measurements?: Prisma.SortOrder
   stock?: Prisma.SortOrder
   sizeStock?: Prisma.SortOrder
+  colorImages?: Prisma.SortOrder
+  colorSizes?: Prisma.SortOrder
+  colorSizeStock?: Prisma.SortOrder
   isNew?: Prisma.SortOrder
   isBestseller?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
@@ -695,6 +758,9 @@ export type ProductMinOrderByAggregateInput = {
   measurements?: Prisma.SortOrder
   stock?: Prisma.SortOrder
   sizeStock?: Prisma.SortOrder
+  colorImages?: Prisma.SortOrder
+  colorSizes?: Prisma.SortOrder
+  colorSizeStock?: Prisma.SortOrder
   isNew?: Prisma.SortOrder
   isBestseller?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
@@ -758,6 +824,9 @@ export type ProductSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   measurements?: boolean
   stock?: boolean
   sizeStock?: boolean
+  colorImages?: boolean
+  colorSizes?: boolean
+  colorSizeStock?: boolean
   isNew?: boolean
   isBestseller?: boolean
   isFeatured?: boolean
@@ -782,6 +851,9 @@ export type ProductSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   measurements?: boolean
   stock?: boolean
   sizeStock?: boolean
+  colorImages?: boolean
+  colorSizes?: boolean
+  colorSizeStock?: boolean
   isNew?: boolean
   isBestseller?: boolean
   isFeatured?: boolean
@@ -806,6 +878,9 @@ export type ProductSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   measurements?: boolean
   stock?: boolean
   sizeStock?: boolean
+  colorImages?: boolean
+  colorSizes?: boolean
+  colorSizeStock?: boolean
   isNew?: boolean
   isBestseller?: boolean
   isFeatured?: boolean
@@ -830,6 +905,9 @@ export type ProductSelectScalar = {
   measurements?: boolean
   stock?: boolean
   sizeStock?: boolean
+  colorImages?: boolean
+  colorSizes?: boolean
+  colorSizeStock?: boolean
   isNew?: boolean
   isBestseller?: boolean
   isFeatured?: boolean
@@ -837,7 +915,7 @@ export type ProductSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ProductOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "name" | "brand" | "code" | "price" | "originalPrice" | "images" | "category" | "subcategory" | "sizes" | "colors" | "description" | "measurements" | "stock" | "sizeStock" | "isNew" | "isBestseller" | "isFeatured" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
+export type ProductOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "name" | "brand" | "code" | "price" | "originalPrice" | "images" | "category" | "subcategory" | "sizes" | "colors" | "description" | "measurements" | "stock" | "sizeStock" | "colorImages" | "colorSizes" | "colorSizeStock" | "isNew" | "isBestseller" | "isFeatured" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
 
 export type $ProductPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Product"
@@ -859,6 +937,9 @@ export type $ProductPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     measurements: string | null
     stock: string
     sizeStock: string
+    colorImages: string
+    colorSizes: string
+    colorSizeStock: string
     isNew: boolean
     isBestseller: boolean
     isFeatured: boolean
@@ -1303,6 +1384,9 @@ export interface ProductFieldRefs {
   readonly measurements: Prisma.FieldRef<"Product", 'String'>
   readonly stock: Prisma.FieldRef<"Product", 'String'>
   readonly sizeStock: Prisma.FieldRef<"Product", 'String'>
+  readonly colorImages: Prisma.FieldRef<"Product", 'String'>
+  readonly colorSizes: Prisma.FieldRef<"Product", 'String'>
+  readonly colorSizeStock: Prisma.FieldRef<"Product", 'String'>
   readonly isNew: Prisma.FieldRef<"Product", 'Boolean'>
   readonly isBestseller: Prisma.FieldRef<"Product", 'Boolean'>
   readonly isFeatured: Prisma.FieldRef<"Product", 'Boolean'>

@@ -18,6 +18,35 @@ export default function ProductDetail({ product, bestsellers }: Props) {
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState(product.colors[0] ?? '');
   const [activeImage, setActiveImage] = useState(0);
+
+  // Seçili renge ait özel görseller varsa onları, yoksa ürünün ana görsellerini göster
+  const colorSpecificImages = product.colorImages?.[selectedColor];
+  const displayedImages = (colorSpecificImages && colorSpecificImages.length > 0)
+    ? colorSpecificImages
+    : product.images;
+
+  // Seçili renge ait özel bedenler varsa onları, yoksa genel bedenleri göster
+  const colorSpecificSizes = product.colorSizes?.[selectedColor];
+  const displayedSizes = (colorSpecificSizes && colorSpecificSizes.length > 0)
+    ? colorSpecificSizes
+    : product.sizes;
+
+  // Seçili renge ait özel stok varsa onu, yoksa genel stoğu kullan
+  const colorSpecificStock = product.colorSizeStock?.[selectedColor];
+  const displayedSizeStock = (colorSpecificStock && Object.keys(colorSpecificStock).length > 0)
+    ? colorSpecificStock
+    : product.sizeStock;
+
+  // Renk değişince ilk fotoğrafa ve seçili bedeni temizle
+  const handleColorChange = (color: string) => {
+    setSelectedColor(color);
+    setActiveImage(0);
+    // Yeni renkte seçili beden yoksa sıfırla
+    const newSizes = product.colorSizes?.[color];
+    if (newSizes && newSizes.length > 0 && selectedSize && !newSizes.includes(selectedSize)) {
+      setSelectedSize('');
+    }
+  };
   const [added, setAdded] = useState(false);
   const [sizeError, setSizeError] = useState(false);
   const [activeTab, setActiveTab] = useState<'aciklama' | 'olculer'>('aciklama');
@@ -57,8 +86,8 @@ export default function ProductDetail({ product, bestsellers }: Props) {
         {/* Gallery */}
         <div className="space-y-3">
           <div className="relative aspect-[3/4] bg-gray-100 overflow-hidden">
-            {product.images[activeImage] ? (
-              <Image src={product.images[activeImage]} alt={product.name} fill priority
+            {displayedImages[activeImage] ? (
+              <Image src={displayedImages[activeImage]} alt={product.name} fill priority
                 className="object-cover" sizes="(max-width: 1024px) 100vw, 50vw" />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-gray-300">
@@ -73,9 +102,9 @@ export default function ProductDetail({ product, bestsellers }: Props) {
               </div>
             )}
           </div>
-          {product.images.length > 1 && (
-            <div className="flex gap-2">
-              {product.images.map((img, i) => (
+          {displayedImages.length > 1 && (
+            <div className="flex gap-2 flex-wrap">
+              {displayedImages.map((img, i) => (
                 <button key={i} onClick={() => setActiveImage(i)} aria-label={`${product.name} fotoğraf ${i + 1}`}
                   className={`relative w-20 aspect-square flex-shrink-0 overflow-hidden border-2 transition-colors ${
                     activeImage === i ? 'border-black' : 'border-transparent'
@@ -123,7 +152,7 @@ export default function ProductDetail({ product, bestsellers }: Props) {
               </p>
               <div className="flex flex-wrap gap-2">
                 {product.colors.map(color => (
-                  <button key={color} onClick={() => setSelectedColor(color)}
+                  <button key={color} onClick={() => handleColorChange(color)}
                     className={`px-3 py-1.5 text-sm border transition-colors ${
                       selectedColor === color ? 'border-black bg-black text-white' : 'border-gray-200 hover:border-gray-400'
                     }`}>
@@ -135,7 +164,7 @@ export default function ProductDetail({ product, bestsellers }: Props) {
           )}
 
           {/* Size */}
-          {product.sizes.length > 0 && (
+          {displayedSizes.length > 0 && (
             <div>
               <div className="flex items-center justify-between mb-2">
                 <p className={`text-xs font-semibold uppercase tracking-wider ${sizeError ? 'text-red-500' : ''}`}>
@@ -144,9 +173,9 @@ export default function ProductDetail({ product, bestsellers }: Props) {
                 <button className="text-xs text-gray-400 underline">Beden Rehberi</button>
               </div>
               <div className="flex flex-wrap gap-2">
-                {product.sizes.map(size => {
-                  const stock = product.sizeStock?.[size];
-                  const hasStockDefined = product.sizeStock && Object.keys(product.sizeStock).length > 0;
+                {displayedSizes.map(size => {
+                  const stock = displayedSizeStock?.[size];
+                  const hasStockDefined = displayedSizeStock && Object.keys(displayedSizeStock).length > 0;
                   if (hasStockDefined && stock === 0) return null;
                   const isLow = hasStockDefined && stock !== undefined && stock <= 3;
                   return (

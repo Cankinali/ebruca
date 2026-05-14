@@ -3,17 +3,21 @@ import { NextRequest, NextResponse } from 'next/server';
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Admin login sayfasını koru değil
+  // Login sayfası açık olsun
   if (pathname === '/admin/giris') return NextResponse.next();
 
-  // /admin altındaki tüm sayfaları koru
+  // /admin altındaki her şeyi koru
   if (pathname.startsWith('/admin')) {
     const token = request.cookies.get('admin_token')?.value;
-    const secret = process.env.ADMIN_SECRET ?? 'supersecretkey_change_this_in_production';
+    const secret = process.env.ADMIN_SECRET;
 
-    if (token !== secret) {
+    // SECRET tanımlı değilse — daima reddet (yanlışlıkla açık kalmasın)
+    if (!secret || !token || token.length < 32 || token !== secret) {
       const loginUrl = new URL('/admin/giris', request.url);
-      return NextResponse.redirect(loginUrl);
+      // Eski oturum varsa çerezi de temizle
+      const res = NextResponse.redirect(loginUrl);
+      res.cookies.set('admin_token', '', { maxAge: 0, path: '/' });
+      return res;
     }
   }
 
