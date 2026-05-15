@@ -34,7 +34,7 @@ export default function TrustBadges() {
         </svg>
       ),
       title: '3 Taksit',
-      subtitle: '10.000 TL üzeri',
+      subtitle: '5.000 TL üzeri seçili kartlar',
     },
     {
       icon: (

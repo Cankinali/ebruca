@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 
 const announcements = [
   '5.000 TL üzeri ÜCRETSİZ KARGO',
-  '10.000 TL üzeri VADE FARKSIZ 3 TAKSİT',
+  '5.000 TL üzeri SEÇİLİ KARTLARDA 3 TAKSİT',
 ];
 
 export default function AnnouncementBar() {

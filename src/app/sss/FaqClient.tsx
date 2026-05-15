@@ -29,7 +29,7 @@ const faqs = [
       },
       {
         q: 'Taksit imkanı var mı?',
-        a: '10.000 TL ve üzeri siparişlerde vade farksız 3 taksit imkanı sunulmaktadır.',
+        a: '5.000 TL ve üzeri siparişlerde seçili banka kartlarında 3 taksit imkanı sunulmaktadır.',
       },
       {
         q: 'Ödemem güvende mi?',
