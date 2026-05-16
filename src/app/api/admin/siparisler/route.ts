@@ -8,11 +8,22 @@ export async function GET(request: Request) {
 
   const { searchParams } = new URL(request.url);
   const status = searchParams.get('status') || '';
+  const showUnpaid = searchParams.get('unpaid') === '1';
   const page = parseInt(searchParams.get('page') || '1');
   const limit = 20;
   const skip = (page - 1) * limit;
 
-  const where = status ? { status } : {};
+  // Varsayılan: yalnızca ödemesi gerçekleşmiş (paymentStatus = success) siparişler.
+  // unpaid=1 ise ödeme bekleyenleri göster.
+  // status filtresi varsa onunla beraber çalış.
+  type WhereType = { status?: string; paymentStatus?: string | { not: string } };
+  const where: WhereType = {};
+  if (status) where.status = status;
+  if (showUnpaid) {
+    where.paymentStatus = { not: 'success' };
+  } else {
+    where.paymentStatus = 'success';
+  }
 
   const [orders, total] = await Promise.all([
     prisma.order.findMany({

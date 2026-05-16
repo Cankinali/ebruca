@@ -33,7 +33,6 @@ const STATUS_CONFIG: Record<OrderStatus, { label: string; color: string; bg: str
 
 const STATUS_FILTERS = [
   { value: '', label: 'Tümü' },
-  { value: 'pending', label: 'Bekliyor' },
   { value: 'confirmed', label: 'Onaylandı' },
   { value: 'shipped', label: 'Kargoda' },
   { value: 'delivered', label: 'Teslim' },
@@ -46,19 +45,29 @@ export default function SiparislerPage() {
   const [page, setPage] = useState(1);
   const [pages, setPages] = useState(1);
   const [status, setStatus] = useState('');
+  const [showUnpaid, setShowUnpaid] = useState(false);
+  const [unpaidCount, setUnpaidCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
   const fetchOrders = useCallback(async () => {
     setLoading(true);
     const params = new URLSearchParams({ page: String(page) });
     if (status) params.set('status', status);
+    if (showUnpaid) params.set('unpaid', '1');
     const res = await fetch(`/api/admin/siparisler?${params}`);
     const data = await res.json();
     setOrders(data.orders || []);
     setTotal(data.total || 0);
     setPages(data.pages || 1);
     setLoading(false);
-  }, [page, status]);
+  }, [page, status, showUnpaid]);
+
+  // Ödeme bekleyen sayısını arka planda al
+  useEffect(() => {
+    fetch('/api/admin/siparisler?unpaid=1&page=1')
+      .then(r => r.json())
+      .then(d => setUnpaidCount(d.total || 0));
+  }, []);
 
   useEffect(() => { fetchOrders(); }, [fetchOrders]);
 
@@ -79,6 +88,41 @@ export default function SiparislerPage() {
           <p className="text-lg font-bold">{totalRevenue.toLocaleString('tr-TR')} TL</p>
         </div>
       </div>
+
+      {/* Ödenmiş / Ödeme Bekleyen sekmeleri */}
+      <div className="flex gap-1 mb-4 border-b border-gray-200">
+        <button
+          onClick={() => { setShowUnpaid(false); setPage(1); setStatus(''); }}
+          className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors ${
+            !showUnpaid ? 'border-black text-black' : 'border-transparent text-gray-400 hover:text-black'
+          }`}
+        >
+          ✅ Ödenmiş Siparişler
+        </button>
+        <button
+          onClick={() => { setShowUnpaid(true); setPage(1); setStatus(''); }}
+          className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors flex items-center gap-2 ${
+            showUnpaid ? 'border-amber-500 text-amber-700' : 'border-transparent text-gray-400 hover:text-black'
+          }`}
+        >
+          ⏳ Ödeme Bekleyen
+          {unpaidCount > 0 && (
+            <span className="bg-amber-100 text-amber-700 text-[10px] font-bold rounded-full px-2 py-0.5">
+              {unpaidCount}
+            </span>
+          )}
+        </button>
+      </div>
+
+      {showUnpaid && (
+        <div className="mb-4 p-3 bg-amber-50 border border-amber-200 text-xs text-amber-800 flex gap-2">
+          <span>⚠️</span>
+          <span>
+            Bu siparişler ödemeye başladı ama tamamlamadı. Iyzico panelinden teyit etmeden işleme almayın.
+            Genelde kullanıcı kart vermekten vazgeçmiştir veya banka onaylamadı.
+          </span>
+        </div>
+      )}
 
       {/* Filtreler */}
       <div className="flex gap-2 mb-5 flex-wrap">

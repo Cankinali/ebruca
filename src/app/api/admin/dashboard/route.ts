@@ -9,9 +9,13 @@ export async function GET() {
   const now = new Date();
   const year = now.getFullYear();
 
-  // All non-cancelled orders
+  // Sadece ÖDEMESİ BAŞARILI ve iptal edilmemiş siparişler
+  // (ödeme bekleyenler gelir/sipariş sayısına dahil edilmez)
   const allOrders = await prisma.order.findMany({
-    where: { status: { not: 'cancelled' } },
+    where: {
+      paymentStatus: 'success',
+      status: { not: 'cancelled' },
+    },
     select: { total: true, status: true, createdAt: true },
   });
 
@@ -46,7 +50,9 @@ export async function GET() {
   });
 
   // Status counts
+  // Statü sayımları için: ödenmiş + iptal edilenler (ödeme bekleyenler hariç)
   const allWithCancelled = await prisma.order.findMany({
+    where: { paymentStatus: 'success' },
     select: { status: true },
   });
   const statusCounts: Record<string, number> = {};
