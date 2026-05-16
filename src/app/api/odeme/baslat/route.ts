@@ -70,8 +70,13 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // Kargo: 5000 TL üzeri ücretsiz, altı 90 TL
-    const serverShipping = serverSubtotal >= 5000 ? 0 : 90;
+    // Kargo: ekspres=1 TL (test), standart 5000 TL üzeri ücretsiz altı 90 TL
+    let serverShipping: number;
+    if (body.shippingMethod === 'ekspres') {
+      serverShipping = 1; // TEST
+    } else {
+      serverShipping = serverSubtotal >= 5000 ? 0 : 90;
+    }
     const serverTotal = serverSubtotal + serverShipping;
 
     // 1. Sipariş kaydı (pending)
