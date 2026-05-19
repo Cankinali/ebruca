@@ -5,15 +5,15 @@ export const categories: Category[] = [
     id: '1',
     name: 'Elbise',
     slug: 'elbise',
-    image: 'https://res.cloudinary.com/dgwcd1hnd/image/upload/v1778272255/ebruca/categories/cat-elbise.jpg',
+    image: 'https://res.cloudinary.com/dgwcd1hnd/image/upload/v1779218328/ebruca/categories/cat-elbise-v2.jpg',
     objectPosition: 'center 30%',
   },
   {
     id: '2',
     name: 'Takım',
     slug: 'takim',
-    image: 'https://res.cloudinary.com/dgwcd1hnd/image/upload/v1778272257/ebruca/categories/cat-takim.jpg',
-    objectPosition: 'center 15%',
+    image: 'https://res.cloudinary.com/dgwcd1hnd/image/upload/v1779218324/ebruca/categories/cat-takim-v2.jpg',
+    objectPosition: 'center 35%',
     subcategories: [
       { id: '2a', name: 'Etekli Takım', slug: 'etekli-takim' },
       { id: '2b', name: 'Pantolonlu Takım', slug: 'pantolonlu-takim' },
@@ -23,8 +23,8 @@ export const categories: Category[] = [
     id: '3',
     name: 'Alt Giyim',
     slug: 'alt-giyim',
-    image: 'https://res.cloudinary.com/dgwcd1hnd/image/upload/v1778272251/ebruca/categories/cat-alt-giyim.jpg',
-    objectPosition: 'center 40%',
+    image: 'https://res.cloudinary.com/dgwcd1hnd/image/upload/v1779218331/ebruca/categories/cat-alt-giyim-v2.jpg',
+    objectPosition: 'center 50%',
     subcategories: [
       { id: '3a', name: 'Etek', slug: 'etek' },
       { id: '3b', name: 'Pantolon', slug: 'pantolon' },
@@ -34,7 +34,8 @@ export const categories: Category[] = [
     id: '4',
     name: 'Üst Giyim',
     slug: 'ust-giyim',
-    image: 'https://images.unsplash.com/photo-1551232864-3f0890e580d9?w=600&q=80',
+    image: 'https://res.cloudinary.com/dgwcd1hnd/image/upload/v1779218326/ebruca/categories/cat-ust-giyim-v2.jpg',
+    objectPosition: 'center 25%',
   },
 ];
 
