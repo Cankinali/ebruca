@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Product } from '@/lib/types';
@@ -15,8 +16,14 @@ interface Props {
 
 export default function ProductDetail({ product, bestsellers }: Props) {
   const { addItem } = useCart();
+  const searchParams = useSearchParams();
+  // URL'de ?renk= varsa onu kullan, yoksa ilk rengi
+  const renkFromUrl = searchParams.get('renk');
+  const initialColor = (renkFromUrl && product.colors.includes(renkFromUrl))
+    ? renkFromUrl
+    : (product.colors[0] ?? '');
   const [selectedSize, setSelectedSize] = useState('');
-  const [selectedColor, setSelectedColor] = useState(product.colors[0] ?? '');
+  const [selectedColor, setSelectedColor] = useState(initialColor);
   const [activeImage, setActiveImage] = useState(0);
 
   // Seçili renge ait özel görseller varsa onları, yoksa ürünün ana görsellerini göster

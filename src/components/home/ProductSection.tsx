@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Product } from '@/lib/types';
 import ProductCard from '@/components/ui/ProductCard';
+import { expandProductsByColor } from '@/lib/products-display';
 
 interface ProductSectionProps {
   title: string;
@@ -29,8 +30,8 @@ export default function ProductSection({ title, subtitle, products, viewAllHref 
         )}
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
-        {products.slice(0, 8).map(product => (
-          <ProductCard key={product.id} product={product} />
+        {expandProductsByColor(products).slice(0, 8).map(product => (
+          <ProductCard key={product.displayKey} product={product} />
         ))}
       </div>
     </section>

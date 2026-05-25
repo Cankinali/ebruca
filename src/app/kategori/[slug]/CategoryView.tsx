@@ -5,6 +5,7 @@ import { Category, FilterOptions, Product, SortOption } from '@/lib/types';
 import ProductCard from '@/components/ui/ProductCard';
 import FilterPanel from '@/components/ui/FilterPanel';
 import Link from 'next/link';
+import { expandProductsByColor } from '@/lib/products-display';
 
 interface Props {
   slug: string;
@@ -37,7 +38,19 @@ export default function CategoryView({ slug, category, initialProducts }: Props)
       case 'price_desc': list.sort((a, b) => b.price - a.price); break;
       case 'bestseller': list.sort((a, b) => (b.isBestseller ? 1 : 0) - (a.isBestseller ? 1 : 0)); break;
     }
-    return list;
+
+    // Çok renkli ürünleri her renk için ayrı karta genişlet
+    let expanded = expandProductsByColor(list);
+
+    // Renk filtresi varsa: yalnızca o renkleri içeren kartları göster
+    if (filters.colors?.length) {
+      expanded = expanded.filter(p => {
+        if (p.displayColor) return filters.colors!.includes(p.displayColor);
+        // displayColor yoksa (tek renk veya renksiz), p.colors içinden eşleşme ara
+        return p.colors.some(c => filters.colors!.includes(c));
+      });
+    }
+    return expanded;
   }, [baseProducts, filters, sort]);
 
   const activeFilterCount =
@@ -148,7 +161,7 @@ export default function CategoryView({ slug, category, initialProducts }: Props)
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
               {filtered.map(product => (
-                <ProductCard key={product.id} product={product} />
+                <ProductCard key={product.displayKey} product={product} />
               ))}
             </div>
           )}

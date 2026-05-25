@@ -10,14 +10,21 @@ export default async function CategoryCards() {
     'takim':     ['etekli-takim', 'pantolonlu-takim'],
   };
 
-  // Tüm ürün sayımlarını çek
-  const counts = await prisma.product.groupBy({
-    by: ['category'],
-    _count: { id: true },
+  // Tüm ürünleri çek (renk sayımı için colors lazım)
+  const allProducts = await prisma.product.findMany({
+    select: { category: true, colors: true },
   });
 
+  // Her kategori için "kart sayısı": çok renkli ürünler her renk için ayrı sayılır
   const rawMap: Record<string, number> = {};
-  counts.forEach(c => { rawMap[c.category] = c._count.id; });
+  for (const p of allProducts) {
+    let colorCount = 1;
+    try {
+      const colors = JSON.parse(p.colors || '[]') as string[];
+      if (colors.length > 1) colorCount = colors.length;
+    } catch { /* boş kalsın */ }
+    rawMap[p.category] = (rawMap[p.category] ?? 0) + colorCount;
+  }
 
   // Üst kategoriler için alt kategori sayılarını da topla
   const countMap: Record<string, number> = { ...rawMap };
