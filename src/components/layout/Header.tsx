@@ -24,6 +24,8 @@ const menuItems = [
     ],
   },
   { label: 'Üst Giyim', href: '/kategori/ust-giyim' },
+  { label: 'Dış Giyim', href: '/kategori/dis-giyim' },
+  { label: 'Şal & Eşarp', href: '/kategori/sal-esarp' },
   { label: 'İletişim', href: '/iletisim' },
 ];
 

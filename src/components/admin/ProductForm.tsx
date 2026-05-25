@@ -37,6 +37,8 @@ const CATEGORIES = [
   { value: 'etek', label: 'Etek' },
   { value: 'pantolon', label: 'Pantolon' },
   { value: 'ust-giyim', label: 'Üst Giyim' },
+  { value: 'dis-giyim', label: 'Dış Giyim' },
+  { value: 'sal-esarp', label: 'Şal & Eşarp' },
 ];
 
 const STANDARD_SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'Standart'];

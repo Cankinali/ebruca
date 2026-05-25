@@ -310,11 +310,20 @@ export default function CheckoutPage() {
                   &quot;Ödemeyi Tamamla&quot; butonuna bastığınızda <strong>iyzico</strong>&apos;nun güvenli ödeme sayfasına yönlendirileceksiniz.
                   Orada kart bilgilerinizi girip işlemi tamamlayabilirsiniz. Banka onayı sonrası bu sayfaya geri döndürüleceksiniz.
                 </p>
-                {finalTotal >= 10000 && (
+                {finalTotal >= 5000 && (
                   <p className="text-xs text-green-700 mt-2 font-medium">
                     ✓ Bu siparişte <strong>vade farksız 3 taksit</strong> imkanı sunulmaktadır.
                   </p>
                 )}
+              </div>
+
+              {/* Taksit destekli kartlar bilgisi */}
+              <div className="border border-gray-100 p-3 text-[11px] sm:text-xs text-gray-600 leading-relaxed">
+                <p className="font-semibold text-gray-700 mb-1">💳 Peşin fiyatına taksit seçenekleri:</p>
+                <p>
+                  <strong>World, Bonus, Maximum, Axess, CardFinans, Paraf</strong> kartlarda geçerlidir.
+                  Taksit seçenekleri banka ve kart tipine göre ödeme ekranında görüntülenir.
+                </p>
               </div>
               {/* Yasal onaylar — Iyzico zorunlu */}
               <div className="space-y-2.5 pt-2 border-t border-gray-100">

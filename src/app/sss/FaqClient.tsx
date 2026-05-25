@@ -32,6 +32,10 @@ const faqs = [
         a: '5.000 TL ve üzeri siparişlerde seçili banka kartlarında 3 taksit imkanı sunulmaktadır.',
       },
       {
+        q: 'Hangi kartlarda peşin fiyatına taksit yapabilirim?',
+        a: 'World, Bonus, Maximum, Axess, CardFinans ve Paraf kartlarda vade farksız taksit geçerlidir. Taksit seçenekleri banka ve kart tipine göre ödeme ekranında otomatik olarak görüntülenir.',
+      },
+      {
         q: 'Ödemem güvende mi?',
         a: 'Evet. 256 Bit SSL şifreleme ve 3D Secure koruması ile tüm ödemeler güvence altındadır.',
       },

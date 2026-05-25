@@ -37,6 +37,20 @@ export const categories: Category[] = [
     image: 'https://res.cloudinary.com/dgwcd1hnd/image/upload/v1779218326/ebruca/categories/cat-ust-giyim-v2.jpg',
     objectPosition: 'center 25%',
   },
+  {
+    id: '5',
+    name: 'Dış Giyim',
+    slug: 'dis-giyim',
+    image: 'https://res.cloudinary.com/dgwcd1hnd/image/upload/v1779674996/ebruca/categories/cat-dis-giyim-v2.jpg',
+    objectPosition: 'center 30%',
+  },
+  {
+    id: '6',
+    name: 'Şal & Eşarp',
+    slug: 'sal-esarp',
+    image: 'https://res.cloudinary.com/dgwcd1hnd/image/upload/v1779674997/ebruca/categories/cat-sal-esarp-v2.jpg',
+    objectPosition: 'center 30%',
+  },
 ];
 
 // Örnek ürünler kaldırıldı — tüm ürünler veritabanından gelir
