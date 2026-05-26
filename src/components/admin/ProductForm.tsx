@@ -57,11 +57,11 @@ const BEDEN_GROUPS: { group: string; sizes: string[] }[] = [
 const bedenValue = (group: string, size: string) => `${group} / ${size}`;
 const COLOR_OPTIONS = [
   // Klasik nötrler
-  'Siyah', 'Beyaz', 'Krem', 'Ekru', 'Bej', 'Vizon', 'Camel', 'Pudra',
+  'Siyah', 'Beyaz', 'Krem', 'Ekru', 'Bej', 'Vizon', 'Camel', 'Pudra', 'İnci', 'Taş',
   // Koyular
-  'Gri', 'Lacivert', 'Kahverengi',
+  'Gri', 'Lacivert', 'İndigo', 'Kahverengi',
   // Renkler
-  'Kırmızı', 'Bordo', 'Mürdüm', 'Pembe', 'Mor', 'Mavi', 'Yeşil', 'Haki', 'Sarı', 'Turuncu',
+  'Kırmızı', 'Bordo', 'Mürdüm', 'Pembe', 'Mor', 'Mavi', 'Yeşil', 'Yağ Yeşili', 'Haki', 'Sarı', 'Turuncu',
   // Metalik
   'Gold', 'Gümüş',
   // Özel
