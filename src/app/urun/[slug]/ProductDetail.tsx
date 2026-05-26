@@ -183,14 +183,25 @@ export default function ProductDetail({ product, bestsellers }: Props) {
                 {displayedSizes.map(size => {
                   const stock = displayedSizeStock?.[size];
                   const hasStockDefined = displayedSizeStock && Object.keys(displayedSizeStock).length > 0;
-                  if (hasStockDefined && stock === 0) return null;
-                  const isLow = hasStockDefined && stock !== undefined && stock <= 3;
+                  const isSoldOut = hasStockDefined && stock === 0;
+                  const isLow = hasStockDefined && stock !== undefined && stock > 0 && stock <= 3;
                   return (
-                    <button key={size} onClick={() => { setSelectedSize(size); setSizeError(false); }}
+                    <button
+                      key={size}
+                      onClick={() => { if (!isSoldOut) { setSelectedSize(size); setSizeError(false); } }}
+                      disabled={isSoldOut}
+                      aria-label={isSoldOut ? `${size} - Tükendi` : size}
                       className={`relative flex flex-col items-center justify-center min-w-12 h-12 px-2 text-sm border transition-colors leading-tight ${
-                        selectedSize === size ? 'border-black bg-black text-white' : 'border-gray-200 hover:border-gray-400'
+                        isSoldOut
+                          ? 'border-gray-200 text-gray-400 line-through cursor-not-allowed bg-gray-50/50'
+                          : selectedSize === size
+                            ? 'border-black bg-black text-white'
+                            : 'border-gray-200 hover:border-gray-400'
                       }`}>
                       <span>{size}</span>
+                      {isSoldOut && (
+                        <span className="text-[9px] text-gray-400 font-medium">Tükendi</span>
+                      )}
                       {isLow && (
                         <span className={`text-[9px] ${selectedSize === size ? 'text-white/70' : 'text-amber-500'}`}>
                           Son {stock}!
