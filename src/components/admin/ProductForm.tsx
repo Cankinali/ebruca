@@ -61,7 +61,7 @@ const COLOR_OPTIONS = [
   // Koyular
   'Gri', 'Lacivert', 'İndigo', 'Kahverengi',
   // Renkler
-  'Kırmızı', 'Bordo', 'Mürdüm', 'Pembe', 'Mor', 'Mavi', 'Yeşil', 'Yağ Yeşili', 'Haki', 'Sarı', 'Turuncu',
+  'Kırmızı', 'Bordo', 'Mürdüm', 'Pembe', 'Mor', 'Lila', 'Mavi', 'Bebe Mavisi', 'Yeşil', 'Yağ Yeşili', 'Haki', 'Sarı', 'Turuncu',
   // Metalik
   'Gold', 'Gümüş',
   // Özel
