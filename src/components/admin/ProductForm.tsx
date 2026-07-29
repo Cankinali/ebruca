@@ -59,9 +59,9 @@ const COLOR_OPTIONS = [
   // Klasik nötrler
   'Siyah', 'Beyaz', 'Krem', 'Ekru', 'Bej', 'Vizon', 'Camel', 'Pudra', 'İnci', 'Taş',
   // Koyular
-  'Gri', 'Lacivert', 'İndigo', 'Kahverengi',
+  'Gri', 'Antrasit', 'Lacivert', 'İndigo', 'Kahverengi',
   // Renkler
-  'Kırmızı', 'Bordo', 'Kiremit', 'Mürdüm', 'Pembe', 'Fuşya', 'Mor', 'Lila', 'Mavi', 'Bebe Mavisi', 'Yeşil', 'Yağ Yeşili', 'Haki', 'Sarı', 'Turuncu',
+  'Kırmızı', 'Bordo', 'Kiremit', 'Mürdüm', 'Pembe', 'Fuşya', 'Mor', 'Lila', 'Mavi', 'Bebe Mavisi', 'Yeşil', 'Mint Yeşili', 'Yağ Yeşili', 'Haki', 'Sarı', 'Turuncu',
   // Metalik
   'Gold', 'Gümüş',
   // Özel
