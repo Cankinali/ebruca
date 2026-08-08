@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { initializeCheckout } from '@/lib/iyzico';
 import { prisma } from '@/lib/prisma';
 import { getCurrentUser } from '@/lib/auth';
+import { hasEnoughStock } from '@/lib/stock';
 import { SITE } from '@/lib/seo';
 
 interface CartItem {
@@ -52,17 +53,26 @@ export async function POST(req: NextRequest) {
       if (!product) {
         return NextResponse.json({ error: `Ürün bulunamadı: ${item.name}` }, { status: 400 });
       }
-      // Stok kontrolü
-      const sizeStock = JSON.parse(product.sizeStock || '{}') as Record<string, number>;
-      const availableStock = sizeStock[item.size];
-      if (Object.keys(sizeStock).length > 0 && (availableStock === undefined || availableStock < item.quantity)) {
+      const qty = Math.max(1, Math.min(99, Math.floor(item.quantity)));
+
+      // Stok kontrolü — renk bazlı stok varsa ondan, yoksa düz stoktan.
+      // Aynı kural ürün sayfasında ve ödeme sonrası stok düşümünde de geçerli.
+      const stockSource = {
+        sizeStock: JSON.parse(product.sizeStock || '{}') as Record<string, number>,
+        colorSizeStock: JSON.parse(product.colorSizeStock || '{}') as Record<
+          string,
+          Record<string, number>
+        >,
+      };
+      if (!hasEnoughStock(stockSource, item.color, item.size, qty)) {
+        const variantLabel = item.color ? `${item.color} / ${item.size}` : item.size;
         return NextResponse.json({
-          error: `${product.name} (${item.size}) stokta yok veya yetersiz.`,
+          error: `${product.name} (${variantLabel}) stokta yok veya yetersiz.`,
         }, { status: 400 });
       }
+
       // Fiyatı DB'den al (kullanıcının gönderdiğini kabul etme!)
       const realPrice = product.price;
-      const qty = Math.max(1, Math.min(99, Math.floor(item.quantity)));
       serverSubtotal += realPrice * qty;
       verifiedItems.push({
         ...item,

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
 import { Product } from '@/lib/types';
+import { resolveStock, stockLevel } from '@/lib/stock';
 import type { DisplayProduct } from '@/lib/products-display';
 
 interface ProductCardProps {
@@ -32,13 +33,13 @@ export default function ProductCard({ product }: ProductCardProps) {
     ? `/urun/${product.slug}?renk=${encodeURIComponent(displayColor)}`
     : `/urun/${product.slug}`;
 
-  // Stok kontrolü: o rengin stoğu hesaplansın
+  // Stok kontrolü: o rengin stoğu hesaplansın (kural @/lib/stock içinde).
+  // Renk kartı değilse ürünün genel stok etiketi kullanılır.
   let stockState = product.stock;
   if (displayColor) {
-    const variantStock = product.colorSizeStock?.[displayColor];
-    if (variantStock && Object.keys(variantStock).length > 0) {
-      const total = Object.values(variantStock).reduce((a, b) => a + b, 0);
-      stockState = total === 0 ? 'out_of_stock' : total <= 3 ? 'low_stock' : 'in_stock';
+    const { sizeStock, origin } = resolveStock(product, displayColor);
+    if (origin === 'variant') {
+      stockState = stockLevel(Object.values(sizeStock).reduce((a, b) => a + b, 0));
     }
   }
 

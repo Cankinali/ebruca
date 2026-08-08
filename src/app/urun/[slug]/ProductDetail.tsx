@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Product } from '@/lib/types';
 import { useCart } from '@/lib/cart-context';
+import { resolveStock } from '@/lib/stock';
 import ProductCard from '@/components/ui/ProductCard';
 import { COMPANY } from '@/lib/company';
 
@@ -38,11 +39,9 @@ export default function ProductDetail({ product, bestsellers }: Props) {
     ? colorSpecificSizes
     : product.sizes;
 
-  // Seçili renge ait özel stok varsa onu, yoksa genel stoğu kullan
-  const colorSpecificStock = product.colorSizeStock?.[selectedColor];
-  const displayedSizeStock = (colorSpecificStock && Object.keys(colorSpecificStock).length > 0)
-    ? colorSpecificStock
-    : product.sizeStock;
+  // Seçili renge ait özel stok varsa onu, yoksa genel stoğu kullan.
+  // Kural @/lib/stock içinde — ödeme öncesi kontrol ve stok düşümü de aynısını kullanır.
+  const displayedSizeStock = resolveStock(product, selectedColor).sizeStock;
 
   // Renk değişince ilk fotoğrafa ve seçili bedeni temizle
   const handleColorChange = (color: string) => {
