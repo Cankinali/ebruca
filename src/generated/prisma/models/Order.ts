@@ -59,6 +59,7 @@ export type OrderMinAggregateOutputType = {
   cargoCompany: string | null
   trackingNo: string | null
   note: string | null
+  reminderSentAt: Date | null
   paymentId: string | null
   paymentToken: string | null
   conversationId: string | null
@@ -89,6 +90,7 @@ export type OrderMaxAggregateOutputType = {
   cargoCompany: string | null
   trackingNo: string | null
   note: string | null
+  reminderSentAt: Date | null
   paymentId: string | null
   paymentToken: string | null
   conversationId: string | null
@@ -119,6 +121,7 @@ export type OrderCountAggregateOutputType = {
   cargoCompany: number
   trackingNo: number
   note: number
+  reminderSentAt: number
   paymentId: number
   paymentToken: number
   conversationId: number
@@ -165,6 +168,7 @@ export type OrderMinAggregateInputType = {
   cargoCompany?: true
   trackingNo?: true
   note?: true
+  reminderSentAt?: true
   paymentId?: true
   paymentToken?: true
   conversationId?: true
@@ -195,6 +199,7 @@ export type OrderMaxAggregateInputType = {
   cargoCompany?: true
   trackingNo?: true
   note?: true
+  reminderSentAt?: true
   paymentId?: true
   paymentToken?: true
   conversationId?: true
@@ -225,6 +230,7 @@ export type OrderCountAggregateInputType = {
   cargoCompany?: true
   trackingNo?: true
   note?: true
+  reminderSentAt?: true
   paymentId?: true
   paymentToken?: true
   conversationId?: true
@@ -342,6 +348,7 @@ export type OrderGroupByOutputType = {
   cargoCompany: string
   trackingNo: string
   note: string
+  reminderSentAt: Date | null
   paymentId: string
   paymentToken: string
   conversationId: string
@@ -395,6 +402,7 @@ export type OrderWhereInput = {
   cargoCompany?: Prisma.StringFilter<"Order"> | string
   trackingNo?: Prisma.StringFilter<"Order"> | string
   note?: Prisma.StringFilter<"Order"> | string
+  reminderSentAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
   paymentId?: Prisma.StringFilter<"Order"> | string
   paymentToken?: Prisma.StringFilter<"Order"> | string
   conversationId?: Prisma.StringFilter<"Order"> | string
@@ -427,6 +435,7 @@ export type OrderOrderByWithRelationInput = {
   cargoCompany?: Prisma.SortOrder
   trackingNo?: Prisma.SortOrder
   note?: Prisma.SortOrder
+  reminderSentAt?: Prisma.SortOrderInput | Prisma.SortOrder
   paymentId?: Prisma.SortOrder
   paymentToken?: Prisma.SortOrder
   conversationId?: Prisma.SortOrder
@@ -462,6 +471,7 @@ export type OrderWhereUniqueInput = Prisma.AtLeast<{
   cargoCompany?: Prisma.StringFilter<"Order"> | string
   trackingNo?: Prisma.StringFilter<"Order"> | string
   note?: Prisma.StringFilter<"Order"> | string
+  reminderSentAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
   paymentId?: Prisma.StringFilter<"Order"> | string
   paymentToken?: Prisma.StringFilter<"Order"> | string
   conversationId?: Prisma.StringFilter<"Order"> | string
@@ -494,6 +504,7 @@ export type OrderOrderByWithAggregationInput = {
   cargoCompany?: Prisma.SortOrder
   trackingNo?: Prisma.SortOrder
   note?: Prisma.SortOrder
+  reminderSentAt?: Prisma.SortOrderInput | Prisma.SortOrder
   paymentId?: Prisma.SortOrder
   paymentToken?: Prisma.SortOrder
   conversationId?: Prisma.SortOrder
@@ -532,6 +543,7 @@ export type OrderScalarWhereWithAggregatesInput = {
   cargoCompany?: Prisma.StringWithAggregatesFilter<"Order"> | string
   trackingNo?: Prisma.StringWithAggregatesFilter<"Order"> | string
   note?: Prisma.StringWithAggregatesFilter<"Order"> | string
+  reminderSentAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Order"> | Date | string | null
   paymentId?: Prisma.StringWithAggregatesFilter<"Order"> | string
   paymentToken?: Prisma.StringWithAggregatesFilter<"Order"> | string
   conversationId?: Prisma.StringWithAggregatesFilter<"Order"> | string
@@ -561,6 +573,7 @@ export type OrderCreateInput = {
   cargoCompany?: string
   trackingNo?: string
   note?: string
+  reminderSentAt?: Date | string | null
   paymentId?: string
   paymentToken?: string
   conversationId?: string
@@ -593,6 +606,7 @@ export type OrderUncheckedCreateInput = {
   cargoCompany?: string
   trackingNo?: string
   note?: string
+  reminderSentAt?: Date | string | null
   paymentId?: string
   paymentToken?: string
   conversationId?: string
@@ -623,6 +637,7 @@ export type OrderUpdateInput = {
   cargoCompany?: Prisma.StringFieldUpdateOperationsInput | string
   trackingNo?: Prisma.StringFieldUpdateOperationsInput | string
   note?: Prisma.StringFieldUpdateOperationsInput | string
+  reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   paymentId?: Prisma.StringFieldUpdateOperationsInput | string
   paymentToken?: Prisma.StringFieldUpdateOperationsInput | string
   conversationId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -655,6 +670,7 @@ export type OrderUncheckedUpdateInput = {
   cargoCompany?: Prisma.StringFieldUpdateOperationsInput | string
   trackingNo?: Prisma.StringFieldUpdateOperationsInput | string
   note?: Prisma.StringFieldUpdateOperationsInput | string
+  reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   paymentId?: Prisma.StringFieldUpdateOperationsInput | string
   paymentToken?: Prisma.StringFieldUpdateOperationsInput | string
   conversationId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -686,6 +702,7 @@ export type OrderCreateManyInput = {
   cargoCompany?: string
   trackingNo?: string
   note?: string
+  reminderSentAt?: Date | string | null
   paymentId?: string
   paymentToken?: string
   conversationId?: string
@@ -715,6 +732,7 @@ export type OrderUpdateManyMutationInput = {
   cargoCompany?: Prisma.StringFieldUpdateOperationsInput | string
   trackingNo?: Prisma.StringFieldUpdateOperationsInput | string
   note?: Prisma.StringFieldUpdateOperationsInput | string
+  reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   paymentId?: Prisma.StringFieldUpdateOperationsInput | string
   paymentToken?: Prisma.StringFieldUpdateOperationsInput | string
   conversationId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -745,6 +763,7 @@ export type OrderUncheckedUpdateManyInput = {
   cargoCompany?: Prisma.StringFieldUpdateOperationsInput | string
   trackingNo?: Prisma.StringFieldUpdateOperationsInput | string
   note?: Prisma.StringFieldUpdateOperationsInput | string
+  reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   paymentId?: Prisma.StringFieldUpdateOperationsInput | string
   paymentToken?: Prisma.StringFieldUpdateOperationsInput | string
   conversationId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -785,6 +804,7 @@ export type OrderCountOrderByAggregateInput = {
   cargoCompany?: Prisma.SortOrder
   trackingNo?: Prisma.SortOrder
   note?: Prisma.SortOrder
+  reminderSentAt?: Prisma.SortOrder
   paymentId?: Prisma.SortOrder
   paymentToken?: Prisma.SortOrder
   conversationId?: Prisma.SortOrder
@@ -822,6 +842,7 @@ export type OrderMaxOrderByAggregateInput = {
   cargoCompany?: Prisma.SortOrder
   trackingNo?: Prisma.SortOrder
   note?: Prisma.SortOrder
+  reminderSentAt?: Prisma.SortOrder
   paymentId?: Prisma.SortOrder
   paymentToken?: Prisma.SortOrder
   conversationId?: Prisma.SortOrder
@@ -852,6 +873,7 @@ export type OrderMinOrderByAggregateInput = {
   cargoCompany?: Prisma.SortOrder
   trackingNo?: Prisma.SortOrder
   note?: Prisma.SortOrder
+  reminderSentAt?: Prisma.SortOrder
   paymentId?: Prisma.SortOrder
   paymentToken?: Prisma.SortOrder
   conversationId?: Prisma.SortOrder
@@ -949,6 +971,7 @@ export type OrderCreateWithoutUserInput = {
   cargoCompany?: string
   trackingNo?: string
   note?: string
+  reminderSentAt?: Date | string | null
   paymentId?: string
   paymentToken?: string
   conversationId?: string
@@ -979,6 +1002,7 @@ export type OrderUncheckedCreateWithoutUserInput = {
   cargoCompany?: string
   trackingNo?: string
   note?: string
+  reminderSentAt?: Date | string | null
   paymentId?: string
   paymentToken?: string
   conversationId?: string
@@ -1038,6 +1062,7 @@ export type OrderScalarWhereInput = {
   cargoCompany?: Prisma.StringFilter<"Order"> | string
   trackingNo?: Prisma.StringFilter<"Order"> | string
   note?: Prisma.StringFilter<"Order"> | string
+  reminderSentAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
   paymentId?: Prisma.StringFilter<"Order"> | string
   paymentToken?: Prisma.StringFilter<"Order"> | string
   conversationId?: Prisma.StringFilter<"Order"> | string
@@ -1067,6 +1092,7 @@ export type OrderCreateWithoutItemsInput = {
   cargoCompany?: string
   trackingNo?: string
   note?: string
+  reminderSentAt?: Date | string | null
   paymentId?: string
   paymentToken?: string
   conversationId?: string
@@ -1098,6 +1124,7 @@ export type OrderUncheckedCreateWithoutItemsInput = {
   cargoCompany?: string
   trackingNo?: string
   note?: string
+  reminderSentAt?: Date | string | null
   paymentId?: string
   paymentToken?: string
   conversationId?: string
@@ -1143,6 +1170,7 @@ export type OrderUpdateWithoutItemsInput = {
   cargoCompany?: Prisma.StringFieldUpdateOperationsInput | string
   trackingNo?: Prisma.StringFieldUpdateOperationsInput | string
   note?: Prisma.StringFieldUpdateOperationsInput | string
+  reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   paymentId?: Prisma.StringFieldUpdateOperationsInput | string
   paymentToken?: Prisma.StringFieldUpdateOperationsInput | string
   conversationId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1174,6 +1202,7 @@ export type OrderUncheckedUpdateWithoutItemsInput = {
   cargoCompany?: Prisma.StringFieldUpdateOperationsInput | string
   trackingNo?: Prisma.StringFieldUpdateOperationsInput | string
   note?: Prisma.StringFieldUpdateOperationsInput | string
+  reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   paymentId?: Prisma.StringFieldUpdateOperationsInput | string
   paymentToken?: Prisma.StringFieldUpdateOperationsInput | string
   conversationId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1203,6 +1232,7 @@ export type OrderCreateManyUserInput = {
   cargoCompany?: string
   trackingNo?: string
   note?: string
+  reminderSentAt?: Date | string | null
   paymentId?: string
   paymentToken?: string
   conversationId?: string
@@ -1232,6 +1262,7 @@ export type OrderUpdateWithoutUserInput = {
   cargoCompany?: Prisma.StringFieldUpdateOperationsInput | string
   trackingNo?: Prisma.StringFieldUpdateOperationsInput | string
   note?: Prisma.StringFieldUpdateOperationsInput | string
+  reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   paymentId?: Prisma.StringFieldUpdateOperationsInput | string
   paymentToken?: Prisma.StringFieldUpdateOperationsInput | string
   conversationId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1262,6 +1293,7 @@ export type OrderUncheckedUpdateWithoutUserInput = {
   cargoCompany?: Prisma.StringFieldUpdateOperationsInput | string
   trackingNo?: Prisma.StringFieldUpdateOperationsInput | string
   note?: Prisma.StringFieldUpdateOperationsInput | string
+  reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   paymentId?: Prisma.StringFieldUpdateOperationsInput | string
   paymentToken?: Prisma.StringFieldUpdateOperationsInput | string
   conversationId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1292,6 +1324,7 @@ export type OrderUncheckedUpdateManyWithoutUserInput = {
   cargoCompany?: Prisma.StringFieldUpdateOperationsInput | string
   trackingNo?: Prisma.StringFieldUpdateOperationsInput | string
   note?: Prisma.StringFieldUpdateOperationsInput | string
+  reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   paymentId?: Prisma.StringFieldUpdateOperationsInput | string
   paymentToken?: Prisma.StringFieldUpdateOperationsInput | string
   conversationId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1353,6 +1386,7 @@ export type OrderSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   cargoCompany?: boolean
   trackingNo?: boolean
   note?: boolean
+  reminderSentAt?: boolean
   paymentId?: boolean
   paymentToken?: boolean
   conversationId?: boolean
@@ -1386,6 +1420,7 @@ export type OrderSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   cargoCompany?: boolean
   trackingNo?: boolean
   note?: boolean
+  reminderSentAt?: boolean
   paymentId?: boolean
   paymentToken?: boolean
   conversationId?: boolean
@@ -1417,6 +1452,7 @@ export type OrderSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   cargoCompany?: boolean
   trackingNo?: boolean
   note?: boolean
+  reminderSentAt?: boolean
   paymentId?: boolean
   paymentToken?: boolean
   conversationId?: boolean
@@ -1448,6 +1484,7 @@ export type OrderSelectScalar = {
   cargoCompany?: boolean
   trackingNo?: boolean
   note?: boolean
+  reminderSentAt?: boolean
   paymentId?: boolean
   paymentToken?: boolean
   conversationId?: boolean
@@ -1459,7 +1496,7 @@ export type OrderSelectScalar = {
   updatedAt?: boolean
 }
 
-export type OrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orderNo" | "status" | "userId" | "firstName" | "lastName" | "email" | "phone" | "address" | "city" | "district" | "postalCode" | "subtotal" | "shippingFee" | "total" | "cargoCompany" | "trackingNo" | "note" | "paymentId" | "paymentToken" | "conversationId" | "basketId" | "paymentTransactionId" | "fraudStatus" | "paymentStatus" | "createdAt" | "updatedAt", ExtArgs["result"]["order"]>
+export type OrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orderNo" | "status" | "userId" | "firstName" | "lastName" | "email" | "phone" | "address" | "city" | "district" | "postalCode" | "subtotal" | "shippingFee" | "total" | "cargoCompany" | "trackingNo" | "note" | "reminderSentAt" | "paymentId" | "paymentToken" | "conversationId" | "basketId" | "paymentTransactionId" | "fraudStatus" | "paymentStatus" | "createdAt" | "updatedAt", ExtArgs["result"]["order"]>
 export type OrderInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.Order$userArgs<ExtArgs>
   items?: boolean | Prisma.Order$itemsArgs<ExtArgs>
@@ -1497,6 +1534,7 @@ export type $OrderPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     cargoCompany: string
     trackingNo: string
     note: string
+    reminderSentAt: Date | null
     paymentId: string
     paymentToken: string
     conversationId: string
@@ -1949,6 +1987,7 @@ export interface OrderFieldRefs {
   readonly cargoCompany: Prisma.FieldRef<"Order", 'String'>
   readonly trackingNo: Prisma.FieldRef<"Order", 'String'>
   readonly note: Prisma.FieldRef<"Order", 'String'>
+  readonly reminderSentAt: Prisma.FieldRef<"Order", 'DateTime'>
   readonly paymentId: Prisma.FieldRef<"Order", 'String'>
   readonly paymentToken: Prisma.FieldRef<"Order", 'String'>
   readonly conversationId: Prisma.FieldRef<"Order", 'String'>

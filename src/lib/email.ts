@@ -215,3 +215,86 @@ export async function sendPasswordResetEmail(info: PasswordResetInfo): Promise<b
     return bildir('şifre sıfırlama', info.email, e);
   }
 }
+
+interface ReminderItem extends OrderItem {
+  /** Ürün sayfasına dönüş linki — yoksa isim düz metin gösterilir. */
+  url?: string;
+}
+
+interface ReminderInfo {
+  orderNo: string;
+  firstName: string;
+  email: string;
+  total: number;
+  shippingFee: number;
+  items: ReminderItem[];
+  /** "Siparişimi Tamamla" butonunun gideceği adres. */
+  ctaUrl: string;
+  /** Sipariş otomatik iptal edilene kadar kalan saat. */
+  kalanSaat: number;
+}
+
+/**
+ * Ödemesi tamamlanmamış sipariş hatırlatması.
+ *
+ * Bilinçli olarak İŞLEM BİLDİRİMİ dilinde yazılmıştır: kişinin kendi
+ * başlattığı sipariş kaydıyla ilgili bilgilendirmedir. İndirim, aciliyet
+ * baskısı veya kampanya dili İÇERMEZ — o durumda ticari elektronik ileti
+ * sayılır ve alıcı onayı + İYS kaydı gerekir (6563 sayılı kanun).
+ */
+export async function sendAbandonedOrderReminder(info: ReminderInfo): Promise<boolean> {
+  const r = client();
+  if (!r) {
+    console.log('[Email] RESEND_API_KEY yok — gönderilmedi (sipariş hatırlatma)', info.orderNo);
+    return false;
+  }
+
+  const satirlar = info.items.map(i => `
+    <tr style="border-bottom:1px solid #eee;">
+      <td style="padding:10px 0;font-size:14px;">
+        ${i.url
+          ? `<a href="${i.url}" style="color:#000;text-decoration:none;font-weight:600;">${i.name}</a>`
+          : `<strong>${i.name}</strong>`}<br>
+        <span style="color:#888;font-size:12px;">Beden: ${i.size} · Renk: ${i.color} · Adet: ${i.quantity}</span>
+      </td>
+      <td style="padding:10px 0;font-size:14px;text-align:right;white-space:nowrap;">
+        ${(i.price * i.quantity).toLocaleString('tr-TR')} TL
+      </td>
+    </tr>`).join('');
+
+  const body = `
+    <p style="font-size:14px;color:#555;">Merhaba ${info.firstName},</p>
+    <p style="font-size:14px;color:#555;">
+      <strong>${info.orderNo}</strong> numaralı siparişinizin ödemesi tamamlanmadı.
+      Seçtiğiniz ürünler aşağıda — dilerseniz kaldığınız yerden devam edebilirsiniz.
+    </p>
+    <table style="width:100%;border-collapse:collapse;margin:16px 0;">${satirlar}</table>
+    <table style="width:100%;font-size:14px;">
+      <tr><td>Kargo</td><td style="text-align:right;">${info.shippingFee === 0 ? 'Ücretsiz' : info.shippingFee.toLocaleString('tr-TR') + ' TL'}</td></tr>
+      <tr style="font-weight:700;border-top:1px solid #ccc;"><td style="padding-top:8px;">Toplam</td><td style="text-align:right;padding-top:8px;">${info.total.toLocaleString('tr-TR')} TL</td></tr>
+    </table>
+    <p style="text-align:center;margin:28px 0;">
+      <a href="${info.ctaUrl}" style="display:inline-block;background:#000;color:#fff;text-decoration:none;padding:14px 32px;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;">Siparişimi Tamamla</a>
+    </p>
+    <p style="font-size:13px;color:#888;">
+      Tamamlanmayan siparişler ${info.kalanSaat} saat içinde otomatik olarak iptal edilir.
+      Ürünlerin stok durumu bu sürede değişebilir.
+    </p>
+    <p style="font-size:13px;color:#555;">
+      Ödeme sırasında bir sorun yaşadıysanız bize yazın:
+      <a href="mailto:${COMPANY.email}" style="color:#000;">${COMPANY.email}</a>
+    </p>
+  `;
+
+  try {
+    const { error } = await r.emails.send({
+      from: FROM,
+      to: info.email,
+      subject: `Siparişiniz tamamlanmadı · ${info.orderNo}`,
+      html: emailLayout('Siparişiniz Sizi Bekliyor', body),
+    });
+    return bildir('sipariş hatırlatma', info.email, error);
+  } catch (e) {
+    return bildir('sipariş hatırlatma', info.email, e);
+  }
+}

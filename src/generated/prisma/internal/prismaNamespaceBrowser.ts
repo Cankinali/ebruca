@@ -166,6 +166,7 @@ export const OrderScalarFieldEnum = {
   cargoCompany: 'cargoCompany',
   trackingNo: 'trackingNo',
   note: 'note',
+  reminderSentAt: 'reminderSentAt',
   paymentId: 'paymentId',
   paymentToken: 'paymentToken',
   conversationId: 'conversationId',

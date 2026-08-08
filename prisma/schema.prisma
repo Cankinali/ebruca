@@ -125,6 +125,9 @@ model Order {
   // Not
   note          String      @default("")
 
+  // Tamamlanmamış sipariş hatırlatması gönderildiği an — bir kez gönderilir
+  reminderSentAt DateTime?
+
   // Iyzico ödeme bilgileri
   paymentId             String   @default("")
   paymentToken          String   @default("")
