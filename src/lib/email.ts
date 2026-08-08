@@ -8,10 +8,41 @@ import { SITE } from './seo';
 
 const FROM = process.env.EMAIL_FROM || `${COMPANY.brand} <onboarding@resend.dev>`;
 
+/**
+ * resend.dev, Resend'in paylaşımlı test göndericisidir: bu adresle YALNIZCA
+ * Resend hesabının sahibi olan e-postaya gönderim yapılabilir, müşteri
+ * adreslerine yapılan gönderimler 403 ile reddedilir.
+ * Canlıya çıkmadan önce ebruca.com alan adı Resend'de doğrulanmalı ve
+ * EMAIL_FROM o alan adındaki bir adrese çevrilmelidir.
+ */
+const TEST_GONDERICI = FROM.includes('resend.dev');
+
+let uyarildi = false;
+function gondericiUyarisi() {
+  if (uyarildi || !TEST_GONDERICI) return;
+  uyarildi = true;
+  console.error(
+    '[Email] UYARI: Gönderici adresi resend.dev test adresi. Müşterilere ' +
+    'gönderilen TÜM e-postalar reddedilecek. resend.com/domains adresinden ' +
+    'alan adı doğrulayıp EMAIL_FROM değerini güncelleyin.'
+  );
+}
+
 function client() {
   const key = process.env.RESEND_API_KEY;
   if (!key) return null;
+  gondericiUyarisi();
   return new Resend(key);
+}
+
+/** Gönderim sonucunu tek yerden, görünür şekilde raporlar. */
+function bildir(tur: string, alici: string, hata: unknown): boolean {
+  if (!hata) return true;
+  console.error(
+    `[Email] GÖNDERİLEMEDİ (${tur}) → ${alici}:`,
+    hata instanceof Error ? hata.message : hata
+  );
+  return false;
 }
 
 interface OrderItem {
@@ -71,11 +102,11 @@ function itemsTable(items: OrderItem[]) {
   </table>`;
 }
 
-export async function sendOrderConfirmation(order: OrderInfo) {
+export async function sendOrderConfirmation(order: OrderInfo): Promise<boolean> {
   const r = client();
   if (!r) {
     console.log('[Email] RESEND_API_KEY yok — gönderilmedi (sipariş onayı)');
-    return;
+    return false;
   }
   const subtotal = order.total - order.shippingFee;
   const body = `
@@ -97,14 +128,16 @@ export async function sendOrderConfirmation(order: OrderInfo) {
     <p style="font-size:13px;color:#555;">Sorularınız için: <a href="mailto:${COMPANY.email}" style="color:#000;">${COMPANY.email}</a></p>
   `;
   try {
-    await r.emails.send({
+    // Resend SDK 4xx/5xx durumunda exception FIRLATMAZ; hatayı döndürür.
+    const { error } = await r.emails.send({
       from: FROM,
       to: order.email,
       subject: `Siparişiniz alındı · ${order.orderNo}`,
       html: emailLayout('Siparişiniz Alındı 🎉', body),
     });
+    return bildir('sipariş onayı', order.email, error);
   } catch (e) {
-    console.error('[Email] Sipariş onayı gönderilemedi:', e);
+    return bildir('sipariş onayı', order.email, e);
   }
 }
 
@@ -113,11 +146,11 @@ interface ShippingInfo extends OrderInfo {
   trackingNo?: string;
 }
 
-export async function sendShippingNotification(order: ShippingInfo) {
+export async function sendShippingNotification(order: ShippingInfo): Promise<boolean> {
   const r = client();
   if (!r) {
     console.log('[Email] RESEND_API_KEY yok — gönderilmedi (kargo)');
-    return;
+    return false;
   }
   const body = `
     <p style="font-size:14px;color:#555;">Merhaba ${order.firstName},</p>
@@ -135,14 +168,15 @@ export async function sendShippingNotification(order: ShippingInfo) {
     <p style="font-size:13px;color:#555;margin-top:24px;">Teşekkür ederiz! 💕</p>
   `;
   try {
-    await r.emails.send({
+    const { error } = await r.emails.send({
       from: FROM,
       to: order.email,
       subject: `Siparişiniz kargoya verildi · ${order.orderNo}`,
       html: emailLayout('Siparişiniz Yola Çıktı 🚚', body),
     });
+    return bildir('kargo bildirimi', order.email, error);
   } catch (e) {
-    console.error('[Email] Kargo bilgisi gönderilemedi:', e);
+    return bildir('kargo bildirimi', order.email, e);
   }
 }
 
@@ -152,12 +186,12 @@ interface PasswordResetInfo {
   resetUrl: string;
 }
 
-export async function sendPasswordResetEmail(info: PasswordResetInfo) {
+export async function sendPasswordResetEmail(info: PasswordResetInfo): Promise<boolean> {
   const r = client();
   if (!r) {
     // Geliştirmede anahtar yoksa bağlantıyı konsola yaz — akış test edilebilsin.
     console.log('[Email] RESEND_API_KEY yok — şifre sıfırlama bağlantısı:', info.resetUrl);
-    return;
+    return false;
   }
   const body = `
     <p style="font-size:14px;color:#555;">Merhaba ${info.firstName},</p>
@@ -170,13 +204,14 @@ export async function sendPasswordResetEmail(info: PasswordResetInfo) {
     <p style="font-size:11px;color:#999;margin-top:24px;word-break:break-all;">Buton çalışmazsa bu adresi tarayıcınıza yapıştırın:<br>${info.resetUrl}</p>
   `;
   try {
-    await r.emails.send({
+    const { error } = await r.emails.send({
       from: FROM,
       to: info.email,
       subject: 'Şifre sıfırlama talebi',
       html: emailLayout('Şifrenizi Yenileyin', body),
     });
+    return bildir('şifre sıfırlama', info.email, error);
   } catch (e) {
-    console.error('[Email] Şifre sıfırlama gönderilemedi:', e);
+    return bildir('şifre sıfırlama', info.email, e);
   }
 }
