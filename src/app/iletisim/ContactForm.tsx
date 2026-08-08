@@ -6,16 +6,36 @@ import { COMPANY } from '@/lib/company';
 export default function ContactForm() {
   const [form, setForm] = useState({ ad: '', email: '', konu: '', mesaj: '', kvkk: false });
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
     setForm(prev => ({ ...prev, [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: API entegrasyonu
-    setSent(true);
+    setSending(true);
+    setError('');
+
+    try {
+      const res = await fetch('/api/iletisim', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        setError(data.error || 'Mesaj gönderilemedi.');
+      } else {
+        setSent(true);
+      }
+    } catch {
+      setError('Bağlantı hatası. Lütfen tekrar deneyin.');
+    }
+    setSending(false);
   };
 
   return (
@@ -136,9 +156,13 @@ export default function ContactForm() {
                 <a href="/gizlilik" className="underline">KVKK Aydınlatma Metni</a>'ni okudum, onaylıyorum.
               </span>
             </label>
+            {error && (
+              <p className="text-sm text-red-600 bg-red-50 border border-red-200 p-3">{error}</p>
+            )}
             <button type="submit"
-              className="w-full bg-black text-white py-3.5 text-sm font-semibold tracking-widest uppercase hover:bg-gray-800 transition-colors">
-              Gönder
+              disabled={sending}
+              className="w-full bg-black text-white py-3.5 text-sm font-semibold tracking-widest uppercase hover:bg-gray-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
+              {sending ? 'Gönderiliyor...' : 'Gönder'}
             </button>
           </form>
         )}

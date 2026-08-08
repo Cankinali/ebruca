@@ -8,6 +8,7 @@ import {
   clearFailedLogins,
   lockRemainingMinutes,
 } from '@/lib/auth';
+import { rateLimit, clientIp } from '@/lib/rate-limit';
 
 interface Body {
   email?: string;
@@ -19,6 +20,16 @@ const GENERIC_ERROR = 'E-posta veya şifre hatalı.';
 
 export async function POST(req: NextRequest) {
   try {
+    // Hesap kilidi tek bir hesabı korur; bu sınır ise aynı IP'den çok sayıda
+    // FARKLI hesap denenmesini (credential stuffing) yavaşlatır.
+    const limit = rateLimit(`giris:${clientIp(req)}`, 20, 15 * 60_000);
+    if (!limit.allowed) {
+      return NextResponse.json(
+        { error: 'Çok fazla giriş denemesi. Lütfen bir süre sonra tekrar deneyin.' },
+        { status: 429, headers: { 'Retry-After': String(limit.retryAfterSeconds) } }
+      );
+    }
+
     const body = (await req.json()) as Body;
     const email = normalizeEmail(body.email || '');
     const password = body.password || '';

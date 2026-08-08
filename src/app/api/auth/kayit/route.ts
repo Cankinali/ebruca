@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { rateLimit, clientIp } from '@/lib/rate-limit';
 import {
   hashPassword,
   createSession,
@@ -19,6 +20,15 @@ interface Body {
 
 export async function POST(req: NextRequest) {
   try {
+    // Toplu sahte hesap açılmasını sınırla: saatte 5 kayıt.
+    const limit = rateLimit(`kayit:${clientIp(req)}`, 5, 60 * 60_000);
+    if (!limit.allowed) {
+      return NextResponse.json(
+        { error: 'Çok fazla kayıt denemesi. Lütfen bir süre sonra tekrar deneyin.' },
+        { status: 429, headers: { 'Retry-After': String(limit.retryAfterSeconds) } }
+      );
+    }
+
     const body = (await req.json()) as Body;
 
     const firstName = (body.firstName || '').trim();

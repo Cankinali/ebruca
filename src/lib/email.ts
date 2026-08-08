@@ -298,3 +298,49 @@ export async function sendAbandonedOrderReminder(info: ReminderInfo): Promise<bo
     return bildir('sipariş hatırlatma', info.email, e);
   }
 }
+
+interface ContactInfo {
+  ad: string;
+  email: string;
+  konu: string;
+  mesaj: string;
+}
+
+/**
+ * İletişim formu mesajını mağazanın kendi adresine iletir.
+ * Reply-To müşterinin adresi olarak ayarlanır; böylece gelen kutusundan
+ * doğrudan "yanıtla" ile müşteriye dönülebilir.
+ */
+export async function sendContactMessage(info: ContactInfo): Promise<boolean> {
+  const r = client();
+  if (!r) {
+    console.log('[Email] RESEND_API_KEY yok — iletişim mesajı gönderilmedi:', info.email);
+    return false;
+  }
+
+  const kacis = (s: string) =>
+    s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  const body = `
+    <table style="width:100%;font-size:14px;border-collapse:collapse;">
+      <tr><td style="padding:6px 0;color:#888;width:90px;">Gönderen</td><td style="padding:6px 0;"><strong>${kacis(info.ad)}</strong></td></tr>
+      <tr><td style="padding:6px 0;color:#888;">E-posta</td><td style="padding:6px 0;"><a href="mailto:${kacis(info.email)}" style="color:#000;">${kacis(info.email)}</a></td></tr>
+      <tr><td style="padding:6px 0;color:#888;">Konu</td><td style="padding:6px 0;">${kacis(info.konu)}</td></tr>
+    </table>
+    <div style="margin-top:20px;padding:16px;background:#f8f8f8;border-left:3px solid #000;font-size:14px;line-height:1.7;white-space:pre-wrap;">${kacis(info.mesaj)}</div>
+    <p style="font-size:12px;color:#888;margin-top:20px;">Bu e-postayı yanıtlarsanız doğrudan müşteriye ulaşır.</p>
+  `;
+
+  try {
+    const { error } = await r.emails.send({
+      from: FROM,
+      to: COMPANY.email,
+      replyTo: info.email,
+      subject: `İletişim formu: ${info.konu || 'Konu belirtilmemiş'} — ${info.ad}`,
+      html: emailLayout('Yeni İletişim Mesajı', body),
+    });
+    return bildir('iletişim mesajı', COMPANY.email, error);
+  } catch (e) {
+    return bildir('iletişim mesajı', COMPANY.email, e);
+  }
+}
