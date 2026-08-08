@@ -1,25 +1,64 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
+// useSearchParams istemci tarafında çözülür; statik prerender için Suspense şart.
 export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-[70vh]" />}>
+      <LoginForm />
+    </Suspense>
+  );
+}
+
+function LoginForm() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  // Korumalı bir sayfadan yönlendirildiyse giriş sonrası oraya dön.
+  const rawNext = searchParams.get('next') || '/hesabim';
+  // Açık yönlendirme (open redirect) koruması: sadece site içi yollara izin ver.
+  const next = rawNext.startsWith('/') && !rawNext.startsWith('//') ? rawNext : '/hesabim';
+
   const [form, setForm] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
     setError('');
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.email || !form.password) {
       setError('Tüm alanları doldurun.');
       return;
     }
-    // TODO: API entegrasyonu
-    alert('Giriş başarılı! (Demo)');
+
+    setSubmitting(true);
+    try {
+      const res = await fetch('/api/auth/giris', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: form.email, password: form.password }),
+      });
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        setError(data.error || 'Giriş yapılamadı.');
+        setSubmitting(false);
+        return;
+      }
+
+      // Header'ın oturum durumunu tazelemesi için sunucu bileşenlerini yenile.
+      router.replace(next);
+      router.refresh();
+    } catch {
+      setError('Bağlantı hatası. Lütfen tekrar deneyin.');
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -66,9 +105,10 @@ export default function LoginPage() {
 
           <button
             type="submit"
-            className="w-full bg-black text-white py-3.5 text-sm font-semibold tracking-widest uppercase hover:bg-gray-800 transition-colors"
+            disabled={submitting}
+            className="w-full bg-black text-white py-3.5 text-sm font-semibold tracking-widest uppercase hover:bg-gray-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            Giriş Yap
+            {submitting ? 'Giriş yapılıyor...' : 'Giriş Yap'}
           </button>
         </form>
 

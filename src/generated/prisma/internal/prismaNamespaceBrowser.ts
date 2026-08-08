@@ -52,6 +52,9 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   Product: 'Product',
+  User: 'User',
+  Session: 'Session',
+  PasswordResetToken: 'PasswordResetToken',
   Order: 'Order',
   OrderItem: 'OrderItem'
 } as const
@@ -99,10 +102,56 @@ export const ProductScalarFieldEnum = {
 export type ProductScalarFieldEnum = (typeof ProductScalarFieldEnum)[keyof typeof ProductScalarFieldEnum]
 
 
+export const UserScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  passwordHash: 'passwordHash',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  phone: 'phone',
+  address: 'address',
+  city: 'city',
+  district: 'district',
+  postalCode: 'postalCode',
+  kvkkAcceptedAt: 'kvkkAcceptedAt',
+  termsAcceptedAt: 'termsAcceptedAt',
+  failedLoginCount: 'failedLoginCount',
+  lockedUntil: 'lockedUntil',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const SessionScalarFieldEnum = {
+  id: 'id',
+  tokenHash: 'tokenHash',
+  userId: 'userId',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt'
+} as const
+
+export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeof SessionScalarFieldEnum]
+
+
+export const PasswordResetTokenScalarFieldEnum = {
+  id: 'id',
+  tokenHash: 'tokenHash',
+  userId: 'userId',
+  expiresAt: 'expiresAt',
+  usedAt: 'usedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type PasswordResetTokenScalarFieldEnum = (typeof PasswordResetTokenScalarFieldEnum)[keyof typeof PasswordResetTokenScalarFieldEnum]
+
+
 export const OrderScalarFieldEnum = {
   id: 'id',
   orderNo: 'orderNo',
   status: 'status',
+  userId: 'userId',
   firstName: 'firstName',
   lastName: 'lastName',
   email: 'email',

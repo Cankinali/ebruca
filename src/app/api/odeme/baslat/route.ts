@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { initializeCheckout } from '@/lib/iyzico';
 import { prisma } from '@/lib/prisma';
+import { getCurrentUser } from '@/lib/auth';
 import { SITE } from '@/lib/seo';
 
 interface CartItem {
@@ -25,7 +26,7 @@ interface Body {
   postalCode?: string;
   identityNumber?: string;
   items: CartItem[];
-  shippingMethod?: 'standart' | 'ekspres';
+  shippingMethod?: 'standart';
   note?: string;
 }
 
@@ -36,6 +37,9 @@ export async function POST(req: NextRequest) {
     if (!body.items?.length) {
       return NextResponse.json({ error: 'Sepet boş.' }, { status: 400 });
     }
+
+    // Oturum varsa sipariş hesaba bağlanır; misafir siparişlerde null kalır.
+    const sessionUser = await getCurrentUser();
 
     // SUNUCU-TARAFLI FIYAT DOĞRULAMA — istemciden gelen fiyatlara güvenme!
     let serverSubtotal = 0;
@@ -70,13 +74,9 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // Kargo: ekspres=1 TL (test), standart 5000 TL üzeri ücretsiz altı 90 TL
-    let serverShipping: number;
-    if (body.shippingMethod === 'ekspres') {
-      serverShipping = 1; // TEST
-    } else {
-      serverShipping = serverSubtotal >= 5000 ? 0 : 90;
-    }
+    // Kargo: 5000 TL üzeri ücretsiz, altı 90 TL.
+    // Ücret daima sunucuda hesaplanır — istemciden gelen kargo seçimi fiyatı etkilemez.
+    const serverShipping = serverSubtotal >= 5000 ? 0 : 90;
     const serverTotal = serverSubtotal + serverShipping;
 
     // 1. Sipariş kaydı (pending)
@@ -88,6 +88,7 @@ export async function POST(req: NextRequest) {
       data: {
         orderNo,
         status: 'pending',
+        userId: sessionUser?.id ?? null,
         firstName: body.firstName,
         lastName: body.lastName,
         email: body.email,
@@ -118,6 +119,25 @@ export async function POST(req: NextRequest) {
       },
       include: { items: true },
     });
+
+    // Üyenin kayıtlı adresini son kullanılan adresle güncelle — sonraki
+    // siparişte form hazır gelsin. Başarısız olursa ödeme akışı bozulmasın.
+    if (sessionUser) {
+      try {
+        await prisma.user.update({
+          where: { id: sessionUser.id },
+          data: {
+            phone: body.phone,
+            address: body.address,
+            city: body.city,
+            district: body.district,
+            postalCode: body.postalCode || '',
+          },
+        });
+      } catch (e) {
+        console.error('[odeme/baslat] Üye adresi güncellenemedi:', e);
+      }
+    }
 
     // 2. Iyzico request payload
     const buyerIp = req.headers.get('x-forwarded-for')?.split(',')[0] ||

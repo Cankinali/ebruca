@@ -21,9 +21,21 @@ export function proxy(request: NextRequest) {
     }
   }
 
+  // /hesabim — yalnızca iyimser (optimistic) kontrol: çerez var mı diye bakar.
+  // Token'ın gerçekten geçerli olduğu sayfanın kendisinde doğrulanır
+  // (bkz. src/app/hesabim/page.tsx → getCurrentUser). Proxy her istekte
+  // çalıştığı için burada veritabanına gidilmez.
+  if (pathname.startsWith('/hesabim')) {
+    if (!request.cookies.get('ebruca_session')?.value) {
+      const loginUrl = new URL('/giris', request.url);
+      loginUrl.searchParams.set('next', pathname);
+      return NextResponse.redirect(loginUrl);
+    }
+  }
+
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/admin', '/admin/:path*'],
+  matcher: ['/admin', '/admin/:path*', '/hesabim', '/hesabim/:path*'],
 };

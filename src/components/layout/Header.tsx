@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useCart } from '@/lib/cart-context';
+import { useSession } from '@/lib/use-session';
 import AnnouncementBar from './AnnouncementBar';
 
 const menuItems = [
@@ -31,6 +32,8 @@ const menuItems = [
 
 export default function Header() {
   const { totalItems } = useCart();
+  const { user } = useSession();
+  const accountHref = user ? '/hesabim' : '/giris';
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -169,12 +172,19 @@ export default function Header() {
                 </button>
               )}
 
-              <Link href="/giris"
-                className="p-2 min-w-[44px] min-h-[44px] hidden sm:flex items-center justify-center hover:bg-gray-50 rounded"
-                aria-label="Hesabım">
+              <Link href={accountHref}
+                className="relative p-2 min-w-[44px] min-h-[44px] hidden sm:flex items-center justify-center hover:bg-gray-50 rounded"
+                aria-label={user ? 'Hesabım' : 'Giriş Yap'}
+                title={user ? `${user.firstName} — Hesabım` : 'Giriş Yap'}>
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
+                {user && (
+                  <span
+                    className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-green-500 ring-2 ring-white"
+                    aria-hidden="true"
+                  />
+                )}
               </Link>
 
               <Link href="/sepet"
@@ -234,13 +244,13 @@ export default function Header() {
                 )}
               </div>
             ))}
-            <Link href="/giris"
+            <Link href={accountHref}
               className="flex items-center py-4 text-sm font-medium text-gray-800 gap-2"
               onClick={() => setMobileOpen(false)}>
               <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
-              Hesabım
+              {user ? `Hesabım (${user.firstName})` : 'Giriş Yap / Üye Ol'}
             </Link>
           </nav>
         </div>

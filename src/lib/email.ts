@@ -145,3 +145,38 @@ export async function sendShippingNotification(order: ShippingInfo) {
     console.error('[Email] Kargo bilgisi gönderilemedi:', e);
   }
 }
+
+interface PasswordResetInfo {
+  email: string;
+  firstName: string;
+  resetUrl: string;
+}
+
+export async function sendPasswordResetEmail(info: PasswordResetInfo) {
+  const r = client();
+  if (!r) {
+    // Geliştirmede anahtar yoksa bağlantıyı konsola yaz — akış test edilebilsin.
+    console.log('[Email] RESEND_API_KEY yok — şifre sıfırlama bağlantısı:', info.resetUrl);
+    return;
+  }
+  const body = `
+    <p style="font-size:14px;color:#555;">Merhaba ${info.firstName},</p>
+    <p style="font-size:14px;color:#555;">Hesabınız için şifre sıfırlama talebinde bulunuldu. Yeni şifrenizi belirlemek için aşağıdaki butona tıklayın.</p>
+    <p style="text-align:center;margin:28px 0;">
+      <a href="${info.resetUrl}" style="display:inline-block;background:#000;color:#fff;text-decoration:none;padding:14px 32px;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;">Şifremi Yenile</a>
+    </p>
+    <p style="font-size:13px;color:#555;">Bu bağlantı <strong>1 saat</strong> geçerlidir ve yalnızca bir kez kullanılabilir.</p>
+    <p style="font-size:13px;color:#555;">Bu talebi siz oluşturmadıysanız bu e-postayı görmezden gelebilirsiniz — şifreniz değişmeden kalır.</p>
+    <p style="font-size:11px;color:#999;margin-top:24px;word-break:break-all;">Buton çalışmazsa bu adresi tarayıcınıza yapıştırın:<br>${info.resetUrl}</p>
+  `;
+  try {
+    await r.emails.send({
+      from: FROM,
+      to: info.email,
+      subject: 'Şifre sıfırlama talebi',
+      html: emailLayout('Şifrenizi Yenileyin', body),
+    });
+  } catch (e) {
+    console.error('[Email] Şifre sıfırlama gönderilemedi:', e);
+  }
+}

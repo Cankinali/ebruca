@@ -34,11 +34,72 @@ model Product {
   updatedAt     DateTime    @updatedAt
 }
 
+model User {
+  id            String      @id @default(cuid())
+  // Daima küçük harfe normalize edilerek saklanır (SQLite unique büyük/küçük harf duyarlıdır)
+  email         String      @unique
+  passwordHash  String
+
+  firstName     String
+  lastName      String
+  phone         String      @default("")
+
+  // Kayıtlı teslimat adresi — ödeme formunu ön doldurmak için
+  address       String      @default("")
+  city          String      @default("")
+  district      String      @default("")
+  postalCode    String      @default("")
+
+  // Yasal onaylar (KVKK / üyelik sözleşmesi) — kayıt anında damgalanır
+  kvkkAcceptedAt  DateTime?
+  termsAcceptedAt DateTime?
+
+  // Kaba kuvvet koruması
+  failedLoginCount Int       @default(0)
+  lockedUntil      DateTime?
+
+  sessions      Session[]
+  resetTokens   PasswordResetToken[]
+  orders        Order[]
+
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  // Çerezdeki ham token değil, SHA-256 özeti saklanır
+  tokenHash String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  tokenHash String    @unique
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+}
+
 model Order {
   id            String      @id @default(cuid())
   orderNo       String      @unique
   // Durum: pending | confirmed | shipped | delivered | cancelled
   status        String      @default("pending")
+
+  // Üyelik — misafir siparişlerinde null kalır
+  userId        String?
+  user          User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   // Müşteri
   firstName     String
@@ -76,6 +137,9 @@ model Order {
   items         OrderItem[]
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
+
+  @@index([userId])
+  @@index([email])
 }
 
 model OrderItem {

@@ -1,14 +1,17 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 export default function RegisterPage() {
+  const router = useRouter();
   const [form, setForm] = useState({
     ad: '', soyad: '', email: '', password: '', passwordConfirm: '',
     kvkk: false, sozlesme: false,
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [submitting, setSubmitting] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -28,12 +31,40 @@ export default function RegisterPage() {
     return e;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const errs = validate();
     if (Object.keys(errs).length) { setErrors(errs); return; }
-    // TODO: API entegrasyonu
-    alert('Kayıt başarılı! (Demo)');
+
+    setSubmitting(true);
+    try {
+      const res = await fetch('/api/auth/kayit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          firstName: form.ad,
+          lastName: form.soyad,
+          email: form.email,
+          password: form.password,
+          kvkk: form.kvkk,
+          terms: form.sozlesme,
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        setErrors({ submit: data.error || 'Kayıt oluşturulamadı.' });
+        setSubmitting(false);
+        return;
+      }
+
+      // Kayıt başarılı — sunucu oturum çerezini yazdı, hesap sayfasına geç.
+      router.replace('/hesabim');
+      router.refresh();
+    } catch {
+      setErrors({ submit: 'Bağlantı hatası. Lütfen tekrar deneyin.' });
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -103,11 +134,16 @@ export default function RegisterPage() {
             {errors.sozlesme && <p className="text-red-500 text-xs ml-5">{errors.sozlesme}</p>}
           </div>
 
+          {errors.submit && (
+            <p className="text-sm text-red-600 bg-red-50 border border-red-200 p-3">{errors.submit}</p>
+          )}
+
           <button
             type="submit"
-            className="w-full bg-black text-white py-3.5 text-sm font-semibold tracking-widest uppercase hover:bg-gray-800 transition-colors"
+            disabled={submitting}
+            className="w-full bg-black text-white py-3.5 text-sm font-semibold tracking-widest uppercase hover:bg-gray-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            Üye Ol
+            {submitting ? 'Hesap oluşturuluyor...' : 'Üye Ol'}
           </button>
         </form>
 

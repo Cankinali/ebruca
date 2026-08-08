@@ -51,3 +51,6 @@ next-env.d.ts
 
 # .env.example commit edilebilir
 !.env.example
+
+# Veritabanı yedekleri — müşteri kişisel verisi içerir, asla commit edilmemeli
+/backups/

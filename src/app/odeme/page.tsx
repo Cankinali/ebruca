@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useCart } from '@/lib/cart-context';
+import { useSession } from '@/lib/use-session';
 
 type Step = 'adres' | 'kargo' | 'odeme';
 
@@ -22,7 +23,30 @@ export default function CheckoutPage() {
   const [agreedTerms, setAgreedTerms] = useState(false);
   const [agreedSales, setAgreedSales] = useState(false);
 
-  const shippingFee = form.kargo === 'ekspres' ? 1 : (totalPrice >= 5000 ? 0 : 90);
+  const { user } = useSession();
+  const prefilled = useRef(false);
+
+  // Üye giriş yapmışsa kayıtlı bilgilerini forma doldur. Yalnızca bir kez
+  // çalışır ve kullanıcının o ana kadar yazdıklarının üzerine yazmaz.
+  useEffect(() => {
+    if (!user || prefilled.current) return;
+    prefilled.current = true;
+
+    setForm(prev => ({
+      ...prev,
+      ad: prev.ad || user.firstName,
+      soyad: prev.soyad || user.lastName,
+      email: prev.email || user.email,
+      telefon: prev.telefon || user.phone,
+      adres: prev.adres || user.address,
+      il: prev.il || user.city,
+      ilce: prev.ilce || user.district,
+      postaKodu: prev.postaKodu || user.postalCode,
+    }));
+  }, [user]);
+
+  // Sunucudaki hesapla aynı kural (bkz. /api/odeme/baslat) — burası yalnızca gösterim.
+  const shippingFee = totalPrice >= 5000 ? 0 : 90;
   const finalTotal = totalPrice + shippingFee;
 
   const steps: { key: Step; label: string }[] = [
@@ -156,15 +180,27 @@ export default function CheckoutPage() {
             <div className="space-y-4">
               <h2 className="text-base sm:text-lg font-bold uppercase tracking-wide">Teslimat Adresi</h2>
 
-              {/* Misafir / Giriş */}
-              <div className="flex gap-2">
-                <button className="flex-1 py-2.5 text-xs sm:text-sm font-medium border bg-black text-white text-center">
-                  Misafir Olarak Devam
-                </button>
-                <Link href="/giris" className="flex-1 py-2.5 text-xs sm:text-sm font-medium border border-gray-200 hover:border-gray-400 text-center transition-colors">
-                  Giriş Yap
-                </Link>
-              </div>
+              {/* Oturum durumu — üyeyse bilgilendir, değilse giriş seçeneği sun */}
+              {user ? (
+                <div className="flex items-center gap-2 p-3 bg-gray-50 border border-gray-100 text-xs sm:text-sm text-gray-700">
+                  <svg className="w-4 h-4 flex-shrink-0 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span>
+                    <strong>{user.firstName}</strong> olarak giriş yaptınız — bilgileriniz dolduruldu.
+                    Sipariş <Link href="/hesabim" className="underline">hesabınıza</Link> kaydedilecek.
+                  </span>
+                </div>
+              ) : (
+                <div className="flex gap-2">
+                  <span className="flex-1 py-2.5 text-xs sm:text-sm font-medium border bg-black text-white text-center">
+                    Misafir Olarak Devam
+                  </span>
+                  <Link href="/giris?next=/odeme" className="flex-1 py-2.5 text-xs sm:text-sm font-medium border border-gray-200 hover:border-gray-400 text-center transition-colors">
+                    Giriş Yap
+                  </Link>
+                </div>
+              )}
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
@@ -230,7 +266,6 @@ export default function CheckoutPage() {
               <h2 className="text-base sm:text-lg font-bold uppercase tracking-wide">Kargo Seçimi</h2>
               {[
                 { value: 'standart', label: 'Standart Kargo', desc: '2-4 iş günü', price: totalPrice >= 5000 ? 0 : 90 },
-                { value: 'ekspres', label: 'Ekspres Kargo (TEST)', desc: '1 TL test', price: 1 },
               ].map(option => (
                 <label key={option.value}
                   className={`flex items-center justify-between p-4 border cursor-pointer transition-colors ${
