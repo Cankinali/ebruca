@@ -17,6 +17,18 @@ const FROM = process.env.EMAIL_FROM || `${COMPANY.brand} <onboarding@resend.dev>
  */
 const TEST_GONDERICI = FROM.includes('resend.dev');
 
+/**
+ * Müşteri "yanıtla" derse mesajın nereye gideceği.
+ *
+ * Gönderim adresi siparis@ebruca.com ama ebruca.com'un MX kaydı yok — yani
+ * o adres e-posta ALAMIYOR. Reply-To olmadan müşterinin yanıtı hiçbir yere
+ * ulaşmaz. Yanıtları mağazanın gerçek gelen kutusuna yönlendiriyoruz.
+ *
+ * İleride ebruca.com için e-posta alımı kurulursa REPLY_TO_EMAIL ortam
+ * değişkeniyle bu adres değiştirilebilir.
+ */
+const REPLY_TO = process.env.REPLY_TO_EMAIL || COMPANY.email;
+
 let uyarildi = false;
 function gondericiUyarisi() {
   if (uyarildi || !TEST_GONDERICI) return;
@@ -132,6 +144,7 @@ export async function sendOrderConfirmation(order: OrderInfo): Promise<boolean> 
     const { error } = await r.emails.send({
       from: FROM,
       to: order.email,
+      replyTo: REPLY_TO,
       subject: `Siparişiniz alındı · ${order.orderNo}`,
       html: emailLayout('Siparişiniz Alındı 🎉', body),
     });
@@ -171,6 +184,7 @@ export async function sendShippingNotification(order: ShippingInfo): Promise<boo
     const { error } = await r.emails.send({
       from: FROM,
       to: order.email,
+      replyTo: REPLY_TO,
       subject: `Siparişiniz kargoya verildi · ${order.orderNo}`,
       html: emailLayout('Siparişiniz Yola Çıktı 🚚', body),
     });
@@ -207,6 +221,7 @@ export async function sendPasswordResetEmail(info: PasswordResetInfo): Promise<b
     const { error } = await r.emails.send({
       from: FROM,
       to: info.email,
+      replyTo: REPLY_TO,
       subject: 'Şifre sıfırlama talebi',
       html: emailLayout('Şifrenizi Yenileyin', body),
     });
@@ -290,6 +305,7 @@ export async function sendAbandonedOrderReminder(info: ReminderInfo): Promise<bo
     const { error } = await r.emails.send({
       from: FROM,
       to: info.email,
+      replyTo: REPLY_TO,
       subject: `Siparişiniz tamamlanmadı · ${info.orderNo}`,
       html: emailLayout('Siparişiniz Sizi Bekliyor', body),
     });
