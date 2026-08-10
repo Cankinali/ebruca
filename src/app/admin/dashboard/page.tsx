@@ -12,6 +12,13 @@ interface DashboardData {
   statusCounts: Record<string, number>;
   monthly: { month: number; revenue: number; count: number }[];
   topProducts: { name: string; qty: number; revenue: number }[];
+  uyeler: {
+    toplam: number;
+    buAy: number;
+    buHafta: number;
+    uyeliSiparis: number;
+    misafirSiparis: number;
+  };
 }
 
 const MONTH_NAMES = ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'];
@@ -157,6 +164,57 @@ export default function DashboardPage() {
             </Link>
           </div>
         </div>
+      </div>
+
+      {/* Üyelik */}
+      <div className="border border-gray-100 p-5">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xs font-bold uppercase tracking-wider text-gray-500">Üyelik</h2>
+          <Link href="/admin/uyeler" className="text-xs text-gray-500 hover:text-black underline">
+            Tümünü gör
+          </Link>
+        </div>
+
+        {data.uyeler.toplam === 0 ? (
+          <p className="text-sm text-gray-400 text-center py-6">Henüz kayıtlı üye yok</p>
+        ) : (
+          <>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {[
+                { etiket: 'Toplam üye', deger: data.uyeler.toplam },
+                { etiket: 'Bu ay katılan', deger: data.uyeler.buAy },
+                { etiket: 'Son 7 gün', deger: data.uyeler.buHafta },
+                { etiket: 'Üyeli sipariş', deger: data.uyeler.uyeliSiparis },
+              ].map(k => (
+                <div key={k.etiket} className="bg-gray-50 p-3">
+                  <p className="text-[10px] uppercase tracking-wider text-gray-400">{k.etiket}</p>
+                  <p className="text-lg font-bold mt-0.5">{k.deger}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* Üyeli / misafir sipariş dağılımı */}
+            {(data.uyeler.uyeliSiparis + data.uyeler.misafirSiparis) > 0 && (
+              <div className="mt-4">
+                <div className="flex items-center justify-between mb-1 text-xs text-gray-600">
+                  <span>Üyeli sipariş: {data.uyeler.uyeliSiparis}</span>
+                  <span>Misafir: {data.uyeler.misafirSiparis}</span>
+                </div>
+                <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden flex">
+                  <div
+                    className="h-full bg-black"
+                    style={{
+                      width: `${Math.round(
+                        (data.uyeler.uyeliSiparis /
+                          (data.uyeler.uyeliSiparis + data.uyeler.misafirSiparis)) * 100
+                      )}%`,
+                    }}
+                  />
+                </div>
+              </div>
+            )}
+          </>
+        )}
       </div>
 
       {/* En çok satan ürünler */}

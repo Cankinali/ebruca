@@ -21,6 +21,8 @@ interface Order {
   id: string;
   orderNo: string;
   status: OrderStatus;
+  /** Dolu ise sipariş bir üye hesabıyla verilmiş; null ise misafir. */
+  userId: string | null;
   firstName: string;
   lastName: string;
   email: string;
@@ -173,6 +175,21 @@ export default function SiparisDetayPage({ params }: { params: Promise<{ id: str
             <p className="font-semibold">{order.firstName} {order.lastName}</p>
             <p className="text-sm text-gray-600 mt-1">{order.email}</p>
             <p className="text-sm text-gray-600">{order.phone}</p>
+            <div className="mt-3 pt-3 border-t border-gray-100">
+              {order.userId ? (
+                <Link
+                  href={`/admin/uyeler/${order.userId}`}
+                  className="inline-flex items-center gap-1.5 text-xs font-medium hover:underline"
+                >
+                  <span className="text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 bg-gray-900 text-white">
+                    Üye
+                  </span>
+                  Üye profilini ve diğer siparişlerini gör →
+                </Link>
+              ) : (
+                <p className="text-xs text-gray-400">Misafir siparişi (üyelik hesabı yok)</p>
+              )}
+            </div>
           </div>
 
           {/* Teslimat Adresi */}

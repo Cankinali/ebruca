@@ -63,6 +63,17 @@ export async function GET() {
   // Total revenue
   const totalRevenue = allOrders.reduce((s, o) => s + o.total, 0);
 
+  // Üyelik istatistikleri
+  const startOfWeek = new Date(now.getTime() - 7 * 86_400_000);
+  const [uyeToplam, uyeBuAy, uyeBuHafta, uyeliSiparis] = await Promise.all([
+    prisma.user.count(),
+    prisma.user.count({ where: { createdAt: { gte: startOfMonth } } }),
+    prisma.user.count({ where: { createdAt: { gte: startOfWeek } } }),
+    prisma.order.count({
+      where: { userId: { not: null }, paymentStatus: 'success', status: { not: 'cancelled' } },
+    }),
+  ]);
+
   // Top products
   const items = await prisma.orderItem.findMany({
     select: { name: true, quantity: true, price: true },
@@ -86,5 +97,13 @@ export async function GET() {
     statusCounts,
     monthly,
     topProducts,
+    uyeler: {
+      toplam: uyeToplam,
+      buAy: uyeBuAy,
+      buHafta: uyeBuHafta,
+      // Üyelikle verilen sipariş sayısı — üyeliğin satışa katkısını gösterir
+      uyeliSiparis,
+      misafirSiparis: allOrders.length - uyeliSiparis,
+    },
   });
 }

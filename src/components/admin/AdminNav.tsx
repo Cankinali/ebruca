@@ -17,6 +17,7 @@ export default function AdminNav() {
     { href: '/admin/dashboard', label: 'Dashboard', icon: '📊' },
     { href: '/admin/siparisler', label: 'Siparişler', icon: '📦' },
     { href: '/admin/urunler', label: 'Ürünler', icon: '👗' },
+    { href: '/admin/uyeler', label: 'Üyeler', icon: '👤' },
   ];
 
   return (

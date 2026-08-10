@@ -9,6 +9,8 @@ interface Order {
   id: string;
   orderNo: string;
   status: OrderStatus;
+  /** Dolu ise sipariş bir üye hesabıyla verilmiş; null ise misafir. */
+  userId: string | null;
   firstName: string;
   lastName: string;
   email: string;
@@ -173,7 +175,18 @@ export default function SiparislerPage() {
                     <tr key={order.id} className="hover:bg-gray-50 transition-colors">
                       <td className="py-3 px-3 font-mono text-xs font-bold">{order.orderNo}</td>
                       <td className="py-3 px-3">
-                        <p className="font-medium">{order.firstName} {order.lastName}</p>
+                        <p className="font-medium">
+                          {order.firstName} {order.lastName}
+                          {order.userId && (
+                            <Link
+                              href={`/admin/uyeler/${order.userId}`}
+                              title="Üye hesabıyla verilmiş — profili aç"
+                              className="ml-2 text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 bg-gray-900 text-white hover:bg-gray-700"
+                            >
+                              Üye
+                            </Link>
+                          )}
+                        </p>
                         <p className="text-xs text-gray-400">{order.phone}</p>
                       </td>
                       <td className="py-3 px-3 text-xs text-gray-600">{order.city} / {order.district}</td>
