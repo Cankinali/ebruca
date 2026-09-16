@@ -84,9 +84,9 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // Kargo: 5000 TL üzeri ücretsiz, altı 90 TL.
+    // Kargo: 5000 TL üzeri ücretsiz, altı 130 TL.
     // Ücret daima sunucuda hesaplanır — istemciden gelen kargo seçimi fiyatı etkilemez.
-    const serverShipping = serverSubtotal >= 5000 ? 0 : 90;
+    const serverShipping = serverSubtotal >= 5000 ? 0 : 130;
     const serverTotal = serverSubtotal + serverShipping;
 
     // 1. Sipariş kaydı (pending)

@@ -46,7 +46,7 @@ export default function CheckoutPage() {
   }, [user]);
 
   // Sunucudaki hesapla aynı kural (bkz. /api/odeme/baslat) — burası yalnızca gösterim.
-  const shippingFee = totalPrice >= 5000 ? 0 : 90;
+  const shippingFee = totalPrice >= 5000 ? 0 : 130;
   const finalTotal = totalPrice + shippingFee;
 
   const steps: { key: Step; label: string }[] = [
@@ -265,7 +265,7 @@ export default function CheckoutPage() {
             <div className="space-y-4">
               <h2 className="text-base sm:text-lg font-bold uppercase tracking-wide">Kargo Seçimi</h2>
               {[
-                { value: 'standart', label: 'Standart Kargo', desc: '2-4 iş günü', price: totalPrice >= 5000 ? 0 : 90 },
+                { value: 'standart', label: 'Standart Kargo', desc: '2-4 iş günü', price: totalPrice >= 5000 ? 0 : 130 },
               ].map(option => (
                 <label key={option.value}
                   className={`flex items-center justify-between p-4 border cursor-pointer transition-colors ${
