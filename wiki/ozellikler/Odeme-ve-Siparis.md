@@ -43,4 +43,3 @@ Eşik değişirse **üç yer** birlikte güncellenmeli (bir de `/teslimat` ve `/
 ## Bilinen eksikler
 
 - `/siparis-tamamlandi` sayfası `pending=1` parametresine bakmıyor, fraud incelemesindeki siparişe de "Siparişiniz Alındı!" diyor.
-- Başarısız ödemede sepet boş ve hata mesajı gösterilmiyor → [[Donusum-Iyilestirme]]

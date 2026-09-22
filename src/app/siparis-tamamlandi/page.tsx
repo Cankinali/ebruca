@@ -1,12 +1,20 @@
 'use client';
 
-import { Suspense } from 'react';
+import { Suspense, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import { useCart } from '@/lib/cart-context';
 
 function OrderSuccess() {
   const params = useSearchParams();
   const orderNo = params.get('no');
+  const { clearCart } = useCart();
+
+  // Sepet ödeme sonrası burada temizlenir (ödeme sayfasında değil) — başarısız
+  // ödemede müşteri sepetini dolu bulsun diye. Sipariş no'suz ziyarette dokunma.
+  useEffect(() => {
+    if (orderNo) clearCart();
+  }, [orderNo, clearCart]);
 
   return (
     <div className="max-w-lg mx-auto px-4 py-20 text-center">

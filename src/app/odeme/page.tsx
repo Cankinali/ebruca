@@ -9,7 +9,7 @@ import { useSession } from '@/lib/use-session';
 type Step = 'adres' | 'kargo' | 'odeme';
 
 export default function CheckoutPage() {
-  const { items, totalPrice, clearCart } = useCart();
+  const { items, totalPrice } = useCart();
   const router = useRouter();
   const [step, setStep] = useState<Step>('adres');
   const [submitting, setSubmitting] = useState(false);
@@ -127,8 +127,8 @@ export default function CheckoutPage() {
         throw new Error(data.error || 'Ödeme başlatılamadı');
       }
 
-      // Sepeti temizle ve Iyzico ödeme sayfasına yönlendir
-      clearCart();
+      // Sepet burada temizlenmez: ödeme başarısız olursa müşteri /sepet'e
+      // döner ve sepetini dolu bulmalı. Temizleme /siparis-tamamlandi'da.
       window.location.href = data.paymentPageUrl;
     } catch (err) {
       setErrors({ submit: 'Ödeme başlatılamadı: ' + (err instanceof Error ? err.message : 'bilinmeyen hata') });

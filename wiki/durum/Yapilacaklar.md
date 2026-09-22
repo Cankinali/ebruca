@@ -14,8 +14,8 @@ Son güncelleme: 23.09.2026
 
 ## Satış / büyüme (öncelik sırasıyla) → [[Buyume-Plani]]
 
-- [ ] Başarısız ödemede sepetin boşalması + sepet sayfasında hata mesajının görünmemesi → [[Donusum-Iyilestirme]]
-- [ ] Anasayfadaki sabit "4.9 / 5" puanı ile "Henüz yorum yok." çelişkisi
+- [x] Başarısız ödemede sepetin boşalması + hata mesajı (23.09.2026)
+- [ ] Sepetteki işlevsiz "Kupon kodu" kutusu: ya kaldırılmalı ya da çalışır hale getirilmeli
 - [ ] `/siparis-tamamlandi` sayfasında `pending=1` durumunun ayrı gösterilmesi
 - [ ] Çerez rızası: Kabul / Reddet / Tercihler + `/cerez` metninin güncellenmesi → [[Yasal-Cerceve]]
 - [ ] Meta Business Manager, Pixel, alan adı doğrulaması

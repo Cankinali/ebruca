@@ -1,10 +1,76 @@
 'use client';
 
+import { Suspense, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useSearchParams } from 'next/navigation';
 import { useCart } from '@/lib/cart-context';
 
+/**
+ * /api/odeme/sonuc başarısız dönüşlerde buraya ?error=... ile yönlendirir.
+ * Tutar/doğrulama uyuşmazlığında çekim yapılmış olabilir — müşteriye tekrar
+ * denemesini değil, önce bize ulaşmasını söyle (çift çekim riski).
+ */
+function PaymentErrorBanner() {
+  const params = useSearchParams();
+  const [kapali, setKapali] = useState(false);
+  const code = params.get('error');
+  if (!code || kapali) return null;
+
+  let mesaj: string;
+  let iletisim = false;
+  switch (code) {
+    case 'payment_failed': {
+      // Iyzico'nun hata metni (ör. "Kart limiti yetersiz"). URL'den geldiği için kısaltılır.
+      const detay = (params.get('msg') ?? '').slice(0, 150);
+      mesaj = `Ödemeniz tamamlanamadı${detay ? `: ${detay}` : '.'} Sepetiniz duruyor; tekrar deneyebilir ya da farklı bir kart kullanabilirsiniz.`;
+      break;
+    }
+    case 'mismatch':
+    case 'amount_mismatch':
+    case 'server_error':
+      mesaj = 'Ödemeniz doğrulanamadı. Kartınızdan çekim yapıldıysa lütfen tekrar denemeden önce bizimle iletişime geçin.';
+      iletisim = true;
+      break;
+    case 'missing_token':
+    case 'order_not_found':
+      mesaj = 'Ödeme sonucu alınamadı. Tekrar deneyebilir ya da bizimle iletişime geçebilirsiniz.';
+      iletisim = true;
+      break;
+    default:
+      return null;
+  }
+
+  return (
+    <div role="alert" className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-6">
+      <div className="flex items-start gap-3 border border-red-200 bg-red-50 p-3 sm:p-4 text-xs sm:text-sm text-red-800">
+        <p className="flex-1 leading-relaxed">
+          {mesaj}
+          {iletisim && (
+            <> <Link href="/iletisim" className="underline font-medium">İletişim</Link></>
+          )}
+        </p>
+        <button onClick={() => setKapali(true)} aria-label="Kapat"
+          className="text-red-400 hover:text-red-700 min-w-[24px]">
+          ✕
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function CartPage() {
+  return (
+    <>
+      <Suspense>
+        <PaymentErrorBanner />
+      </Suspense>
+      <CartContent />
+    </>
+  );
+}
+
+function CartContent() {
   const { items, removeItem, updateQuantity, totalItems, totalPrice } = useCart();
 
   const shippingFee = totalPrice >= 5000 ? 0 : 130;

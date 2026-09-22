@@ -18,7 +18,7 @@ Akış: anasayfa → kategori / tüm ürünler → ürün detayı → [[Sepet]] 
 
 ## Anasayfa blokları
 
-`src/components/home/`: HeroBanner (3 sabit görsel), CategoryCards, ProductSection (yeni gelenler / çok satanlar), CustomerReviews, TrustBadges. Üstte `AnnouncementBar` ("5.000 TL üzeri ücretsiz kargo" / "3 taksit").
+`src/components/home/`: HeroBanner (3 sabit görsel), CategoryCards, ProductSection (yeni gelenler / çok satanlar), TrustBadges. Üstte `AnnouncementBar` ("5.000 TL üzeri ücretsiz kargo" / "3 taksit").
 
 ## Ürün bayrakları
 

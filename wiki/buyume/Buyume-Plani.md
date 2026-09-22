@@ -26,7 +26,7 @@ Hedef: Meta (Instagram + Facebook) reklamları ve site içi iyileştirmelerle **
 Her adım bir öncekinin üzerine kurulur.
 
 ### Faz 0: Zemin
-1. **Sepet ve ödeme hatası sızıntısını kapat** → [[Donusum-Iyilestirme]] (reklamdan gelen müşteriyi kaybetmemek için)
+1. ~~Sepet ve ödeme hatası sızıntısını kapat~~ ✅ 23.09.2026 → [[Donusum-Iyilestirme]]
 2. **R2 taşımasını bitir** → [[Gorseller]] (trafik artınca Cloudinary faturası artar)
 3. **Çerez rızasını düzelt** (kabul et / reddet / tercihler) → [[Yasal-Cerceve]]
 

@@ -22,5 +22,5 @@ tags: [buyume, kritik]
 ## Reklam metinleri
 
 - İndirim gösteriliyorsa gerçek bir önceki fiyata dayanmalı (`originalPrice`). Fiyat Etiketi Yönetmeliği'ndeki indirim kurallarına dikkat edilmeli.
-- Sitede gösterilen puan ve yorumlar gerçek olmalı. Anasayfadaki sabit "4.9 / 5" buna uymuyor → [[Donusum-Iyilestirme]]
+- Sitede gösterilen puan ve yorumlar gerçek olmalı. Sabit bir puan yazılmamalı.
 - Mesafeli satış ve ön bilgilendirme metinleri kampanya koşullarıyla çelişmemeli.

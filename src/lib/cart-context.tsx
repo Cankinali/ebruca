@@ -110,7 +110,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
     [removeItem]
   );
 
-  const clearCart = useCallback(() => setItems([]), []);
+  // localStorage da hemen silinir: sipariş tamamlandı sayfası gibi bir alt
+  // bileşen bunu ilk effect'inde çağırırsa, yukarıdaki geri yükleme effect'i
+  // (üst bileşen effect'leri sonra çalışır) eski sepeti geri getirmesin.
+  const clearCart = useCallback(() => {
+    setItems([]);
+    try { localStorage.removeItem(STORAGE_KEY); } catch {}
+  }, []);
 
   const totalItems = items.reduce((sum, i) => sum + i.quantity, 0);
   const totalPrice = items.reduce((sum, i) => sum + i.product.price * i.quantity, 0);
