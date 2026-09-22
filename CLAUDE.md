@@ -16,7 +16,7 @@ sitesi. Kod, yorumlar ve route isimleri **Türkçe**; bu tutarlılığı koruyun
 | Veritabanı | Yerel: SQLite dosyası · Canlı: Turso (libSQL) |
 | Ödeme | Iyzico Checkout Form (barındırılan ödeme sayfası) |
 | E-posta | Resend |
-| Görsel | Cloudinary (custom Next image loader) |
+| Görsel | Cloudinary (custom Next image loader) — **Cloudflare R2'ye taşınıyor, bkz. `R2_TASIMA.md`** |
 | Barındırma | Vercel (+ Vercel Cron) |
 
 ## Üç ana bölüm
@@ -159,6 +159,14 @@ Yerel geliştirme `.env`, canlı Turso bilgileri `.env.production.local`
 `CRON_SECRET` `IYZIPAY_API_KEY` `IYZIPAY_SECRET_KEY` `IYZIPAY_BASE_URL`
 `RESEND_API_KEY` `EMAIL_FROM` `REPLY_TO_EMAIL` `CLOUDINARY_*`
 `STORAGE_PROVIDER` `NEXT_PUBLIC_SITE_URL`
+
+## Wiki (Obsidian vault)
+
+`wiki/` bir Obsidian vault'udur (giriş: `wiki/Home.md`). Claude yazar ve
+günceller. Bir özellik eklendiğinde ya da değiştiğinde ilgili not **aynı
+commit'te** güncellenir. Satış ve Meta reklam çalışmaları `wiki/buyume/`
+altında, bekleyen işler `wiki/durum/Yapilacaklar.md` dosyasında. Vault'a müşteri
+kişisel verisi yazılmaz.
 
 ## Çalışma notları
 

@@ -54,3 +54,6 @@ next-env.d.ts
 
 # Veritabanı yedekleri — müşteri kişisel verisi içerir, asla commit edilmemeli
 /backups/
+
+# Obsidian — kişisel pencere düzeni
+/wiki/.obsidian/workspace*.json
