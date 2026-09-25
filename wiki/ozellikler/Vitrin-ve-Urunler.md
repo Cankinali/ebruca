@@ -24,6 +24,14 @@ Akış: anasayfa → kategori / tüm ürünler → ürün detayı → [[Sepet]] 
 
 `isNew`, `isBestseller`, `isFeatured` admin panelinden elle işaretlenir. Satış verisinden **otomatik hesaplanmaz**.
 
+## Önbellek (ISR)
+
+Anasayfa, `/tumurunler`, `/kategori/[slug]` ve `/urun/[slug]` **ISR** ile Vercel CDN'inde önbelleklenir (`revalidate = 3600`). Ürün ve kategori sayfaları build'de `generateStaticParams` ile önceden üretilir. Build sonrası eklenen ürünlerin sayfası ilk ziyarette üretilir.
+
+Veri değişince `src/lib/revalidate.ts` → `revalidateVitrin()` tüm vitrini geçersiz kılar. Çağrıldığı yerler: admin ürün ekle/düzenle/sil, admin elle sipariş, ödeme sonucu (stok düşümü). **Ürünleri veya stoğu değiştiren yeni bir yol eklenirse bu çağrı unutulmamalı.** Unutulursa vitrin en fazla 1 saat eski veri gösterir. Fiyat ve stok zaten `/api/odeme/baslat`'ta sunucuda yeniden doğrulanır.
+
+Eskiden bu dört sayfada `force-dynamic` vardı. Her istek function çalıştırıyordu ve Active CPU'nun ~%85'i buradan geliyordu (09.2026).
+
 ## Ürün detayı
 
-`src/app/urun/[slug]/`: `page.tsx` (metadata + Product/Breadcrumb JSON-LD) ve `ProductDetail.tsx` (renk/beden seçimi, `addItem`). Tasarlanan `ViewContent` ve `AddToCart` olayları buraya bağlanacak → [[Meta-Pixel-ve-CAPI]]
+`src/app/urun/[slug]/`: `page.tsx` (metadata + Product/Breadcrumb JSON-LD) ve `ProductDetail.tsx` (renk/beden seçimi, `addItem`). `?renk=` parametresi `ProductDetailFromUrl` içinde Suspense altında okunur. Fallback, ilk renkle tam render edilir; böylece statik HTML'de ürün içeriği eksiksiz yer alır. Tasarlanan `ViewContent` ve `AddToCart` olayları buraya bağlanacak → [[Meta-Pixel-ve-CAPI]]

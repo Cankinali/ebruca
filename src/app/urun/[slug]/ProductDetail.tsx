@@ -13,16 +13,27 @@ import { COMPANY } from '@/lib/company';
 interface Props {
   product: Product;
   bestsellers: Product[];
+  initialColor?: string;
 }
 
-export default function ProductDetail({ product, bestsellers }: Props) {
-  const { addItem } = useCart();
-  const searchParams = useSearchParams();
-  // URL'de ?renk= varsa onu kullan, yoksa ilk rengi
-  const renkFromUrl = searchParams.get('renk');
-  const initialColor = (renkFromUrl && product.colors.includes(renkFromUrl))
+/**
+ * URL'deki ?renk= parametresini okuyup ProductDetail'e verir.
+ *
+ * Sayfa statik (ISR) olduğu için useSearchParams bir Suspense sınırı ister.
+ * Bu yüzden okuma ayrı bir bileşende: page.tsx bunu Suspense içine koyar,
+ * fallback olarak ilk renkle tam ProductDetail render edilir. Böylece HTML'de
+ * (ve arama motorlarında) ürün içeriği eksiksiz yer alır.
+ */
+export function ProductDetailFromUrl({ product, bestsellers }: Props) {
+  const renkFromUrl = useSearchParams().get('renk');
+  const color = (renkFromUrl && product.colors.includes(renkFromUrl))
     ? renkFromUrl
     : (product.colors[0] ?? '');
+  return <ProductDetail key={color} product={product} bestsellers={bestsellers} initialColor={color} />;
+}
+
+export default function ProductDetail({ product, bestsellers, initialColor = product.colors[0] ?? '' }: Props) {
+  const { addItem } = useCart();
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState(initialColor);
   const [activeImage, setActiveImage] = useState(0);

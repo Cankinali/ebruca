@@ -4,7 +4,8 @@ import ProductSection from '@/components/home/ProductSection';
 import TrustBadges from '@/components/home/TrustBadges';
 import { dbGetNewArrivals, dbGetBestsellers } from '@/lib/db-helpers';
 
-export const dynamic = 'force-dynamic';
+// ISR — ürün/stok değişince lib/revalidate.ts ile anında yenilenir
+export const revalidate = 3600;
 
 export default async function HomePage() {
   const newArrivals = await dbGetNewArrivals();

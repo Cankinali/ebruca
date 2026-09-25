@@ -22,5 +22,6 @@ Neden böyle yapıldı? Tekrar tartışılmasın diye. Yeni kararlar en üste ek
 | 08.2026 | Terk edilmiş sipariş hatırlatması pazarlama dili **içermez** | 6563 sayılı kanun ve İYS → [[Gunluk-Bakim]] |
 | 08.2026 | 72 saatlik otomatik iptalde `paymentStatus` korunur | Sipariş panelde kalsın, geri alınabilsin |
 | — | Stok kuralı tek dosyada (`lib/stock.ts`) | Dört kopya ayrışmıştı → [[Stok]] |
+| 09.2026 | Vitrin sayfaları ISR, değişiklikte `revalidateVitrin()` | `force-dynamic` Active CPU'yu tüketiyordu → [[Vitrin-ve-Urunler]] |
 | — | Kök layout statik | `cookies()` tüm siteyi dinamik yapardı → [[Mimari]] |
 | — | Canlı şema elle yazılmış SQL ile güncellenir | Prisma Turso'ya gitmiyor → [[Veritabani]] |

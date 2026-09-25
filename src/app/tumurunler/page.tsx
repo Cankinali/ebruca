@@ -3,7 +3,8 @@ import { dbGetAllProducts } from '@/lib/db-helpers';
 import { absoluteUrl } from '@/lib/seo';
 import AllProductsView from './AllProductsView';
 
-export const dynamic = 'force-dynamic';
+// ISR — ürün/stok değişince lib/revalidate.ts ile anında yenilenir
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: 'Tüm Ürünler',

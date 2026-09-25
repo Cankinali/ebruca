@@ -1,11 +1,22 @@
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
 import { dbGetProductBySlug, dbGetBestsellers } from '@/lib/db-helpers';
 import { absoluteUrl, SITE } from '@/lib/seo';
 import { COMPANY } from '@/lib/company';
-import ProductDetail from './ProductDetail';
+import { prisma } from '@/lib/prisma';
+import ProductDetail, { ProductDetailFromUrl } from './ProductDetail';
 
-export const dynamic = 'force-dynamic';
+// ISR: sayfa CDN'de önbelleklenir. Ürün/stok değişince lib/revalidate.ts
+// anında geçersiz kılar; bu süre yalnızca emniyet payıdır.
+export const revalidate = 3600;
+
+// Build sırasında mevcut ürünler önceden üretilir; sonradan eklenenler ilk
+// ziyarette üretilip önbelleğe alınır.
+export async function generateStaticParams() {
+  const rows = await prisma.product.findMany({ select: { slug: true } });
+  return rows.map(({ slug }) => ({ slug }));
+}
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -108,7 +119,9 @@ export default async function ProductPage({ params }: PageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
       />
-      <ProductDetail product={product} bestsellers={bestsellers} />
+      <Suspense fallback={<ProductDetail product={product} bestsellers={bestsellers} />}>
+        <ProductDetailFromUrl product={product} bestsellers={bestsellers} />
+      </Suspense>
     </>
   );
 }

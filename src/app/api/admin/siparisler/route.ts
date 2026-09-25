@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireAdmin } from '@/lib/admin-auth';
+import { revalidateVitrin } from '@/lib/revalidate';
 
 export async function GET(request: Request) {
   const unauth = await requireAdmin();
@@ -105,6 +106,7 @@ export async function POST(request: Request) {
       });
     }
   }
+  revalidateVitrin();
 
   return NextResponse.json(order, { status: 201 });
 }

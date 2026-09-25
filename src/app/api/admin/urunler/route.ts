@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireAdmin } from '@/lib/admin-auth';
+import { revalidateVitrin } from '@/lib/revalidate';
 
 function slugify(text: string) {
   return text
@@ -63,6 +64,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    revalidateVitrin();
     return NextResponse.json(product, { status: 201 });
   } catch (err) {
     console.error('[POST /api/admin/urunler]', err);

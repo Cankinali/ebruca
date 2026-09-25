@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireAdmin } from '@/lib/admin-auth';
+import { revalidateVitrin } from '@/lib/revalidate';
 
 // GET — tek ürün
 export async function GET(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -46,6 +47,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       },
     });
 
+    revalidateVitrin();
     return NextResponse.json(product);
   } catch (err) {
     console.error('[PUT /api/admin/urunler/[id]]', err);
@@ -59,5 +61,6 @@ export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id:
   if (unauth) return unauth;
   const { id } = await params;
   await prisma.product.delete({ where: { id } });
+  revalidateVitrin();
   return NextResponse.json({ ok: true });
 }

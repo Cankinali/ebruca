@@ -1,11 +1,16 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getCategoryBySlug } from '@/lib/data';
+import { categories, getCategoryBySlug } from '@/lib/data';
 import { dbGetProductsByCategory } from '@/lib/db-helpers';
 import { absoluteUrl, SITE } from '@/lib/seo';
 import CategoryView from './CategoryView';
 
-export const dynamic = 'force-dynamic';
+// ISR — bkz. app/urun/[slug]/page.tsx
+export const revalidate = 3600;
+
+export function generateStaticParams() {
+  return categories.flatMap(c => [c, ...(c.subcategories ?? [])]).map(({ slug }) => ({ slug }));
+}
 
 interface PageProps {
   params: Promise<{ slug: string }>;

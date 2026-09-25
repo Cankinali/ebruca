@@ -3,6 +3,7 @@ import { retrieveCheckout } from '@/lib/iyzico';
 import { prisma } from '@/lib/prisma';
 import { sendOrderConfirmation } from '@/lib/email';
 import { decrementStock, stockLevel, totalStock } from '@/lib/stock';
+import { revalidateVitrin } from '@/lib/revalidate';
 
 /**
  * 303 See Other ile redirect — POST'tan GET'e dönüşür.
@@ -101,6 +102,8 @@ export async function POST(req: NextRequest) {
           },
         });
       }
+      // Ürün sayfalarındaki stok bilgisi CDN önbelleğinden gelir
+      revalidateVitrin();
 
       // E-posta gönder (asenkron, hata olsa bile akışı bozma)
       sendOrderConfirmation({
