@@ -10,6 +10,7 @@
     "regenerate": "prisma generate"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1121.0",
     "@libsql/client": "^0.17.3",
     "@prisma/adapter-better-sqlite3": "^7.7.0",
     "@prisma/adapter-libsql": "^7.8.0",
@@ -22,7 +23,8 @@
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "resend": "^6.12.3",
-    "server-only": "^0.0.1"
+    "server-only": "^0.0.1",
+    "sharp": "^0.35.4"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
