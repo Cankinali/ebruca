@@ -2,9 +2,10 @@
 
 import { R2_PUBLIC_BASE, pickVariantWidth, variantKey } from './r2-url';
 
-// GEÇİCİ — bkz. next.config.ts rewrites. true iken R2 görselleri kendi
-// alan adımızdaki /r2/ yolundan istenir (DNS yayılımı bitene kadar).
-const R2_VIA_PROXY = true;
+// true iken R2 görselleri herkes için kendi alan adımızdaki /r2/ yolundan
+// (Vercel proxy) istenir. Normalde false: görseller doğrudan cdn.ebruca.com'dan
+// gelir, çözülemeyen ağlarda layout'taki R2_FALLBACK_SCRIPT /r2/'ye geçirir.
+const R2_VIA_PROXY = false;
 
 // Cloudinary olmayan kaynaklar (ör. lokal geliştirmedeki /uploads/...) dönüşümsüz geçer.
 const CLOUDINARY_UPLOAD = /^(https:\/\/res\.cloudinary\.com\/[^/]+\/image\/upload\/)(.+)$/;

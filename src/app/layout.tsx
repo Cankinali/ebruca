@@ -113,10 +113,17 @@ const websiteLd = {
   },
 };
 
+// GEÇİCİ (26.09.2026, bkz. next.config.ts rewrites): cdn.ebruca.com'u henüz
+// çözemeyen ağlarda (eski DNS önbelleği) görsel hata verince aynı dosyayı
+// /r2/ proxy'sinden ister. Vercel kotasını yalnızca etkilenen ziyaretçiler
+// harcar. <head>'de çalışır ki sunucudan gelen ilk görsellerin hatası da yakalansın.
+const R2_FALLBACK_SCRIPT = `window.addEventListener('error',function(e){var t=e.target;if(!t||t.tagName!=='IMG'||t.dataset.r2fb)return;var b='https://cdn.ebruca.com/';if((t.currentSrc||t.src).indexOf(b)!==0)return;t.dataset.r2fb='1';var f=function(s){return s.split(b).join('/r2/')};if(t.srcset)t.srcset=f(t.srcset);t.src=f(t.src)},true);`;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="tr" className="h-full">
       <head>
+        <script dangerouslySetInnerHTML={{ __html: R2_FALLBACK_SCRIPT }} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationLd) }}
