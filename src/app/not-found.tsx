@@ -15,11 +15,11 @@ export default function NotFound() {
         Aradığınız sayfa kaldırılmış veya hiç var olmamış olabilir.
       </p>
       <div className="flex flex-col sm:flex-row gap-3 justify-center">
-        <Link href="/"
+        <Link prefetch={false} href="/"
           className="px-8 py-3 bg-black text-white text-xs font-semibold tracking-widest uppercase hover:bg-gray-800 transition-colors">
           Anasayfaya Dön
         </Link>
-        <Link href="/tumurunler"
+        <Link prefetch={false} href="/tumurunler"
           className="px-8 py-3 border border-gray-200 text-xs font-medium hover:border-black transition-colors">
           Tüm Ürünler
         </Link>

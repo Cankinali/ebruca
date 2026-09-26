@@ -90,9 +90,9 @@ export default function ProductDetail({ product, bestsellers, initialColor = pro
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <nav className="flex items-center gap-2 text-xs text-gray-400 mb-6" aria-label="Breadcrumb">
-        <Link href="/" className="hover:text-black">Anasayfa</Link>
+        <Link prefetch={false} href="/" className="hover:text-black">Anasayfa</Link>
         <span>/</span>
-        <Link href={`/kategori/${product.category}`} className="hover:text-black capitalize">
+        <Link prefetch={false} href={`/kategori/${product.category}`} className="hover:text-black capitalize">
           {product.category.replace(/-/g, ' ')}
         </Link>
         <span>/</span>

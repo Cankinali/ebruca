@@ -125,7 +125,7 @@ export default function OrderQueryPage() {
       </p>
       <p className="text-center text-xs text-gray-400 mt-2">
         Üyeyseniz tüm siparişlerinizi{' '}
-        <Link href="/hesabim" className="underline">Hesabım</Link> sayfasından görebilirsiniz.
+        <Link prefetch={false} href="/hesabim" className="underline">Hesabım</Link> sayfasından görebilirsiniz.
       </p>
     </div>
   );
@@ -226,7 +226,7 @@ function OrderResult({ order, onReset }: { order: FoundOrder; onReset: () => voi
 
       <p className="text-center text-xs text-gray-400 mt-6">
         Sorularınız için{' '}
-        <Link href="/iletisim" className="underline">bizimle iletişime geçebilirsiniz</Link>.
+        <Link prefetch={false} href="/iletisim" className="underline">bizimle iletişime geçebilirsiniz</Link>.
       </p>
     </div>
   );

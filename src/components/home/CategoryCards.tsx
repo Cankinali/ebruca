@@ -48,7 +48,7 @@ export default async function CategoryCards() {
         {featured.map(category => {
           const realCount = countMap[category.slug] ?? 0;
           return (
-            <Link key={category.id} href={`/kategori/${category.slug}`} className="group block outline-none">
+            <Link prefetch={false} key={category.id} href={`/kategori/${category.slug}`} className="group block outline-none">
               <div className="relative aspect-[3/4] bg-gray-100 overflow-hidden rounded-sm shadow-[0_4px_20px_-10px_rgba(0,0,0,0.1)]">
                 <Image
                   src={category.image}

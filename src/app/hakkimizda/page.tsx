@@ -87,7 +87,7 @@ export default function HakkimizdaPage() {
         </section>
 
         <section className="text-center pt-4">
-          <Link href="/tumurunler"
+          <Link prefetch={false} href="/tumurunler"
             className="inline-block bg-black text-white px-8 py-3 text-xs font-semibold tracking-widest uppercase hover:bg-gray-800 transition-colors">
             Ürünlerimize Göz At
           </Link>

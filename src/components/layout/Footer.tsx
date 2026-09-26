@@ -88,7 +88,7 @@ export default function Footer() {
             <ul className="space-y-2">
               {categories.map(cat => (
                 <li key={cat.slug}>
-                  <Link
+                  <Link prefetch={false}
                     href={`/kategori/${cat.slug}`}
                     className="text-white/60 text-sm hover:text-white"
                   >
@@ -103,17 +103,17 @@ export default function Footer() {
           <div>
             <h4 className="text-sm font-semibold tracking-widest uppercase mb-4">Yardım</h4>
             <ul className="space-y-2">
-              <li><Link href="/hakkimizda" className="text-white/60 text-sm hover:text-white">Hakkımızda</Link></li>
-              <li><Link href="/siparis-sorgula" className="text-white/60 text-sm hover:text-white">Sipariş Sorgula</Link></li>
-              <li><Link href="/teslimat" className="text-white/60 text-sm hover:text-white">Teslimat ve Kargo</Link></li>
-              <li><Link href="/iade-iptal" className="text-white/60 text-sm hover:text-white">İade ve İptal</Link></li>
-              <li><Link href="/sss" className="text-white/60 text-sm hover:text-white">Sıkça Sorulan Sorular</Link></li>
-              <li><Link href="/iletisim" className="text-white/60 text-sm hover:text-white">İletişim</Link></li>
-              <li><Link href="/mesafeli-satis" className="text-white/60 text-sm hover:text-white">Mesafeli Satış Sözleşmesi</Link></li>
-              <li><Link href="/gizlilik" className="text-white/60 text-sm hover:text-white">Gizlilik Politikası</Link></li>
-              <li><Link href="/kvkk" className="text-white/60 text-sm hover:text-white">KVKK Aydınlatma</Link></li>
-              <li><Link href="/cerez" className="text-white/60 text-sm hover:text-white">Çerez Politikası</Link></li>
-              <li><Link href="/uyelik-sozlesmesi" className="text-white/60 text-sm hover:text-white">Üyelik Sözleşmesi</Link></li>
+              <li><Link prefetch={false} href="/hakkimizda" className="text-white/60 text-sm hover:text-white">Hakkımızda</Link></li>
+              <li><Link prefetch={false} href="/siparis-sorgula" className="text-white/60 text-sm hover:text-white">Sipariş Sorgula</Link></li>
+              <li><Link prefetch={false} href="/teslimat" className="text-white/60 text-sm hover:text-white">Teslimat ve Kargo</Link></li>
+              <li><Link prefetch={false} href="/iade-iptal" className="text-white/60 text-sm hover:text-white">İade ve İptal</Link></li>
+              <li><Link prefetch={false} href="/sss" className="text-white/60 text-sm hover:text-white">Sıkça Sorulan Sorular</Link></li>
+              <li><Link prefetch={false} href="/iletisim" className="text-white/60 text-sm hover:text-white">İletişim</Link></li>
+              <li><Link prefetch={false} href="/mesafeli-satis" className="text-white/60 text-sm hover:text-white">Mesafeli Satış Sözleşmesi</Link></li>
+              <li><Link prefetch={false} href="/gizlilik" className="text-white/60 text-sm hover:text-white">Gizlilik Politikası</Link></li>
+              <li><Link prefetch={false} href="/kvkk" className="text-white/60 text-sm hover:text-white">KVKK Aydınlatma</Link></li>
+              <li><Link prefetch={false} href="/cerez" className="text-white/60 text-sm hover:text-white">Çerez Politikası</Link></li>
+              <li><Link prefetch={false} href="/uyelik-sozlesmesi" className="text-white/60 text-sm hover:text-white">Üyelik Sözleşmesi</Link></li>
             </ul>
           </div>
 

@@ -47,7 +47,7 @@ function PaymentErrorBanner() {
         <p className="flex-1 leading-relaxed">
           {mesaj}
           {iletisim && (
-            <> <Link href="/iletisim" className="underline font-medium">İletişim</Link></>
+            <> <Link prefetch={false} href="/iletisim" className="underline font-medium">İletişim</Link></>
           )}
         </p>
         <button onClick={() => setKapali(true)} aria-label="Kapat"
@@ -84,7 +84,7 @@ function CartContent() {
         </svg>
         <h1 className="text-lg font-bold mb-2">Sepetiniz boş</h1>
         <p className="text-gray-500 text-sm mb-8">Beğendiğiniz ürünleri sepete ekleyin.</p>
-        <Link href="/" className="bg-black text-white px-8 py-3 text-sm font-semibold tracking-widest uppercase hover:bg-gray-800 transition-colors">
+        <Link prefetch={false} href="/" className="bg-black text-white px-8 py-3 text-sm font-semibold tracking-widest uppercase hover:bg-gray-800 transition-colors">
           Alışverişe Başla
         </Link>
       </div>
@@ -104,7 +104,7 @@ function CartContent() {
             <div key={`${item.product.id}-${item.size}-${item.color}`}
               className="flex gap-3 sm:gap-4 p-3 sm:p-4 border border-gray-100">
               {/* Görsel */}
-              <Link href={`/urun/${item.product.slug}`}
+              <Link prefetch={false} href={`/urun/${item.product.slug}`}
                 className="relative w-20 sm:w-24 flex-shrink-0 bg-gray-100 overflow-hidden"
                 style={{ aspectRatio: '3/4' }}>
                 <Image src={item.product.images[0]} alt={item.product.name}
@@ -114,7 +114,7 @@ function CartContent() {
               {/* Bilgi */}
               <div className="flex-1 min-w-0 flex flex-col justify-between">
                 <div>
-                  <Link href={`/urun/${item.product.slug}`}
+                  <Link prefetch={false} href={`/urun/${item.product.slug}`}
                     className="text-xs sm:text-sm font-semibold hover:underline line-clamp-2 leading-snug">
                     {item.product.name}
                   </Link>
@@ -202,7 +202,7 @@ function CartContent() {
               </div>
             </div>
 
-            <Link href="/odeme"
+            <Link prefetch={false} href="/odeme"
               className="block w-full bg-black text-white text-center py-3.5 sm:py-4 mt-4 sm:mt-5 text-xs sm:text-sm font-semibold tracking-widest uppercase hover:bg-gray-800 transition-colors">
               Ödemeye Geç
             </Link>

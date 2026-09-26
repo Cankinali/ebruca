@@ -65,7 +65,7 @@ function ResetPasswordForm() {
           <p className="text-gray-500 text-sm mt-2 mb-6">
             Bu şifre sıfırlama bağlantısı eksik veya hatalı görünüyor.
           </p>
-          <Link
+          <Link prefetch={false}
             href="/sifre-sifirla"
             className="block w-full bg-black text-white py-3.5 text-sm font-semibold tracking-widest uppercase hover:bg-gray-800 transition-colors"
           >
@@ -80,7 +80,7 @@ function ResetPasswordForm() {
     <div className="min-h-[70vh] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <Link href="/" className="text-2xl font-bold tracking-[0.2em] uppercase">EBRUCA</Link>
+          <Link prefetch={false} href="/" className="text-2xl font-bold tracking-[0.2em] uppercase">EBRUCA</Link>
           <h1 className="text-xl font-semibold mt-4">Yeni Şifre Belirle</h1>
           <p className="text-gray-500 text-sm mt-1">Hesabınız için yeni bir şifre oluşturun.</p>
         </div>

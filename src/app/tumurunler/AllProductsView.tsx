@@ -52,7 +52,7 @@ export default function AllProductsView({ initialProducts }: Props) {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <nav className="flex items-center gap-2 text-xs text-gray-400 mb-6">
-        <Link href="/" className="hover:text-black">Anasayfa</Link>
+        <Link prefetch={false} href="/" className="hover:text-black">Anasayfa</Link>
         <span>/</span>
         <span className="text-black">Tüm Ürünler</span>
       </nav>
@@ -146,7 +146,7 @@ export default function AllProductsView({ initialProducts }: Props) {
           ) : filtered.length === 0 ? (
             <div className="text-center py-20">
               <p className="text-gray-500">Henüz ürün bulunmuyor.</p>
-              <Link href="/" className="mt-4 inline-block text-sm underline">Anasayfaya Dön</Link>
+              <Link prefetch={false} href="/" className="mt-4 inline-block text-sm underline">Anasayfaya Dön</Link>
             </div>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">

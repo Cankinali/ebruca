@@ -51,7 +51,7 @@ export default function ProductCard({ product }: ProductCardProps) {
     >
       {/* Görsel Alanı */}
       <div className="relative aspect-[3/4] bg-[#f8f8f8] mb-3 sm:mb-4 overflow-hidden">
-        <Link href={href}>
+        <Link prefetch={false} href={href}>
           {primaryImg ? (
             <Image
               src={hovered && hoverImg ? hoverImg : primaryImg}
@@ -99,7 +99,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         {/* Hızlı Ekle Overlay */}
         {stockState !== 'out_of_stock' && (
           <div className="absolute left-0 right-0 bottom-0 p-3 translate-y-[120%] group-hover:translate-y-0 transition-transform duration-500 ease-out hidden lg:block z-20">
-            <Link href={href} className="block w-full bg-white/90 backdrop-blur-md hover:bg-black hover:text-white hover:border-black text-black border border-transparent text-xs py-3 font-medium tracking-[0.1em] uppercase text-center transition-all duration-300">
+            <Link prefetch={false} href={href} className="block w-full bg-white/90 backdrop-blur-md hover:bg-black hover:text-white hover:border-black text-black border border-transparent text-xs py-3 font-medium tracking-[0.1em] uppercase text-center transition-all duration-300">
               İncele
             </Link>
           </div>
@@ -109,7 +109,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       {/* Bilgi Alanı */}
       <div className="flex flex-col gap-1 sm:gap-1.5 px-0.5">
         <p className="text-[9px] sm:text-[10px] text-gray-400 uppercase tracking-[0.15em] font-light">{product.brand}</p>
-        <Link href={href}>
+        <Link prefetch={false} href={href}>
           <h3 className="text-xs sm:text-sm font-light text-gray-900 line-clamp-1 group-hover:text-black transition-colors leading-relaxed">
             {product.name}
             {displayColor && (

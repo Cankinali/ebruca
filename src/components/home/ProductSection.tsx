@@ -20,7 +20,7 @@ export default function ProductSection({ title, subtitle, products, viewAllHref 
           {subtitle && <p className="text-gray-500 text-sm font-light">{subtitle}</p>}
         </div>
         {viewAllHref && (
-          <Link href={viewAllHref}
+          <Link prefetch={false} href={viewAllHref}
             className="group flex items-center gap-2 text-xs sm:text-sm font-medium tracking-[0.2em] uppercase text-gray-600 hover:text-black transition-colors mt-6 md:mt-0">
             TÜMÜNÜ GÖR
             <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">

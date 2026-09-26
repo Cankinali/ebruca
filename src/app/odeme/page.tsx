@@ -143,7 +143,7 @@ export default function CheckoutPage() {
     return (
       <div className="max-w-7xl mx-auto px-4 py-20 text-center">
         <p className="text-gray-500 mb-4">Sepetiniz boş.</p>
-        <Link href="/" className="bg-black text-white px-6 py-3 text-sm">Alışverişe Başla</Link>
+        <Link prefetch={false} href="/" className="bg-black text-white px-6 py-3 text-sm">Alışverişe Başla</Link>
       </div>
     );
   }
@@ -188,7 +188,7 @@ export default function CheckoutPage() {
                   </svg>
                   <span>
                     <strong>{user.firstName}</strong> olarak giriş yaptınız — bilgileriniz dolduruldu.
-                    Sipariş <Link href="/hesabim" className="underline">hesabınıza</Link> kaydedilecek.
+                    Sipariş <Link prefetch={false} href="/hesabim" className="underline">hesabınıza</Link> kaydedilecek.
                   </span>
                 </div>
               ) : (
@@ -196,7 +196,7 @@ export default function CheckoutPage() {
                   <span className="flex-1 py-2.5 text-xs sm:text-sm font-medium border bg-black text-white text-center">
                     Misafir Olarak Devam
                   </span>
-                  <Link href="/giris?next=/odeme" className="flex-1 py-2.5 text-xs sm:text-sm font-medium border border-gray-200 hover:border-gray-400 text-center transition-colors">
+                  <Link prefetch={false} href="/giris?next=/odeme" className="flex-1 py-2.5 text-xs sm:text-sm font-medium border border-gray-200 hover:border-gray-400 text-center transition-colors">
                     Giriş Yap
                   </Link>
                 </div>
@@ -370,7 +370,7 @@ export default function CheckoutPage() {
                     className="mt-0.5 w-4 h-4 accent-black flex-shrink-0"
                   />
                   <span className="text-xs text-gray-700 leading-relaxed">
-                    <Link href="/mesafeli-satis" target="_blank" className="underline font-medium">Mesafeli Satış Sözleşmesi</Link>&apos;ni okudum, onaylıyorum.
+                    <Link prefetch={false} href="/mesafeli-satis" target="_blank" className="underline font-medium">Mesafeli Satış Sözleşmesi</Link>&apos;ni okudum, onaylıyorum.
                   </span>
                 </label>
                 <label className="flex items-start gap-2 cursor-pointer">
@@ -381,8 +381,8 @@ export default function CheckoutPage() {
                     className="mt-0.5 w-4 h-4 accent-black flex-shrink-0"
                   />
                   <span className="text-xs text-gray-700 leading-relaxed">
-                    <Link href="/teslimat" target="_blank" className="underline">Ön Bilgilendirme Formu</Link>&apos;nu (teslimat, iade, kargo) okudum,{' '}
-                    <Link href="/kvkk" target="_blank" className="underline">KVKK Aydınlatma Metni</Link>&apos;ni anladım ve kabul ediyorum.
+                    <Link prefetch={false} href="/teslimat" target="_blank" className="underline">Ön Bilgilendirme Formu</Link>&apos;nu (teslimat, iade, kargo) okudum,{' '}
+                    <Link prefetch={false} href="/kvkk" target="_blank" className="underline">KVKK Aydınlatma Metni</Link>&apos;ni anladım ve kabul ediyorum.
                   </span>
                 </label>
               </div>

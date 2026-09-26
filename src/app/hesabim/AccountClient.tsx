@@ -107,9 +107,9 @@ function OrdersTab({ orders }: { orders: Order[] }) {
         <p className="text-gray-500 mb-1">Henüz siparişiniz bulunmuyor.</p>
         <p className="text-gray-400 text-xs mb-6">
           Üyeliğinizden önce misafir olarak verdiğiniz siparişler burada görünmez —
-          onları <Link href="/siparis-sorgula" className="underline">Sipariş Sorgula</Link> sayfasından takip edebilirsiniz.
+          onları <Link prefetch={false} href="/siparis-sorgula" className="underline">Sipariş Sorgula</Link> sayfasından takip edebilirsiniz.
         </p>
-        <Link href="/tumurunler" className="inline-block bg-black text-white px-6 py-3 text-sm font-semibold tracking-wider uppercase hover:bg-gray-800 transition-colors">
+        <Link prefetch={false} href="/tumurunler" className="inline-block bg-black text-white px-6 py-3 text-sm font-semibold tracking-wider uppercase hover:bg-gray-800 transition-colors">
           Alışverişe Başla
         </Link>
       </div>
@@ -310,7 +310,7 @@ function ProfileTab({ user }: { user: SessionUser }) {
         >
           {saving ? 'Kaydediliyor...' : 'Bilgilerimi Kaydet'}
         </button>
-        <Link
+        <Link prefetch={false}
           href="/sifre-sifirla"
           className="border border-gray-200 px-6 py-3 text-sm font-medium hover:border-black transition-colors"
         >

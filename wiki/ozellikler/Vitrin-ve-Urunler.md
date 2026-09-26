@@ -32,6 +32,10 @@ Veri değişince `src/lib/revalidate.ts` → `revalidateVitrin(slugs)` **hedefli
 
 Eskiden bu dört sayfada `force-dynamic` vardı. Her istek function çalıştırıyordu ve Active CPU'nun ~%85'i buradan geliyordu (09.2026).
 
+## Link ön yüklemesi kapalı
+
+Vitrindeki tüm `<Link>`'lerde `prefetch={false}` (admin hariç). Varsayılan ön yükleme ekranda görünen her link için arka planda istek atıyordu: tek bir kategori/anasayfa görüntülemesi ~90-105 Vercel Edge Request demekti (isteklerin ~%85'i). Kapatınca sayfa başına ~14'e indi; tıklamada sayfa önbellekten geldiği için geçiş yine hızlı (26.09.2026). **Yeni link eklerken `prefetch={false}` unutulmamalı.**
+
 ## Ürün detayı
 
 `src/app/urun/[slug]/`: `page.tsx` (metadata + Product/Breadcrumb JSON-LD) ve `ProductDetail.tsx` (renk/beden seçimi, `addItem`). `?renk=` parametresi `ProductDetailFromUrl` içinde Suspense altında okunur. Fallback, ilk renkle tam render edilir; böylece statik HTML'de ürün içeriği eksiksiz yer alır. Tasarlanan `ViewContent` ve `AddToCart` olayları buraya bağlanacak → [[Meta-Pixel-ve-CAPI]]

@@ -42,7 +42,7 @@ export default function ForgotPasswordPage() {
     <div className="min-h-[70vh] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <Link href="/" className="text-2xl font-bold tracking-[0.2em] uppercase">EBRUCA</Link>
+          <Link prefetch={false} href="/" className="text-2xl font-bold tracking-[0.2em] uppercase">EBRUCA</Link>
           <h1 className="text-xl font-semibold mt-4">Şifremi Unuttum</h1>
           <p className="text-gray-500 text-sm mt-1">
             Hesabınızın e-posta adresini girin, sıfırlama bağlantısı gönderelim.
@@ -54,7 +54,7 @@ export default function ForgotPasswordPage() {
             <p className="text-sm text-green-700 bg-green-50 border border-green-200 p-4 leading-relaxed">
               {message}
             </p>
-            <Link
+            <Link prefetch={false}
               href="/giris"
               className="block w-full bg-black text-white py-3.5 text-sm font-semibold tracking-widest uppercase text-center hover:bg-gray-800 transition-colors"
             >
@@ -86,7 +86,7 @@ export default function ForgotPasswordPage() {
             </button>
 
             <p className="text-center text-sm text-gray-600 pt-2">
-              <Link href="/giris" className="font-medium text-black underline">Giriş sayfasına dön</Link>
+              <Link prefetch={false} href="/giris" className="font-medium text-black underline">Giriş sayfasına dön</Link>
             </p>
           </form>
         )}

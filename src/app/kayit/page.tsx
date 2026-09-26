@@ -71,7 +71,7 @@ export default function RegisterPage() {
     <div className="min-h-[70vh] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <Link href="/" className="text-2xl font-bold tracking-[0.2em] uppercase">EBRUCA</Link>
+          <Link prefetch={false} href="/" className="text-2xl font-bold tracking-[0.2em] uppercase">EBRUCA</Link>
           <h1 className="text-xl font-semibold mt-4">Üye Ol</h1>
           <p className="text-gray-500 text-sm mt-1">Hızlı ve güvenli alışveriş için üye olun</p>
         </div>
@@ -119,7 +119,7 @@ export default function RegisterPage() {
               <input type="checkbox" name="kvkk" checked={form.kvkk} onChange={handleChange}
                 className="mt-0.5 accent-black flex-shrink-0" />
               <span className="text-xs text-gray-600">
-                <Link href="/gizlilik" className="underline">KVKK Aydınlatma Metni</Link>'ni okudum ve kabul ediyorum. *
+                <Link prefetch={false} href="/gizlilik" className="underline">KVKK Aydınlatma Metni</Link>'ni okudum ve kabul ediyorum. *
               </span>
             </label>
             {errors.kvkk && <p className="text-red-500 text-xs ml-5">{errors.kvkk}</p>}
@@ -128,7 +128,7 @@ export default function RegisterPage() {
               <input type="checkbox" name="sozlesme" checked={form.sozlesme} onChange={handleChange}
                 className="mt-0.5 accent-black flex-shrink-0" />
               <span className="text-xs text-gray-600">
-                <Link href="/uyelik-sozlesmesi" className="underline">Üyelik Sözleşmesi</Link>'ni okudum ve kabul ediyorum. *
+                <Link prefetch={false} href="/uyelik-sozlesmesi" className="underline">Üyelik Sözleşmesi</Link>'ni okudum ve kabul ediyorum. *
               </span>
             </label>
             {errors.sozlesme && <p className="text-red-500 text-xs ml-5">{errors.sozlesme}</p>}
@@ -149,7 +149,7 @@ export default function RegisterPage() {
 
         <p className="text-center text-sm text-gray-600 mt-6">
           Zaten üye misiniz?{' '}
-          <Link href="/giris" className="font-medium text-black underline">Giriş Yap</Link>
+          <Link prefetch={false} href="/giris" className="font-medium text-black underline">Giriş Yap</Link>
         </p>
       </div>
     </div>

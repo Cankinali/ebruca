@@ -59,7 +59,7 @@ export default function CategoryView({ slug, category, initialProducts }: Props)
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <nav className="flex items-center gap-2 text-xs text-gray-400 mb-6">
-        <Link href="/" className="hover:text-black">Anasayfa</Link>
+        <Link prefetch={false} href="/" className="hover:text-black">Anasayfa</Link>
         <span>/</span>
         <span className="text-black">{category?.name ?? slug}</span>
       </nav>

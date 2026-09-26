@@ -106,7 +106,7 @@ export default function HeroBanner() {
           >
             {slide.description}
           </p>
-          <Link
+          <Link prefetch={false}
             key={`cta-${current}`}
             href={slide.href}
             className="inline-flex items-center justify-center gap-2 bg-white/10 backdrop-blur-md border border-white/30 text-white px-6 sm:px-10 py-3 sm:py-4 text-[11px] sm:text-sm hover:cursor-pointer font-medium tracking-[0.15em] sm:tracking-[0.2em] uppercase hover:bg-white hover:text-black hover:border-white transition-all duration-300 animate-fadeIn"

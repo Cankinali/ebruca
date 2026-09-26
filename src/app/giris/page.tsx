@@ -65,7 +65,7 @@ function LoginForm() {
     <div className="min-h-[70vh] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <Link href="/" className="text-2xl font-bold tracking-[0.2em] uppercase">EBRUCA</Link>
+          <Link prefetch={false} href="/" className="text-2xl font-bold tracking-[0.2em] uppercase">EBRUCA</Link>
           <h1 className="text-xl font-semibold mt-4">Giriş Yap</h1>
           <p className="text-gray-500 text-sm mt-1">Hesabınıza giriş yapın</p>
         </div>
@@ -86,7 +86,7 @@ function LoginForm() {
           <div>
             <div className="flex justify-between mb-1">
               <label className="text-xs font-medium text-gray-600">Şifre</label>
-              <Link href="/sifre-sifirla" className="text-xs text-gray-400 hover:text-black underline">
+              <Link prefetch={false} href="/sifre-sifirla" className="text-xs text-gray-400 hover:text-black underline">
                 Şifremi Unuttum
               </Link>
             </div>
@@ -123,7 +123,7 @@ function LoginForm() {
 
         <p className="text-center text-sm text-gray-600">
           Hesabınız yok mu?{' '}
-          <Link href="/kayit" className="font-medium text-black underline">
+          <Link prefetch={false} href="/kayit" className="font-medium text-black underline">
             Üye Ol
           </Link>
         </p>
