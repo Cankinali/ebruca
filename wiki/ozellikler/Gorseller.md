@@ -19,3 +19,7 @@ tags: [ozellik, kritik]
 ## Reklamla ilişkisi
 
 Meta reklamları trafiği artırdıkça Cloudinary faturası da artar. Bu yüzden **reklam bütçesi açılmadan önce R2 taşımasının bitmesi** tavsiye edilir. Katalog feed'i de kalıcı görsel URL'lerine ihtiyaç duyar → [[Katalog-ve-Dinamik-Reklam]]
+
+## Admin yükleme sınırı
+
+Vercel istek gövdesini **4,5 MB** ile sınırlar; aşan istek koda ulaşmadan 413 döner. Admin formu (`ProductForm.tsx`) bu yüzden 3 MB'tan büyük ya da JPG/PNG/WebP/GIF olmayan (ör. Mac Safari HEIC) dosyaları yüklemeden önce tarayıcıda en fazla 2400px JPEG'e çevirir → `src/lib/compress-image.ts`. Sunucu tarafı sınır 4 MB. Chrome HEIC açamaz, "Görsel okunamadı" der.

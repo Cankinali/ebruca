@@ -3,7 +3,8 @@ import { uploadImage } from '@/lib/storage';
 import { requireAdmin } from '@/lib/admin-auth';
 
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
-const MAX_SIZE = 5 * 1024 * 1024; // 5 MB
+// Vercel istek gövdesi sınırı 4,5 MB; admin formu büyük fotoğrafları önceden küçültür.
+const MAX_SIZE = 4 * 1024 * 1024; // 4 MB
 
 export async function POST(req: NextRequest) {
   const unauth = await requireAdmin();
@@ -19,7 +20,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Yalnızca JPG, PNG, WebP, GIF kabul edilir.' }, { status: 400 });
     }
     if (file.size > MAX_SIZE) {
-      return NextResponse.json({ error: 'Dosya 5 MB sınırını aşıyor.' }, { status: 400 });
+      return NextResponse.json({ error: 'Dosya 4 MB sınırını aşıyor.' }, { status: 400 });
     }
 
     const { url } = await uploadImage(file);

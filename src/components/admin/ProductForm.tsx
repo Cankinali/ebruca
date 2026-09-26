@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { compressImage, uploadErrorMessage } from '@/lib/compress-image';
 
 interface ProductFormData {
   id?: string;
@@ -101,6 +102,8 @@ export default function ProductForm({ initial = empty, mode }: Props) {
     return 0;
   });
   const [error, setError] = useState('');
+  // Görsel yükleme hatası — formun üstü yerine yükleme alanının yanında gösterilir
+  const [uploadError, setUploadError] = useState('');
 
   // Renk varyantı (her renge ayrı görsel/beden/stok) — default kapalı.
   // Edit modunda mevcut veri varsa otomatik açık.
@@ -160,12 +163,24 @@ export default function ProductForm({ initial = empty, mode }: Props) {
     setForm(prev => ({ ...prev, sizeStock: { ...prev.sizeStock, [size]: qty } }));
   };
 
-  const addColorImage = async (color: string, file: File) => {
+  // Büyük fotoğraflar önce tarayıcıda küçültülür (bkz. lib/compress-image.ts)
+  const uploadOne = async (file: File): Promise<string> => {
     const fd = new FormData();
-    fd.append('file', file);
+    fd.append('file', await compressImage(file));
     const res = await fetch('/api/admin/upload', { method: 'POST', body: fd });
-    if (!res.ok) { setError('Görsel yüklenemedi'); return; }
+    if (!res.ok) throw new Error(await uploadErrorMessage(res));
     const { url } = await res.json();
+    return url;
+  };
+
+  const addColorImage = async (color: string, file: File) => {
+    let url: string;
+    try {
+      url = await uploadOne(file);
+    } catch (err) {
+      setUploadError(`${file.name}: ${err instanceof Error ? err.message : 'Görsel yüklenemedi'}`);
+      return;
+    }
     setForm(prev => ({
       ...prev,
       colorImages: {
@@ -215,16 +230,18 @@ export default function ProductForm({ initial = empty, mode }: Props) {
     const files = Array.from(e.target.files ?? []);
     if (!files.length) return;
     setUploading(true);
+    setUploadError('');
 
+    const failed: string[] = [];
     for (const file of files) {
-      const fd = new FormData();
-      fd.append('file', file);
-      const res = await fetch('/api/admin/upload', { method: 'POST', body: fd });
-      if (res.ok) {
-        const { url } = await res.json();
+      try {
+        const url = await uploadOne(file);
         setForm(prev => ({ ...prev, images: [...prev.images, url] }));
+      } catch (err) {
+        failed.push(`${file.name}: ${err instanceof Error ? err.message : 'yüklenemedi'}`);
       }
     }
+    if (failed.length) setUploadError(failed.join(' · '));
     setUploading(false);
     if (galleryRef.current) galleryRef.current.value = '';
     if (cameraRef.current) cameraRef.current.value = '';
@@ -519,7 +536,7 @@ export default function ProductForm({ initial = empty, mode }: Props) {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v16m8-8H4" />
               </svg>
               <p className="text-sm text-gray-500">Görsel eklemek için tıklayın</p>
-              <p className="text-xs text-gray-400 mt-1">JPG, PNG, WebP — maks. 5 MB — çoklu seçim</p>
+              <p className="text-xs text-gray-400 mt-1">JPG, PNG, WebP, HEIC — büyük fotoğraflar otomatik küçültülür — çoklu seçim</p>
             </>
           )}
         </div>
@@ -534,6 +551,10 @@ export default function ProductForm({ initial = empty, mode }: Props) {
         {/* Kamera input — telefonda kamerayı direkt aç */}
         <input ref={cameraRef} type="file" accept="image/*" capture="environment" className="hidden"
           onChange={handleFileUpload} />
+
+        {uploadError && (
+          <p className="text-sm text-red-600 bg-red-50 border border-red-200 px-3 py-2">{uploadError}</p>
+        )}
 
         <p className="text-xs text-gray-400">
           💡 İlk görsel ana görsel olarak kullanılır. Sıralamayı değiştirmek için oka tıklayın.
@@ -722,6 +743,7 @@ export default function ProductForm({ initial = empty, mode }: Props) {
                             onChange={async (e) => {
                               const files = e.target.files;
                               if (!files) return;
+                              setUploadError('');
                               for (const f of Array.from(files)) {
                                 await addColorImage(color, f);
                               }
@@ -731,6 +753,9 @@ export default function ProductForm({ initial = empty, mode }: Props) {
                           />
                         </label>
                       </div>
+                      {uploadError && (
+                        <p className="text-xs text-red-600 mt-2">{uploadError}</p>
+                      )}
                     </div>
 
                     {/* Beden seçimi (per-color) */}
