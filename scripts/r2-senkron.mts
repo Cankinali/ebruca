@@ -1,7 +1,7 @@
 /**
  * Cloudinary → R2 senkronu (bkz. R2_TASIMA.md).
  *
- * Canlı veritabanındaki (ve kodda sabit yazılı) her Cloudinary görseli için
+ * Canlı veritabanındaki (Product, OrderItem) ve kodda sabit yazılı her Cloudinary görseli için
  * R2'de orijinal + 400/800/1200 WebP sürümlerinin hepsi var mı bakar, eksik
  * olanları tamamlar. Tekrar çalıştırılabilir: var olana dokunmaz.
  *
@@ -42,6 +42,8 @@ const collect = (text: string) => {
   for (const m of text.matchAll(CLOUDINARY)) urls.set(m[1], m[0]);
 };
 for (const r of rows) collect(`${r.images} ${r.colorImages}`);
+// Sipariş kalemleri: silinmiş ürünlerin görselleri yalnızca burada kalmış olabilir
+for (const r of (await db.execute('select image from OrderItem')).rows) collect(String(r.image ?? ''));
 
 // 2) Kodda sabit yazılı olanlar (HeroBanner, kategori görselleri …)
 async function scan(dir: string) {
