@@ -3,6 +3,7 @@
 import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import imageLoader from '@/lib/imageLoader';
 
 type OrderStatus = 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
 
@@ -255,7 +256,7 @@ export default function SiparisDetayPage({ params }: { params: Promise<{ id: str
                 <div key={item.id} className="flex items-center gap-3 py-2 border-b border-gray-50 last:border-0">
                   {item.image ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={item.image} alt={item.name} className="w-12 h-16 object-cover flex-shrink-0 bg-gray-100" />
+                    <img src={imageLoader({ src: item.image, width: 400 })} alt={item.name} className="w-12 h-16 object-cover flex-shrink-0 bg-gray-100" />
                   ) : (
                     <div className="w-12 h-16 bg-gray-100 flex-shrink-0 flex items-center justify-center text-gray-300 text-lg">
                       👗

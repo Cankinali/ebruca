@@ -2,6 +2,10 @@
 
 import { R2_PUBLIC_BASE, pickVariantWidth, variantKey } from './r2-url';
 
+// GEÇİCİ — bkz. next.config.ts rewrites. true iken R2 görselleri kendi
+// alan adımızdaki /r2/ yolundan istenir (DNS yayılımı bitene kadar).
+const R2_VIA_PROXY = true;
+
 // Cloudinary olmayan kaynaklar (ör. lokal geliştirmedeki /uploads/...) dönüşümsüz geçer.
 const CLOUDINARY_UPLOAD = /^(https:\/\/res\.cloudinary\.com\/[^/]+\/image\/upload\/)(.+)$/;
 
@@ -18,7 +22,8 @@ export default function imageLoader({
   // istenen genişliği karşılayanı seç (bkz. lib/r2-url.ts).
   if (src.startsWith(`${R2_PUBLIC_BASE}/`)) {
     const key = src.slice(R2_PUBLIC_BASE.length + 1);
-    return `${R2_PUBLIC_BASE}/${variantKey(key, pickVariantWidth(width))}`;
+    const variant = variantKey(key, pickVariantWidth(width));
+    return R2_VIA_PROXY ? `/r2/${variant}` : `${R2_PUBLIC_BASE}/${variant}`;
   }
 
   const match = src.match(CLOUDINARY_UPLOAD);

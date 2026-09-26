@@ -4,13 +4,15 @@ tags: [durum]
 
 # Yapılacaklar
 
-Son güncelleme: 23.09.2026
+Son güncelleme: 26.09.2026
 
 ## Devam eden
 
-- [ ] **R2 taşıması**: DNS → `cdn.ebruca.com` → kod → canlı DB URL'leri → Cloudinary'yi Free plana düşürmek. Ayrıntı `R2_TASIMA.md`, özet → [[Gorseller]]
-  - `package.json`: `@aws-sdk/client-s3` ve `sharp` henüz `devDependencies`'te (commit edilmemiş değişiklik), taşıma adımında `dependencies`'e geçecek.
-  - `storage.ts` içinde eksik `deleteImage`: ürün silinince dosya sağlayıcıda kalıyor.
+- [x] **R2 taşıması** tamamlandı (26.09.2026), Cloudinary iptal → [[Gorseller]]
+- [ ] **28.09.2026 sonrası: geçici `/r2/` proxy'sini kaldır.** DNS yayılımı sırasında bazı operatörler `cdn.ebruca.com`'u çözemediği için görseller `www` üzerinden R2'ye proxy'leniyor: `next.config.ts` → `rewrites`, `src/lib/imageLoader.ts` → `R2_VIA_PROXY = false`. Önce `dig cdn.ebruca.com @193.192.98.8` NXDOMAIN dönmüyor mu kontrol et.
+- [ ] `storage.ts` içinde eksik `deleteImage`: ürün silinince dosya R2'de kalıyor.
+- [ ] Ölü Cloudinary kodu (`storage.ts` dalı, `imageLoader` kuralı), `cloudinary` paketi ve Vercel'deki `CLOUDINARY_*` değişkenleri temizlenebilir.
+- [ ] Admin elle sipariş (`api/admin/siparisler` POST) stok düşümü `lib/stock.ts` kullanmıyor, renk bazlı stoğu atlıyor.
 
 ## Satış / büyüme (öncelik sırasıyla) → [[Buyume-Plani]]
 

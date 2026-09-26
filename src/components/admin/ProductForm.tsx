@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import imageLoader from '@/lib/imageLoader';
 import { compressImage, uploadErrorMessage } from '@/lib/compress-image';
 
 interface ProductFormData {
@@ -726,7 +727,7 @@ export default function ProductForm({ initial = empty, mode }: Props) {
                         {colorPics.map((url, i) => (
                           <div key={url + i} className="relative w-16 h-20 border border-gray-300 bg-white">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img src={url} alt="" className="w-full h-full object-cover" />
+                            <img src={imageLoader({ src: url, width: 400 })} alt="" className="w-full h-full object-cover" />
                             <button
                               type="button"
                               onClick={() => removeColorImage(color, i)}

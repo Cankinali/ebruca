@@ -28,6 +28,16 @@ const nextConfig: NextConfig = {
       { source: '/:path*', headers: securityHeaders },
     ];
   },
+  // GEÇİCİ (26.09.2026): nameserver Cloudflare'e yeni taşındı; bazı Türk
+  // operatörleri eski Hostinger delegasyonunu 48 saate kadar önbellekte tutuyor
+  // ve orada `cdn` kaydı yok → cdn.ebruca.com çözülemiyor. Görseller bu süre
+  // boyunca www üzerinden R2'ye proxy'lenir (Vercel CDN önbelleğe alır).
+  // Geri alma: bu rewrite'ı ve imageLoader'daki R2_VIA_PROXY'yi kaldır.
+  async rewrites() {
+    return [
+      { source: '/r2/:path*', destination: 'https://cdn.ebruca.com/:path*' },
+    ];
+  },
 };
 
 export default nextConfig;
