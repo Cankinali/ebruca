@@ -4,7 +4,7 @@ tags: [ozellik, kritik]
 
 # Görseller
 
-**Durum (26.09.2026): görseller Cloudflare R2'den (`cdn.ebruca.com`) geliyor.** Kalan tek adım Cloudinary'yi Free plana düşürmek. Ayrıntılı adım listesi repo kökünde `R2_TASIMA.md` dosyasında.
+**Durum (26.09.2026): görseller Cloudflare R2'den (`cdn.ebruca.com`) geliyor.** Cloudinary hesabı aynı gün iptal edildi; aylık ücret bitti. Ayrıntılı adım listesi repo kökünde `R2_TASIMA.md` dosyasında.
 
 - DB ve koddaki tüm adresler `cdn.ebruca.com`. Loader eski Cloudinary adreslerini de hâlâ tanıyor: `imageLoader.ts` adrese bakar; `res.cloudinary.com` → Cloudinary dönüşümü, `cdn.ebruca.com` → önceden üretilmiş `-400/-800/-1200.webp` sürümü (`lib/r2-url.ts`). Yükleme `storage.ts` içinde `STORAGE_PROVIDER` (`cloudinary` | `r2` | yerel) ile seçilir; R2 sürümleri `lib/r2.ts` üretir.
 - `scripts/r2-senkron.mts`: canlı DB'deki her Cloudinary görselinin R2'de tüm sürümleriyle olduğunu denetler, eksiği tamamlar (varsayılan rapor, `--uygula` ile yazar).
