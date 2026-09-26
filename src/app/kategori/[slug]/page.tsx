@@ -6,7 +6,7 @@ import { absoluteUrl, SITE } from '@/lib/seo';
 import CategoryView from './CategoryView';
 
 // ISR — bkz. app/urun/[slug]/page.tsx
-export const revalidate = 3600;
+export const revalidate = 86400;
 
 export function generateStaticParams() {
   return categories.flatMap(c => [c, ...(c.subcategories ?? [])]).map(({ slug }) => ({ slug }));

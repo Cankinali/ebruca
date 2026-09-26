@@ -88,10 +88,12 @@ export async function POST(request: Request) {
   });
 
   // Sipariş edilen her ürünün beden stoğunu düş
+  const changedSlugs: string[] = [];
   for (const item of body.items) {
     if (!item.productId) continue;
     const product = await prisma.product.findUnique({ where: { id: item.productId } });
     if (!product) continue;
+    changedSlugs.push(product.slug);
     const sizeStock = JSON.parse(product.sizeStock || '{}') as Record<string, number>;
     if (sizeStock[item.size] !== undefined) {
       sizeStock[item.size] = Math.max(0, (sizeStock[item.size] ?? 0) - item.quantity);
@@ -106,7 +108,7 @@ export async function POST(request: Request) {
       });
     }
   }
-  revalidateVitrin();
+  revalidateVitrin(changedSlugs);
 
   return NextResponse.json(order, { status: 201 });
 }

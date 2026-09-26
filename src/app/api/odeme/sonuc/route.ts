@@ -78,10 +78,12 @@ export async function POST(req: NextRequest) {
       });
 
       // Stok düş — kural @/lib/stock içinde; ödeme öncesi kontrolle aynı kaynak.
+      const changedSlugs: string[] = [];
       for (const item of order.items) {
         if (!item.productId) continue;
         const product = await prisma.product.findUnique({ where: { id: item.productId } });
         if (!product) continue;
+        changedSlugs.push(product.slug);
 
         const current = {
           sizeStock: JSON.parse(product.sizeStock || '{}') as Record<string, number>,
@@ -103,7 +105,7 @@ export async function POST(req: NextRequest) {
         });
       }
       // Ürün sayfalarındaki stok bilgisi CDN önbelleğinden gelir
-      revalidateVitrin();
+      revalidateVitrin(changedSlugs);
 
       // E-posta gönder (asenkron, hata olsa bile akışı bozma)
       sendOrderConfirmation({

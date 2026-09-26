@@ -5,7 +5,7 @@ import TrustBadges from '@/components/home/TrustBadges';
 import { dbGetNewArrivals, dbGetBestsellers } from '@/lib/db-helpers';
 
 // ISR — ürün/stok değişince lib/revalidate.ts ile anında yenilenir
-export const revalidate = 3600;
+export const revalidate = 86400;
 
 export default async function HomePage() {
   const newArrivals = await dbGetNewArrivals();

@@ -47,7 +47,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       },
     });
 
-    revalidateVitrin();
+    revalidateVitrin([product.slug]);
     return NextResponse.json(product);
   } catch (err) {
     console.error('[PUT /api/admin/urunler/[id]]', err);
@@ -60,7 +60,7 @@ export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id:
   const unauth = await requireAdmin();
   if (unauth) return unauth;
   const { id } = await params;
-  await prisma.product.delete({ where: { id } });
-  revalidateVitrin();
+  const deleted = await prisma.product.delete({ where: { id } });
+  revalidateVitrin([deleted.slug]);
   return NextResponse.json({ ok: true });
 }

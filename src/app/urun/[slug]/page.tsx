@@ -8,8 +8,9 @@ import { prisma } from '@/lib/prisma';
 import ProductDetail, { ProductDetailFromUrl } from './ProductDetail';
 
 // ISR: sayfa CDN'de önbelleklenir. Ürün/stok değişince lib/revalidate.ts
-// anında geçersiz kılar; bu süre yalnızca emniyet payıdır.
-export const revalidate = 3600;
+// anında geçersiz kılar; bu süre (1 gün) yalnızca emniyet payıdır. Kısa
+// tutmayın: botlar tüm ürünleri gezdiği için her yenileme Active CPU yer.
+export const revalidate = 86400;
 
 // Build sırasında mevcut ürünler önceden üretilir; sonradan eklenenler ilk
 // ziyarette üretilip önbelleğe alınır.

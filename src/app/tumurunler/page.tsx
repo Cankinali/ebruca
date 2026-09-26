@@ -4,7 +4,7 @@ import { absoluteUrl } from '@/lib/seo';
 import AllProductsView from './AllProductsView';
 
 // ISR — ürün/stok değişince lib/revalidate.ts ile anında yenilenir
-export const revalidate = 3600;
+export const revalidate = 86400;
 
 export const metadata: Metadata = {
   title: 'Tüm Ürünler',

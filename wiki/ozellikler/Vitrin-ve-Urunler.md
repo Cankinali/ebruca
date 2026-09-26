@@ -26,9 +26,9 @@ Akış: anasayfa → kategori / tüm ürünler → ürün detayı → [[Sepet]] 
 
 ## Önbellek (ISR)
 
-Anasayfa, `/tumurunler`, `/kategori/[slug]` ve `/urun/[slug]` **ISR** ile Vercel CDN'inde önbelleklenir (`revalidate = 3600`). Ürün ve kategori sayfaları build'de `generateStaticParams` ile önceden üretilir. Build sonrası eklenen ürünlerin sayfası ilk ziyarette üretilir.
+Anasayfa, `/tumurunler`, `/kategori/[slug]` ve `/urun/[slug]` **ISR** ile Vercel CDN'inde önbelleklenir (`revalidate = 86400`, günde bir). Kısa tutmayın: botlar tüm ürünleri gezdiği için her yenileme Active CPU yer. Ürün ve kategori sayfaları build'de `generateStaticParams` ile önceden üretilir. Build sonrası eklenen ürünlerin sayfası ilk ziyarette üretilir.
 
-Veri değişince `src/lib/revalidate.ts` → `revalidateVitrin()` tüm vitrini geçersiz kılar. Çağrıldığı yerler: admin ürün ekle/düzenle/sil, admin elle sipariş, ödeme sonucu (stok düşümü). **Ürünleri veya stoğu değiştiren yeni bir yol eklenirse bu çağrı unutulmamalı.** Unutulursa vitrin en fazla 1 saat eski veri gösterir. Fiyat ve stok zaten `/api/odeme/baslat`'ta sunucuda yeniden doğrulanır.
+Veri değişince `src/lib/revalidate.ts` → `revalidateVitrin(slugs)` **hedefli** yeniler: anasayfa, tüm ürünler, kategori sayfaları ve yalnızca değişen ürünlerin sayfası. (Önceden tüm siteyi geçersiz kılıyordu; her admin kaydında ~200 sayfa yeniden üretiliyordu.) Diğer ürün sayfalarındaki "çok satanlar" bloğu en geç 1 gün eski kalabilir. Çağrıldığı yerler: admin ürün ekle/düzenle/sil, admin elle sipariş, ödeme sonucu (stok düşümü). **Ürünleri veya stoğu değiştiren yeni bir yol eklenirse bu çağrı unutulmamalı.** Unutulursa vitrin en fazla 1 gün eski veri gösterir. Fiyat ve stok zaten `/api/odeme/baslat`'ta sunucuda yeniden doğrulanır.
 
 Eskiden bu dört sayfada `force-dynamic` vardı. Her istek function çalıştırıyordu ve Active CPU'nun ~%85'i buradan geliyordu (09.2026).
 

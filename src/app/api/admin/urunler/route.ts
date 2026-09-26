@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    revalidateVitrin();
+    revalidateVitrin([product.slug]);
     return NextResponse.json(product, { status: 201 });
   } catch (err) {
     console.error('[POST /api/admin/urunler]', err);
