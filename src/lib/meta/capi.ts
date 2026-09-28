@@ -107,6 +107,7 @@ export async function sendCapiEvent(ev: CapiEvent): Promise<boolean> {
     const text = await res.text();
     let json: {
       events_received?: number;
+      messages?: unknown[];
       fbtrace_id?: string;
       error?: { message?: string; fbtrace_id?: string };
     } = {};
@@ -125,7 +126,16 @@ export async function sendCapiEvent(ev: CapiEvent): Promise<boolean> {
       );
       return false;
     }
-    console.info('[meta-capi]', ev.eventName, ev.eventId, res.status, json.events_received, json.fbtrace_id);
+    console.info(
+      '[meta-capi]',
+      ev.eventName,
+      ev.eventId,
+      res.status,
+      json.events_received,
+      json.fbtrace_id,
+      // Meta uyarıları (ör. eşleştirme kalitesi) — boşsa yazılmaz
+      json.messages?.length ? JSON.stringify(json.messages).slice(0, 500) : ''
+    );
     return true;
   } catch (err) {
     console.error('[meta-capi]', ev.eventName, ev.eventId, 'gönderilemedi:', err);
