@@ -29,7 +29,10 @@ Next.js 16 (App Router) + React 19 + TypeScript, Tailwind v4, Prisma 7. Veritaba
 | `iyzico.ts` | Iyzico REST client | [[Odeme-ve-Siparis]] |
 | `auth.ts`, `use-session.ts`, `admin-auth.ts` | Üyelik ve admin yetkisi | [[Uyelik]] |
 | `email.ts` | Tüm e-posta şablonları | [[E-posta]] |
-| `storage.ts`, `imageLoader.ts` | Görsel yükleme ve URL üretimi | [[Gorseller]] |
+| `storage.ts`, `imageLoader.ts`, `r2.ts`, `r2-url.ts` | Görsel yükleme (R2) ve URL/sürüm seçimi | [[Gorseller]] |
+| `compress-image.ts` | Admin yüklemesinden önce tarayıcıda küçültme / HEIC→JPEG | [[Gorseller]] |
+| `revalidate.ts` | ISR sayfalarını hedefli yenileme | [[Vitrin-ve-Urunler]] |
+| `meta/` | Meta Pixel + CAPI, çerez onayı | [[Meta-Pixel-ve-CAPI]] |
 | `seo.ts` | Site sabitleri | [[SEO]] |
 | `company.ts` | Şirket ve yasal bilgiler (tek kaynak) | |
 | `data.ts` | **Kategoriler kodda sabit** (DB'de değil) | [[Vitrin-ve-Urunler]] |
@@ -48,3 +51,6 @@ Yasal: `/kvkk` · `/gizlilik` · `/cerez` · `/mesafeli-satis` · `/iade-iptal` 
 
 - **Kök layout statiktir.** Oturum bilgisi istemcide `use-session.ts` ile alınır. Layout'ta `cookies()` okunursa tüm site dinamik render'a düşer. Meta Pixel gibi scriptler eklenirken de bu korunmalı → [[Meta-Pixel-ve-CAPI]]
 - Fiyat, kargo ve stok **daima sunucuda** hesaplanır.
+- **Vitrin ISR ile CDN'den sunulur** (`revalidate = 86400`, değişiklikte `revalidateVitrin(slugs)`), `force-dynamic` yok. Vercel **Hobby** takımı 20+ projeyle kotayı paylaşıyor; bu kararlar kota yüzünden → [[Olaylar-ve-Dersler]]
+- **Vitrin linklerinde `prefetch={false}`** — varsayılan ön yükleme sayfa başına ~100 Edge Request yapıyordu.
+- Cevaptan sonra yapılacak işler (e-posta, CAPI) **`after()`** ile — await edilmeyen promise Vercel'de yarıda kesilebilir.

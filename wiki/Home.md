@@ -25,7 +25,7 @@ Ebruca.com (kadın giyim e-ticaret) kod tabanının özet ve bağlam katmanı. A
 - [[Admin-Paneli]]: dashboard, siparişler, ürünler, üyeler
 - [[E-posta]]: Resend, şablonlar, tuzaklar
 - [[Gunluk-Bakim]]: cron, hatırlatma ve otomatik iptal
-- [[Gorseller]]: Cloudinary'den R2'ye taşıma
+- [[Gorseller]]: Cloudflare R2 (`cdn.ebruca.com`), admin yükleme
 - [[SEO]]: metadata, JSON-LD, sitemap
 
 ## Büyüme (satışı artırma)
@@ -41,6 +41,7 @@ Ebruca.com (kadın giyim e-ticaret) kod tabanının özet ve bağlam katmanı. A
 
 - [[Yapilacaklar]]: bekleyen işler
 - [[Kararlar]]: neden böyle yapıldı (tekrar tartışılmasın diye)
+- [[Olaylar-ve-Dersler]]: yaşanan sorunlar, kök sebepler, dersler — **bir şey bozulduğunda önce buraya bakın**
 
 ## Kurallar (bu vault için)
 
