@@ -8,7 +8,9 @@ Son güncelleme: 26.09.2026
 
 ## Devam eden
 
-- [ ] **Meta test modu kapatılacak:** 28.09.2026'da Pixel + CAPI canlıya alındı, `META_TEST_EVENT_CODE=TEST527` açık. Test kodu açıkken CAPI olayları yalnızca Events Manager → Test Events'e düşer, **reklam ölçümüne sayılmaz**. Test Events'te olaylar ve Purchase'ın "Deduplicated" göründüğü doğrulanınca Vercel'den `META_TEST_EVENT_CODE` silinip yeniden deploy edilmeli. Alan adı doğrulaması (`NEXT_PUBLIC_META_DOMAIN_VERIFICATION`) da bekliyor.
+- [x] **Meta canlıya geçti (29.09.2026):** `META_TEST_EVENT_CODE` Vercel'den silindi, yeniden deploy edildi. Test siparişi EB19790746 iptal edildi (ödeme kaydı `success` kaldı, 131 TL iade edilmedi — kendi kartla test), deneme1 ürünü silindi. İlk gerçek siparişte logda `[meta-capi] Purchase … 200 1` kontrol edilecek.
+- [ ] Alan adı doğrulaması (`NEXT_PUBLIC_META_DOMAIN_VERIFICATION` ya da Cloudflare'de DNS TXT)
+- [ ] CAPI token'ı yenilemek (sohbete yapıştırılmıştı) — Events Manager'da yenisi, Vercel'de değiştir
 - [x] **27.09.2026: Vercel kota kontrolü** — Günlük Active CPU 8-11 dk'dan ~2,5 dk'ya (≈%70-75) düştü; ebruca 4-6 dk → ~1 dk. 30 günlük toplam her gün ~5 dk azalacak (26.09: 3s41dk/4s). Edge Requests günlük grafiği ayrıca bakılabilir.
 - [x] **R2 taşıması** tamamlandı (26.09.2026), Cloudinary iptal → [[Gorseller]]
 - [ ] **28.09.2026 sonrası: geçici `/r2/` proxy'sini kaldır.** DNS yayılımı sırasında bazı operatörler `cdn.ebruca.com`'u çözemediği için, görsel hata verirse `layout.tsx`'teki `R2_FALLBACK_SCRIPT` aynı dosyayı `www…/r2/` proxy'sinden istiyor (yalnızca etkilenen ziyaretçiler Vercel kotası harcar). Kaldırılacaklar: `next.config.ts` → `rewrites`, `layout.tsx` → `R2_FALLBACK_SCRIPT`, `imageLoader.ts` → `R2_VIA_PROXY`. Önce `dig cdn.ebruca.com @193.192.98.8` NXDOMAIN dönmüyor mu kontrol et.

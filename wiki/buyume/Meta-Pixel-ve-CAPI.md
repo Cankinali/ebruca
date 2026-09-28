@@ -4,7 +4,7 @@ tags: [buyume, plan]
 
 # Meta Pixel ve Conversions API
 
-Durum: **kod hazır (28.09.2026)**; `NEXT_PUBLIC_META_PIXEL_ID` + `META_CAPI_TOKEN` Vercel'e girilince çalışır. Env yoksa her şey sessizce no-op.
+Durum: **CANLIDA (29.09.2026)**, test modu kapalı; `NEXT_PUBLIC_META_PIXEL_ID` + `META_CAPI_TOKEN` Vercel'e girilince çalışır. Env yoksa her şey sessizce no-op.
 
 ## Dosyalar
 
@@ -54,7 +54,7 @@ Arama: `vercel logs -p ebruca --scope cankinalis-projects --environment producti
 |---|---|---|
 | `NEXT_PUBLIC_META_PIXEL_ID` | `1463467692367317` | Production + Preview (28.09 eklendi) |
 | `META_CAPI_TOKEN` | gizli | Production + Preview (28.09 eklendi) |
-| `META_TEST_EVENT_CODE` | `TEST527` | **Yalnızca test süresince** — boşsa hiç gönderilmez |
+| `META_TEST_EVENT_CODE` | — | 29.09.2026'da **silindi** (canlı). Yeniden test gerekirse geçici eklenir; boşsa hiç gönderilmez |
 | `NEXT_PUBLIC_META_FORCE_ENABLE` | eklenmedi | Sadece localhost/preview testi için `true` |
 | `NEXT_PUBLIC_META_DOMAIN_VERIFICATION` | boş | Alan adı doğrulaması yapılınca |
 | `META_GRAPH_API_VERSION` | boş (v25.0) | İsteğe bağlı |
@@ -62,7 +62,7 @@ Arama: `vercel logs -p ebruca --scope cankinalis-projects --environment producti
 ## Canlıya geçiş checklist'i
 
 1. Events Manager → Test Events'te PageView, ViewContent (Browser), AddToCart / InitiateCheckout (Browser + Server, **Deduplicated**), bir gerçek siparişte Purchase (Browser + Server, Deduplicated) görüldü.
-2. Vercel'den **`META_TEST_EVENT_CODE` silindi** (açıkken CAPI olayları reklam ölçümüne sayılmaz).
+2. ✅ 29.09.2026 — Vercel'den **`META_TEST_EVENT_CODE` silindi** (açıkken CAPI olayları reklam ölçümüne sayılmaz).
 3. **`NEXT_PUBLIC_META_FORCE_ENABLE`** Vercel'de yok / `true` değil.
 4. Env değişikliğinden sonra **yeniden deploy** (NEXT_PUBLIC_ değerleri build'e gömülür).
 5. Alan adı doğrulaması (`NEXT_PUBLIC_META_DOMAIN_VERIFICATION` ya da DNS TXT — DNS artık Cloudflare'de).
