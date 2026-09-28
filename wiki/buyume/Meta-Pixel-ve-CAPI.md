@@ -13,7 +13,8 @@ Durum: **kod hazır (28.09.2026)**; `NEXT_PUBLIC_META_PIXEL_ID` + `META_CAPI_TOK
 | `src/lib/meta/shared.ts` | Ortam koruması, `metaContentId` (Product.id), `metaValue`, normalizasyon, `purchaseEventId` |
 | `src/lib/meta/consent-client.ts` | `ebruca_consent` çerezi (`granted`/`denied`) oku/yaz |
 | `src/lib/meta/pixel.ts` | fbq kurulumu (onay yoksa yüklenmez), `track`, `trackWithServer` |
-| `src/lib/meta/purchase-client.ts` | Ödeme başlatılırken sessionStorage'a özet; başarı sayfasında Purchase bir kez |
+| `src/lib/meta/purchase-client.ts` | Başarı sayfasında Purchase bir kez (localStorage işareti); özet URL'den (`mv`, `mc` — ödeme dönüşü ekler), yedek sessionStorage |
+| `scripts/meta-capi-test.mts` | Graph API'ye `test_event_code` ile tek örnek Purchase; test kodu yoksa çalışmaz, token yazdırmaz |
 | `src/lib/meta/capi.ts` | `server-only`; SHA-256 normalizasyon, 3 sn zaman aşımı, asla fırlatmaz; `metaContext(req)` |
 | `src/components/meta/MetaPixel.tsx` | Layout'ta (Suspense) — PageView, onay değişimini dinler |
 | `src/app/api/meta/event/route.ts` | AddToCart / InitiateCheckout köprüsü (onay + rate limit) |
@@ -29,6 +30,14 @@ Durum: **kod hazır (28.09.2026)**; `NEXT_PUBLIC_META_PIXEL_ID` + `META_CAPI_TOK
 - **fbclid → `_fbc`:** Reklamdan gelen URL'deki `fbclid`, onay varsa 90 günlük `_fbc` çerezine yazılır. Instagram/Facebook uygulama içi tarayıcısı çerez başlığını göndermeyebildiği için ödeme başlatılırken `_fbp`/`_fbc` istek gövdesinde de gider (biçim doğrulanarak) ve `Order.metaFbc`'ye yazılır.
 - ViewContent yalnızca Pixel (her görüntülemede fonksiyon çalışmasın — Vercel kotası → [[Mimari]]). Purchase CAPI `after()` ile, `metaPurchaseSentAt` ile tek sefer; gönderim başarısızsa işaret geri alınır.
 - Headless/otomasyon tarayıcılarında (`navigator.webdriver`) Pixel olay GÖNDERMEZ — Playwright testinde bunu gizlemek gerekir.
+
+## Purchase akışı (29.09.2026)
+
+1. `api/odeme/baslat` → `metaContext()` onay, `_fbp`/`_fbc`, IP, UA'yı `Order`'a yazar.
+2. `api/odeme/sonuc` → Iyzico doğrulaması, tutar kontrolü, koşullu `updateMany` (tek sefer) → `after(sendPurchaseOnce)` CAPI (`metaPurchaseSentAt` ile tek sefer) → `successUrl()` onay varsa `mv`/`mc` ekler.
+3. `/siparis-tamamlandi` → `firePurchase()` → `fbq('track','Purchase', …, {eventID: purchase_<orderNo>})`.
+
+İlk gerçek test (EB19790746, 28.09): CAPI `200 / events_received 1`. Tarayıcı Purchase'ı o zaman yalnızca sessionStorage'a bağlıydı; banka uygulaması / yeni sekme dönüşünde kayboluyordu → özet URL'e taşındı. Canlıda (Meta isteği durdurularak) doğrulandı: Purchase doğru `eid`/`value` ile atılıyor, yenilemede tekrar atılmıyor.
 
 ## Loglar
 
