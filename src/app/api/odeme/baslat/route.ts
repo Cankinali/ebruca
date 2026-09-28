@@ -30,6 +30,8 @@ interface Body {
   items: CartItem[];
   shippingMethod?: 'standart';
   note?: string;
+  /** Tarayıcıdaki _fbp/_fbc — çerez başlığı gelmezse yedek (doğrulanarak kullanılır) */
+  meta?: { fbp?: unknown; fbc?: unknown };
 }
 
 export async function POST(req: NextRequest) {
@@ -97,7 +99,7 @@ export async function POST(req: NextRequest) {
 
     // Meta CAPI eşleştirme verisi — dönüş siteler arası POST olduğu için ancak
     // burada okunabiliyor. Onay yoksa hepsi boş/false kalır.
-    const meta = metaContext(req);
+    const meta = metaContext(req, null, body.meta);
 
     const order = await prisma.order.create({
       data: {
@@ -232,7 +234,8 @@ export async function POST(req: NextRequest) {
       orderId: order.id,
       orderNo: order.orderNo,
       // Pixel Purchase'ı sunucudaki CAPI Purchase ile aynı tutarı göndersin diye
-      total: serverTotal,
+      // (KARGO HARİÇ ara toplam — bkz. lib/meta/shared.ts tutar kuralı)
+      subtotal: serverSubtotal,
       paymentPageUrl: result.paymentPageUrl,
       token: result.token,
     });

@@ -1,6 +1,15 @@
 import 'server-only';
 import { createHash } from 'crypto';
-import { CONSENT_COOKIE } from './shared';
+import {
+  CONSENT_COOKIE,
+  FBC_RE,
+  FBP_RE,
+  metaEnvironmentAllowed,
+  normCity,
+  normEmail,
+  normName,
+  normPhone,
+} from './shared';
 
 /**
  * Meta Conversions API — yalnızca sunucu. META_CAPI_TOKEN istemciye ASLA
@@ -17,8 +26,9 @@ const TEST_CODE = process.env.META_TEST_EVENT_CODE ?? '';
 const API_VERSION = process.env.META_GRAPH_API_VERSION || 'v25.0';
 const TIMEOUT_MS = 3000;
 
+/** Yalnızca canlıda (VERCEL_ENV=production) ya da NEXT_PUBLIC_META_FORCE_ENABLE=true iken. */
 export function capiEnabled(): boolean {
-  return Boolean(PIXEL_ID && TOKEN);
+  return Boolean(PIXEL_ID && TOKEN) && metaEnvironmentAllowed();
 }
 
 export interface CapiUserData {
@@ -43,31 +53,18 @@ export interface CapiEvent {
 
 const sha256 = (v: string) => createHash('sha256').update(v).digest('hex');
 
-const TR_FOLD: Record<string, string> = { ç: 'c', ğ: 'g', ı: 'i', ö: 'o', ş: 's', ü: 'u', â: 'a', î: 'i', û: 'u' };
-
-/** Telefon → E.164 rakamları, Türkiye için "90" önekli (ör. 905321234567). */
-export function normalizePhone(raw: string): string {
-  let d = raw.replace(/\D/g, '');
-  if (d.startsWith('0090')) d = d.slice(2);
-  if (d.startsWith('0')) d = '90' + d.slice(1);
-  if (d.length === 10 && d.startsWith('5')) d = '90' + d;
-  return d;
-}
-
 /** Meta'nın normalizasyon kurallarıyla hash'lenmiş user_data. IP/UA/fbp/fbc hash'lenmez. */
 function buildUserData(u: CapiUserData) {
-  const lower = (v?: string) => v?.trim().toLocaleLowerCase('tr-TR') || '';
   const out: Record<string, unknown> = { country: [sha256('tr')] };
-  const email = lower(u.email);
-  if (email) out.em = [sha256(email)];
-  const phone = u.phone ? normalizePhone(u.phone) : '';
-  if (phone) out.ph = [sha256(phone)];
-  const fn = lower(u.firstName);
+  const em = normEmail(u.email);
+  if (em) out.em = [sha256(em)];
+  const ph = normPhone(u.phone);
+  if (ph) out.ph = [sha256(ph)];
+  const fn = normName(u.firstName);
   if (fn) out.fn = [sha256(fn)];
-  const ln = lower(u.lastName);
+  const ln = normName(u.lastName);
   if (ln) out.ln = [sha256(ln)];
-  // Şehir: küçük harf, Latin a-z, boşluksuz (Meta önerisi)
-  const ct = lower(u.city).replace(/[çğıöşüâîû]/g, c => TR_FOLD[c] ?? c).replace(/[^a-z]/g, '');
+  const ct = normCity(u.city);
   if (ct) out.ct = [sha256(ct)];
   if (u.ip) out.client_ip_address = u.ip;
   if (u.userAgent) out.client_user_agent = u.userAgent;
@@ -149,14 +146,27 @@ function fbcFromUrl(url: string | null | undefined): string {
   }
 }
 
-export function metaContext(req: Request, pageUrl?: string | null): MetaRequestContext {
+/**
+ * fallback: tarayıcının istek gövdesinde gönderdiği _fbp/_fbc. Instagram /
+ * Facebook uygulama içi tarayıcıları çerez başlığını her zaman göndermiyor;
+ * biçimi doğrulanmadan kullanılmaz.
+ */
+export function metaContext(
+  req: Request,
+  pageUrl?: string | null,
+  fallback?: { fbp?: unknown; fbc?: unknown }
+): MetaRequestContext {
   const consent = readCookie(req, CONSENT_COOKIE) === 'granted';
   if (!consent) return { consent: false, fbp: '', fbc: '', ip: '', userAgent: '' };
   const fwd = req.headers.get('x-forwarded-for');
+  const fbFallback = (v: unknown, re: RegExp) => (typeof v === 'string' && re.test(v) ? v : '');
   return {
     consent: true,
-    fbp: readCookie(req, '_fbp'),
-    fbc: readCookie(req, '_fbc') || fbcFromUrl(pageUrl ?? req.headers.get('referer')),
+    fbp: readCookie(req, '_fbp') || fbFallback(fallback?.fbp, FBP_RE),
+    fbc:
+      readCookie(req, '_fbc') ||
+      fbFallback(fallback?.fbc, FBC_RE) ||
+      fbcFromUrl(pageUrl ?? req.headers.get('referer')),
     ip: fwd ? fwd.split(',')[0].trim() : req.headers.get('x-real-ip') ?? '',
     userAgent: req.headers.get('user-agent') ?? '',
   };

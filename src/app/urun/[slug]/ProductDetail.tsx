@@ -10,7 +10,7 @@ import { resolveStock } from '@/lib/stock';
 import ProductCard from '@/components/ui/ProductCard';
 import { COMPANY } from '@/lib/company';
 import { track, trackWithServer } from '@/lib/meta/pixel';
-import { metaContentId } from '@/lib/meta/shared';
+import { metaContentId, metaValue } from '@/lib/meta/shared';
 
 // ViewContent tekrar koruması: ProductDetail Suspense fallback'i ve asıl
 // bileşen olarak iki kez mount olabiliyor.
@@ -77,15 +77,16 @@ export default function ProductDetail({ product, bestsellers, initialColor = pro
   // Meta: ürün görüntüleme (sayfa açılınca ve renk değişince). Yalnızca Pixel;
   // CAPI'ye köprülenmez — her ürün görüntülemesinde fonksiyon çalışmasın.
   useEffect(() => {
-    const id = metaContentId(product.id, selectedColor);
+    const id = metaContentId(product.id);
+    const key = `${id}-${selectedColor}`;
     const now = Date.now();
-    if (lastViewContent.key === id && now - lastViewContent.at < 2000) return;
-    lastViewContent = { key: id, at: now };
+    if (lastViewContent.key === key && now - lastViewContent.at < 2000) return;
+    lastViewContent = { key, at: now };
     track('ViewContent', {
       content_ids: [id],
       content_name: product.name,
       content_type: 'product',
-      value: product.price,
+      value: metaValue(product.price),
       currency: 'TRY',
     });
   }, [product.id, product.name, product.price, selectedColor]);
@@ -94,13 +95,13 @@ export default function ProductDetail({ product, bestsellers, initialColor = pro
     if (!selectedSize) { setSizeError(true); return; }
     setSizeError(false);
     addItem(product, selectedSize, selectedColor);
-    const id = metaContentId(product.id, selectedColor);
+    const id = metaContentId(product.id);
     trackWithServer('AddToCart', {
       content_ids: [id],
-      contents: [{ id, quantity: 1, item_price: product.price }],
+      contents: [{ id, quantity: 1, item_price: metaValue(product.price) }],
       content_name: product.name,
       content_type: 'product',
-      value: product.price,
+      value: metaValue(product.price),
       currency: 'TRY',
     });
     setAdded(true);

@@ -1,7 +1,7 @@
 'use client';
 
 import { track } from './pixel';
-import { purchaseEventId, type MetaContent } from './shared';
+import { metaValue, purchaseEventId, type MetaContent } from './shared';
 
 /**
  * Tarayıcı tarafı Purchase.
@@ -42,7 +42,7 @@ export function firePendingPurchase(orderNo: string) {
       content_ids: p.contents.map(c => c.id),
       contents: p.contents,
       num_items: p.contents.reduce((a, c) => a + c.quantity, 0),
-      value: p.value,
+      value: metaValue(p.value),
       currency: 'TRY',
       content_type: 'product',
       order_id: orderNo,

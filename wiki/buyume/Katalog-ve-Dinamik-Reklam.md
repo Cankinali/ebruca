@@ -33,3 +33,5 @@ Meta'nın ürün kataloğu sayesinde reklamlar kullanıcının baktığı ürün
 - Stokta olmayan ürün feed'de `out of stock` olarak görünür, silinmez (geçmiş reklam eşleşmeleri korunur).
 - Feed herkese açık bir URL'dir. İçinde yalnızca vitrinde zaten görünen bilgi olmalı.
 - Aynı feed küçük değişikliklerle **Google Merchant Center** için de kullanılabilir.
+
+> **28.09.2026 kararı:** Pixel/CAPI `content_ids` = `Product.id` (varyant değil). Katalog feed'inde her ürünün `id` alanı `Product.id` olmalı; renkler ayrı item yapılacaksa `item_group_id` = `Product.id` kullanılmalı ve Pixel tarafı `content_type: 'product_group'`'a geçirilmeli → [[Meta-Pixel-ve-CAPI]]

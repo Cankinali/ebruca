@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useCart } from '@/lib/cart-context';
 import { useSession } from '@/lib/use-session';
+import { setAdvancedMatching } from '@/lib/meta/pixel';
 import AnnouncementBar from './AnnouncementBar';
 
 const menuItems = [
@@ -33,6 +34,12 @@ const menuItems = [
 export default function Header() {
   const { totalItems } = useCart();
   const { user } = useSession();
+
+  // Meta Advanced Matching: giriş yapmış kullanıcı. Oturum burada zaten
+  // çekildiği için ayrı bir /api/auth/ben isteği atılmıyor.
+  useEffect(() => {
+    if (user) setAdvancedMatching(user);
+  }, [user]);
   const accountHref = user ? '/hesabim' : '/giris';
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);

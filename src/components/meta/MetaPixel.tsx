@@ -4,7 +4,7 @@ import { useEffect, useSyncExternalStore } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { CONSENT_EVENT } from '@/lib/meta/shared';
 import { getConsent } from '@/lib/meta/consent-client';
-import { PIXEL_ID, ensurePixel, track } from '@/lib/meta/pixel';
+import { PIXEL_ID, captureFbclid, ensurePixel, track } from '@/lib/meta/pixel';
 
 /**
  * Meta Pixel yükleyici + PageView.
@@ -12,6 +12,7 @@ import { PIXEL_ID, ensurePixel, track } from '@/lib/meta/pixel';
  * Kök layout statik kalsın diye istemci bileşeni; useSearchParams kullandığı
  * için layout'ta Suspense içinde. Pazarlama onayı yoksa hiçbir şey yüklemez;
  * onay sonradan verilirse (CookieBanner → CONSENT_EVENT) o anda yüklenir.
+ * Canlı dışı ortamlarda ve /admin'de hiç çalışmaz (bkz. metaEnvironmentAllowed).
  */
 
 function subscribe(onChange: () => void) {
@@ -35,6 +36,7 @@ export default function MetaPixel() {
   const search = searchParams.toString();
   useEffect(() => {
     if (!granted || !PIXEL_ID) return;
+    captureFbclid();
     if (ensurePixel()) track('PageView');
   }, [granted, pathname, search]);
 
