@@ -7,7 +7,13 @@ import { decrementStock, stockLevel, totalStock } from '@/lib/stock';
 import { revalidateVitrin } from '@/lib/revalidate';
 import { SITE } from '@/lib/seo';
 import { sendCapiEvent } from '@/lib/meta/capi';
-import { metaContentId, metaValue, purchaseEventId } from '@/lib/meta/shared';
+import {
+  encodePurchaseSummary,
+  metaContentId,
+  metaValue,
+  purchaseEventId,
+  type MetaContent,
+} from '@/lib/meta/shared';
 
 /**
  * 303 See Other ile redirect — POST'tan GET'e dönüşür.
@@ -99,7 +105,7 @@ export async function POST(req: NextRequest) {
       });
       if (count === 0) {
         // Bu sipariş zaten işlendi: stok düşümü ve e-posta TEKRARLANMAZ.
-        return redirect303(new URL(`/siparis-tamamlandi?no=${order.orderNo}`, req.url));
+        return redirect303(successUrl(order, req.url));
       }
 
       // Stok düş — kural @/lib/stock içinde; ödeme öncesi kontrolle aynı kaynak.
@@ -162,7 +168,7 @@ export async function POST(req: NextRequest) {
         after(() => sendPurchaseOnce(order));
       }
 
-      return redirect303(new URL(`/siparis-tamamlandi?no=${order.orderNo}`, req.url));
+      return redirect303(successUrl(order, req.url));
     }
 
     // Fraud incelemede
@@ -197,6 +203,31 @@ export async function POST(req: NextRequest) {
 
 type OrderWithItems = Prisma.OrderGetPayload<{ include: { items: true } }>;
 
+/** Ürün kimliği varyant değil ürün; aynı ürünün farklı renk/beden kalemleri birleşir. */
+function metaContents(order: OrderWithItems): MetaContent[] {
+  const byId = new Map<string, MetaContent>();
+  for (const i of order.items) {
+    const id = metaContentId(i.productId);
+    const prev = byId.get(id);
+    if (prev) prev.quantity += i.quantity;
+    else byId.set(id, { id, quantity: i.quantity, item_price: metaValue(i.price) });
+  }
+  return [...byId.values()];
+}
+
+/**
+ * Başarı sayfası. Pazarlama onayı varsa tarayıcı Purchase'ı için özet (mv, mc)
+ * URL'e eklenir — sessionStorage banka uygulaması / yeni sekme dönüşünde
+ * kayboluyordu. value = subtotal (kargo hariç), CAPI ile aynı.
+ */
+function successUrl(order: OrderWithItems, base: string): URL {
+  const url = new URL(`/siparis-tamamlandi?no=${order.orderNo}`, base);
+  if (order.metaConsent) {
+    for (const [k, v] of encodePurchaseSummary(order.subtotal, metaContents(order))) url.searchParams.set(k, v);
+  }
+  return url;
+}
+
 /**
  * CAPI Purchase'ı sipariş başına EN FAZLA BİR KEZ gönderir: metaPurchaseSentAt
  * koşullu update ile atomik olarak "sahiplenilir". Gönderim başarısız olursa
@@ -211,15 +242,7 @@ async function sendPurchaseOnce(order: OrderWithItems) {
   });
   if (count === 0) return;
 
-  // Ürün kimliği varyant değil ürün; aynı ürünün farklı renk/beden kalemleri birleşir
-  const byId = new Map<string, { id: string; quantity: number; item_price: number }>();
-  for (const i of order.items) {
-    const id = metaContentId(i.productId);
-    const prev = byId.get(id);
-    if (prev) prev.quantity += i.quantity;
-    else byId.set(id, { id, quantity: i.quantity, item_price: metaValue(i.price) });
-  }
-  const contents = [...byId.values()];
+  const contents = metaContents(order);
   const ok = await sendCapiEvent({
     eventName: 'Purchase',
     eventId: purchaseEventId(order.orderNo),

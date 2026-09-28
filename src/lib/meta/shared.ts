@@ -108,3 +108,38 @@ export function normPhone(raw?: string | null): string {
 /** _fbc biçimi: fb.1.<ms>.<fbclid> */
 export const FBC_RE = /^fb\.1\.\d{10,}\.[\w-]{10,500}$/;
 export const FBP_RE = /^fb\.1\.\d{10,}\.\d{5,}$/;
+
+// ---------------------------------------------------------------------------
+// Purchase özeti — ödeme dönüşünden başarı sayfasına URL ile taşınır
+// ---------------------------------------------------------------------------
+
+/**
+ * Başarı sayfası tarayıcı Purchase'ı için gereken özeti sessionStorage'a
+ * güvenmeden alabilsin diye ödeme dönüşü (sunucu) bunu yönlendirme URL'ine
+ * koyar: mv = value, mc = "id:adet:fiyat,…". Gizli bilgi yok (tutar ve ürün
+ * kimlikleri). sessionStorage, ödeme banka uygulamasında / yeni sekmede
+ * tamamlanınca kayboluyordu.
+ */
+export function encodePurchaseSummary(value: number, contents: MetaContent[]): URLSearchParams {
+  return new URLSearchParams({
+    mv: String(metaValue(value)),
+    mc: contents.map(c => `${c.id}:${c.quantity}:${metaValue(c.item_price)}`).join(','),
+  });
+}
+
+export function decodePurchaseSummary(
+  params: URLSearchParams
+): { value: number; contents: MetaContent[] } | null {
+  const mv = Number(params.get('mv'));
+  const mc = params.get('mc');
+  if (!Number.isFinite(mv) || mv < 0 || !mc) return null;
+  const contents: MetaContent[] = [];
+  for (const part of mc.split(',').slice(0, 50)) {
+    const [id, q, p] = part.split(':');
+    const quantity = Number(q);
+    const item_price = Number(p);
+    if (!id || !/^[\w-]{1,64}$/.test(id) || !Number.isFinite(quantity) || !Number.isFinite(item_price)) return null;
+    contents.push({ id, quantity, item_price });
+  }
+  return contents.length ? { value: metaValue(mv), contents } : null;
+}
