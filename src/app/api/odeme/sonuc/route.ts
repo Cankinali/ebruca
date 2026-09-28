@@ -46,12 +46,23 @@ export async function POST(req: NextRequest) {
       return redirect303(new URL('/sepet?error=mismatch', req.url));
     }
 
-    // Tutar tampering kontrolü
-    if (result.paidPrice !== undefined && Math.abs(result.paidPrice - order.total) > 0.01) {
+    // Tutar tampering kontrolü.
+    // price     = sepet tutarı; baslat'ta order.subtotal olarak gönderiliyor, birebir eşleşmeli.
+    // paidPrice = kart sahibinden çekilen. TAKSİTTE VADE FARKI EKLENİR, bu yüzden
+    //             sipariş toplamından büyük olabilir — yalnızca eksik olması şüphelidir.
+    // (Eskiden paidPrice === total aranıyordu; 5.000 TL üstü her taksitli ödeme
+    //  "uyuşmazlık" sayılıp iptal ediliyordu, para çekildiği hâlde. 28.09.2026)
+    const basketMismatch =
+      result.price !== undefined && Math.abs(result.price - order.subtotal) > 0.01;
+    const underpaid =
+      result.paidPrice !== undefined && result.paidPrice < order.total - 0.01;
+    if (basketMismatch || underpaid) {
       console.error('Tutar uyuşmazlığı', {
         orderId,
-        expected: order.total,
-        got: result.paidPrice,
+        expectedSubtotal: order.subtotal,
+        expectedTotal: order.total,
+        gotPrice: result.price,
+        gotPaidPrice: result.paidPrice,
       });
       await prisma.order.update({
         where: { id: orderId },
