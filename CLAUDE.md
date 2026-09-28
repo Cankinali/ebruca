@@ -170,6 +170,12 @@ kişisel verisi yazılmaz.
 
 ## Çalışma notları
 
+- ⚠️ **`next start` (ve `next build`) `.env.production.local`'ı otomatik yükler →
+  CANLI Turso'ya bağlanır.** Yerelde üretim build'iyle test ederken veritabanını
+  açıkça yerel dosyaya zorlayın:
+  `DATABASE_URL=file:./prisma/dev.db TURSO_AUTH_TOKEN= npx next start -p 3100`
+  (28.09.2026'da "yerel" sanılan bir admin fiyat testi canlı ürünü 54.321 TL yaptı.)
+
 - `npm run dev` · `npm run build` · `npm run lint` · `npx prisma generate`
 - Lint'te **14 sorun baştan beri var** (çoğu `react/no-unescaped-entities`).
   Yeni hata eklemeyin; sayı 14'ün üstüne çıkıyorsa sizin değişikliğinizdendir.

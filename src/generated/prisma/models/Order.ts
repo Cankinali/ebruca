@@ -60,6 +60,12 @@ export type OrderMinAggregateOutputType = {
   trackingNo: string | null
   note: string | null
   reminderSentAt: Date | null
+  metaConsent: boolean | null
+  metaFbp: string | null
+  metaFbc: string | null
+  clientIp: string | null
+  userAgent: string | null
+  metaPurchaseSentAt: Date | null
   paymentId: string | null
   paymentToken: string | null
   conversationId: string | null
@@ -91,6 +97,12 @@ export type OrderMaxAggregateOutputType = {
   trackingNo: string | null
   note: string | null
   reminderSentAt: Date | null
+  metaConsent: boolean | null
+  metaFbp: string | null
+  metaFbc: string | null
+  clientIp: string | null
+  userAgent: string | null
+  metaPurchaseSentAt: Date | null
   paymentId: string | null
   paymentToken: string | null
   conversationId: string | null
@@ -122,6 +134,12 @@ export type OrderCountAggregateOutputType = {
   trackingNo: number
   note: number
   reminderSentAt: number
+  metaConsent: number
+  metaFbp: number
+  metaFbc: number
+  clientIp: number
+  userAgent: number
+  metaPurchaseSentAt: number
   paymentId: number
   paymentToken: number
   conversationId: number
@@ -169,6 +187,12 @@ export type OrderMinAggregateInputType = {
   trackingNo?: true
   note?: true
   reminderSentAt?: true
+  metaConsent?: true
+  metaFbp?: true
+  metaFbc?: true
+  clientIp?: true
+  userAgent?: true
+  metaPurchaseSentAt?: true
   paymentId?: true
   paymentToken?: true
   conversationId?: true
@@ -200,6 +224,12 @@ export type OrderMaxAggregateInputType = {
   trackingNo?: true
   note?: true
   reminderSentAt?: true
+  metaConsent?: true
+  metaFbp?: true
+  metaFbc?: true
+  clientIp?: true
+  userAgent?: true
+  metaPurchaseSentAt?: true
   paymentId?: true
   paymentToken?: true
   conversationId?: true
@@ -231,6 +261,12 @@ export type OrderCountAggregateInputType = {
   trackingNo?: true
   note?: true
   reminderSentAt?: true
+  metaConsent?: true
+  metaFbp?: true
+  metaFbc?: true
+  clientIp?: true
+  userAgent?: true
+  metaPurchaseSentAt?: true
   paymentId?: true
   paymentToken?: true
   conversationId?: true
@@ -349,6 +385,12 @@ export type OrderGroupByOutputType = {
   trackingNo: string
   note: string
   reminderSentAt: Date | null
+  metaConsent: boolean
+  metaFbp: string
+  metaFbc: string
+  clientIp: string
+  userAgent: string
+  metaPurchaseSentAt: Date | null
   paymentId: string
   paymentToken: string
   conversationId: string
@@ -403,6 +445,12 @@ export type OrderWhereInput = {
   trackingNo?: Prisma.StringFilter<"Order"> | string
   note?: Prisma.StringFilter<"Order"> | string
   reminderSentAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
+  metaConsent?: Prisma.BoolFilter<"Order"> | boolean
+  metaFbp?: Prisma.StringFilter<"Order"> | string
+  metaFbc?: Prisma.StringFilter<"Order"> | string
+  clientIp?: Prisma.StringFilter<"Order"> | string
+  userAgent?: Prisma.StringFilter<"Order"> | string
+  metaPurchaseSentAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
   paymentId?: Prisma.StringFilter<"Order"> | string
   paymentToken?: Prisma.StringFilter<"Order"> | string
   conversationId?: Prisma.StringFilter<"Order"> | string
@@ -436,6 +484,12 @@ export type OrderOrderByWithRelationInput = {
   trackingNo?: Prisma.SortOrder
   note?: Prisma.SortOrder
   reminderSentAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  metaConsent?: Prisma.SortOrder
+  metaFbp?: Prisma.SortOrder
+  metaFbc?: Prisma.SortOrder
+  clientIp?: Prisma.SortOrder
+  userAgent?: Prisma.SortOrder
+  metaPurchaseSentAt?: Prisma.SortOrderInput | Prisma.SortOrder
   paymentId?: Prisma.SortOrder
   paymentToken?: Prisma.SortOrder
   conversationId?: Prisma.SortOrder
@@ -472,6 +526,12 @@ export type OrderWhereUniqueInput = Prisma.AtLeast<{
   trackingNo?: Prisma.StringFilter<"Order"> | string
   note?: Prisma.StringFilter<"Order"> | string
   reminderSentAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
+  metaConsent?: Prisma.BoolFilter<"Order"> | boolean
+  metaFbp?: Prisma.StringFilter<"Order"> | string
+  metaFbc?: Prisma.StringFilter<"Order"> | string
+  clientIp?: Prisma.StringFilter<"Order"> | string
+  userAgent?: Prisma.StringFilter<"Order"> | string
+  metaPurchaseSentAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
   paymentId?: Prisma.StringFilter<"Order"> | string
   paymentToken?: Prisma.StringFilter<"Order"> | string
   conversationId?: Prisma.StringFilter<"Order"> | string
@@ -505,6 +565,12 @@ export type OrderOrderByWithAggregationInput = {
   trackingNo?: Prisma.SortOrder
   note?: Prisma.SortOrder
   reminderSentAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  metaConsent?: Prisma.SortOrder
+  metaFbp?: Prisma.SortOrder
+  metaFbc?: Prisma.SortOrder
+  clientIp?: Prisma.SortOrder
+  userAgent?: Prisma.SortOrder
+  metaPurchaseSentAt?: Prisma.SortOrderInput | Prisma.SortOrder
   paymentId?: Prisma.SortOrder
   paymentToken?: Prisma.SortOrder
   conversationId?: Prisma.SortOrder
@@ -544,6 +610,12 @@ export type OrderScalarWhereWithAggregatesInput = {
   trackingNo?: Prisma.StringWithAggregatesFilter<"Order"> | string
   note?: Prisma.StringWithAggregatesFilter<"Order"> | string
   reminderSentAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Order"> | Date | string | null
+  metaConsent?: Prisma.BoolWithAggregatesFilter<"Order"> | boolean
+  metaFbp?: Prisma.StringWithAggregatesFilter<"Order"> | string
+  metaFbc?: Prisma.StringWithAggregatesFilter<"Order"> | string
+  clientIp?: Prisma.StringWithAggregatesFilter<"Order"> | string
+  userAgent?: Prisma.StringWithAggregatesFilter<"Order"> | string
+  metaPurchaseSentAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Order"> | Date | string | null
   paymentId?: Prisma.StringWithAggregatesFilter<"Order"> | string
   paymentToken?: Prisma.StringWithAggregatesFilter<"Order"> | string
   conversationId?: Prisma.StringWithAggregatesFilter<"Order"> | string
@@ -574,6 +646,12 @@ export type OrderCreateInput = {
   trackingNo?: string
   note?: string
   reminderSentAt?: Date | string | null
+  metaConsent?: boolean
+  metaFbp?: string
+  metaFbc?: string
+  clientIp?: string
+  userAgent?: string
+  metaPurchaseSentAt?: Date | string | null
   paymentId?: string
   paymentToken?: string
   conversationId?: string
@@ -607,6 +685,12 @@ export type OrderUncheckedCreateInput = {
   trackingNo?: string
   note?: string
   reminderSentAt?: Date | string | null
+  metaConsent?: boolean
+  metaFbp?: string
+  metaFbc?: string
+  clientIp?: string
+  userAgent?: string
+  metaPurchaseSentAt?: Date | string | null
   paymentId?: string
   paymentToken?: string
   conversationId?: string
@@ -638,6 +722,12 @@ export type OrderUpdateInput = {
   trackingNo?: Prisma.StringFieldUpdateOperationsInput | string
   note?: Prisma.StringFieldUpdateOperationsInput | string
   reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  metaConsent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  metaFbp?: Prisma.StringFieldUpdateOperationsInput | string
+  metaFbc?: Prisma.StringFieldUpdateOperationsInput | string
+  clientIp?: Prisma.StringFieldUpdateOperationsInput | string
+  userAgent?: Prisma.StringFieldUpdateOperationsInput | string
+  metaPurchaseSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   paymentId?: Prisma.StringFieldUpdateOperationsInput | string
   paymentToken?: Prisma.StringFieldUpdateOperationsInput | string
   conversationId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -671,6 +761,12 @@ export type OrderUncheckedUpdateInput = {
   trackingNo?: Prisma.StringFieldUpdateOperationsInput | string
   note?: Prisma.StringFieldUpdateOperationsInput | string
   reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  metaConsent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  metaFbp?: Prisma.StringFieldUpdateOperationsInput | string
+  metaFbc?: Prisma.StringFieldUpdateOperationsInput | string
+  clientIp?: Prisma.StringFieldUpdateOperationsInput | string
+  userAgent?: Prisma.StringFieldUpdateOperationsInput | string
+  metaPurchaseSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   paymentId?: Prisma.StringFieldUpdateOperationsInput | string
   paymentToken?: Prisma.StringFieldUpdateOperationsInput | string
   conversationId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -703,6 +799,12 @@ export type OrderCreateManyInput = {
   trackingNo?: string
   note?: string
   reminderSentAt?: Date | string | null
+  metaConsent?: boolean
+  metaFbp?: string
+  metaFbc?: string
+  clientIp?: string
+  userAgent?: string
+  metaPurchaseSentAt?: Date | string | null
   paymentId?: string
   paymentToken?: string
   conversationId?: string
@@ -733,6 +835,12 @@ export type OrderUpdateManyMutationInput = {
   trackingNo?: Prisma.StringFieldUpdateOperationsInput | string
   note?: Prisma.StringFieldUpdateOperationsInput | string
   reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  metaConsent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  metaFbp?: Prisma.StringFieldUpdateOperationsInput | string
+  metaFbc?: Prisma.StringFieldUpdateOperationsInput | string
+  clientIp?: Prisma.StringFieldUpdateOperationsInput | string
+  userAgent?: Prisma.StringFieldUpdateOperationsInput | string
+  metaPurchaseSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   paymentId?: Prisma.StringFieldUpdateOperationsInput | string
   paymentToken?: Prisma.StringFieldUpdateOperationsInput | string
   conversationId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -764,6 +872,12 @@ export type OrderUncheckedUpdateManyInput = {
   trackingNo?: Prisma.StringFieldUpdateOperationsInput | string
   note?: Prisma.StringFieldUpdateOperationsInput | string
   reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  metaConsent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  metaFbp?: Prisma.StringFieldUpdateOperationsInput | string
+  metaFbc?: Prisma.StringFieldUpdateOperationsInput | string
+  clientIp?: Prisma.StringFieldUpdateOperationsInput | string
+  userAgent?: Prisma.StringFieldUpdateOperationsInput | string
+  metaPurchaseSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   paymentId?: Prisma.StringFieldUpdateOperationsInput | string
   paymentToken?: Prisma.StringFieldUpdateOperationsInput | string
   conversationId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -805,6 +919,12 @@ export type OrderCountOrderByAggregateInput = {
   trackingNo?: Prisma.SortOrder
   note?: Prisma.SortOrder
   reminderSentAt?: Prisma.SortOrder
+  metaConsent?: Prisma.SortOrder
+  metaFbp?: Prisma.SortOrder
+  metaFbc?: Prisma.SortOrder
+  clientIp?: Prisma.SortOrder
+  userAgent?: Prisma.SortOrder
+  metaPurchaseSentAt?: Prisma.SortOrder
   paymentId?: Prisma.SortOrder
   paymentToken?: Prisma.SortOrder
   conversationId?: Prisma.SortOrder
@@ -843,6 +963,12 @@ export type OrderMaxOrderByAggregateInput = {
   trackingNo?: Prisma.SortOrder
   note?: Prisma.SortOrder
   reminderSentAt?: Prisma.SortOrder
+  metaConsent?: Prisma.SortOrder
+  metaFbp?: Prisma.SortOrder
+  metaFbc?: Prisma.SortOrder
+  clientIp?: Prisma.SortOrder
+  userAgent?: Prisma.SortOrder
+  metaPurchaseSentAt?: Prisma.SortOrder
   paymentId?: Prisma.SortOrder
   paymentToken?: Prisma.SortOrder
   conversationId?: Prisma.SortOrder
@@ -874,6 +1000,12 @@ export type OrderMinOrderByAggregateInput = {
   trackingNo?: Prisma.SortOrder
   note?: Prisma.SortOrder
   reminderSentAt?: Prisma.SortOrder
+  metaConsent?: Prisma.SortOrder
+  metaFbp?: Prisma.SortOrder
+  metaFbc?: Prisma.SortOrder
+  clientIp?: Prisma.SortOrder
+  userAgent?: Prisma.SortOrder
+  metaPurchaseSentAt?: Prisma.SortOrder
   paymentId?: Prisma.SortOrder
   paymentToken?: Prisma.SortOrder
   conversationId?: Prisma.SortOrder
@@ -972,6 +1104,12 @@ export type OrderCreateWithoutUserInput = {
   trackingNo?: string
   note?: string
   reminderSentAt?: Date | string | null
+  metaConsent?: boolean
+  metaFbp?: string
+  metaFbc?: string
+  clientIp?: string
+  userAgent?: string
+  metaPurchaseSentAt?: Date | string | null
   paymentId?: string
   paymentToken?: string
   conversationId?: string
@@ -1003,6 +1141,12 @@ export type OrderUncheckedCreateWithoutUserInput = {
   trackingNo?: string
   note?: string
   reminderSentAt?: Date | string | null
+  metaConsent?: boolean
+  metaFbp?: string
+  metaFbc?: string
+  clientIp?: string
+  userAgent?: string
+  metaPurchaseSentAt?: Date | string | null
   paymentId?: string
   paymentToken?: string
   conversationId?: string
@@ -1063,6 +1207,12 @@ export type OrderScalarWhereInput = {
   trackingNo?: Prisma.StringFilter<"Order"> | string
   note?: Prisma.StringFilter<"Order"> | string
   reminderSentAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
+  metaConsent?: Prisma.BoolFilter<"Order"> | boolean
+  metaFbp?: Prisma.StringFilter<"Order"> | string
+  metaFbc?: Prisma.StringFilter<"Order"> | string
+  clientIp?: Prisma.StringFilter<"Order"> | string
+  userAgent?: Prisma.StringFilter<"Order"> | string
+  metaPurchaseSentAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
   paymentId?: Prisma.StringFilter<"Order"> | string
   paymentToken?: Prisma.StringFilter<"Order"> | string
   conversationId?: Prisma.StringFilter<"Order"> | string
@@ -1093,6 +1243,12 @@ export type OrderCreateWithoutItemsInput = {
   trackingNo?: string
   note?: string
   reminderSentAt?: Date | string | null
+  metaConsent?: boolean
+  metaFbp?: string
+  metaFbc?: string
+  clientIp?: string
+  userAgent?: string
+  metaPurchaseSentAt?: Date | string | null
   paymentId?: string
   paymentToken?: string
   conversationId?: string
@@ -1125,6 +1281,12 @@ export type OrderUncheckedCreateWithoutItemsInput = {
   trackingNo?: string
   note?: string
   reminderSentAt?: Date | string | null
+  metaConsent?: boolean
+  metaFbp?: string
+  metaFbc?: string
+  clientIp?: string
+  userAgent?: string
+  metaPurchaseSentAt?: Date | string | null
   paymentId?: string
   paymentToken?: string
   conversationId?: string
@@ -1171,6 +1333,12 @@ export type OrderUpdateWithoutItemsInput = {
   trackingNo?: Prisma.StringFieldUpdateOperationsInput | string
   note?: Prisma.StringFieldUpdateOperationsInput | string
   reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  metaConsent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  metaFbp?: Prisma.StringFieldUpdateOperationsInput | string
+  metaFbc?: Prisma.StringFieldUpdateOperationsInput | string
+  clientIp?: Prisma.StringFieldUpdateOperationsInput | string
+  userAgent?: Prisma.StringFieldUpdateOperationsInput | string
+  metaPurchaseSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   paymentId?: Prisma.StringFieldUpdateOperationsInput | string
   paymentToken?: Prisma.StringFieldUpdateOperationsInput | string
   conversationId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1203,6 +1371,12 @@ export type OrderUncheckedUpdateWithoutItemsInput = {
   trackingNo?: Prisma.StringFieldUpdateOperationsInput | string
   note?: Prisma.StringFieldUpdateOperationsInput | string
   reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  metaConsent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  metaFbp?: Prisma.StringFieldUpdateOperationsInput | string
+  metaFbc?: Prisma.StringFieldUpdateOperationsInput | string
+  clientIp?: Prisma.StringFieldUpdateOperationsInput | string
+  userAgent?: Prisma.StringFieldUpdateOperationsInput | string
+  metaPurchaseSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   paymentId?: Prisma.StringFieldUpdateOperationsInput | string
   paymentToken?: Prisma.StringFieldUpdateOperationsInput | string
   conversationId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1233,6 +1407,12 @@ export type OrderCreateManyUserInput = {
   trackingNo?: string
   note?: string
   reminderSentAt?: Date | string | null
+  metaConsent?: boolean
+  metaFbp?: string
+  metaFbc?: string
+  clientIp?: string
+  userAgent?: string
+  metaPurchaseSentAt?: Date | string | null
   paymentId?: string
   paymentToken?: string
   conversationId?: string
@@ -1263,6 +1443,12 @@ export type OrderUpdateWithoutUserInput = {
   trackingNo?: Prisma.StringFieldUpdateOperationsInput | string
   note?: Prisma.StringFieldUpdateOperationsInput | string
   reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  metaConsent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  metaFbp?: Prisma.StringFieldUpdateOperationsInput | string
+  metaFbc?: Prisma.StringFieldUpdateOperationsInput | string
+  clientIp?: Prisma.StringFieldUpdateOperationsInput | string
+  userAgent?: Prisma.StringFieldUpdateOperationsInput | string
+  metaPurchaseSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   paymentId?: Prisma.StringFieldUpdateOperationsInput | string
   paymentToken?: Prisma.StringFieldUpdateOperationsInput | string
   conversationId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1294,6 +1480,12 @@ export type OrderUncheckedUpdateWithoutUserInput = {
   trackingNo?: Prisma.StringFieldUpdateOperationsInput | string
   note?: Prisma.StringFieldUpdateOperationsInput | string
   reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  metaConsent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  metaFbp?: Prisma.StringFieldUpdateOperationsInput | string
+  metaFbc?: Prisma.StringFieldUpdateOperationsInput | string
+  clientIp?: Prisma.StringFieldUpdateOperationsInput | string
+  userAgent?: Prisma.StringFieldUpdateOperationsInput | string
+  metaPurchaseSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   paymentId?: Prisma.StringFieldUpdateOperationsInput | string
   paymentToken?: Prisma.StringFieldUpdateOperationsInput | string
   conversationId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1325,6 +1517,12 @@ export type OrderUncheckedUpdateManyWithoutUserInput = {
   trackingNo?: Prisma.StringFieldUpdateOperationsInput | string
   note?: Prisma.StringFieldUpdateOperationsInput | string
   reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  metaConsent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  metaFbp?: Prisma.StringFieldUpdateOperationsInput | string
+  metaFbc?: Prisma.StringFieldUpdateOperationsInput | string
+  clientIp?: Prisma.StringFieldUpdateOperationsInput | string
+  userAgent?: Prisma.StringFieldUpdateOperationsInput | string
+  metaPurchaseSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   paymentId?: Prisma.StringFieldUpdateOperationsInput | string
   paymentToken?: Prisma.StringFieldUpdateOperationsInput | string
   conversationId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1387,6 +1585,12 @@ export type OrderSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   trackingNo?: boolean
   note?: boolean
   reminderSentAt?: boolean
+  metaConsent?: boolean
+  metaFbp?: boolean
+  metaFbc?: boolean
+  clientIp?: boolean
+  userAgent?: boolean
+  metaPurchaseSentAt?: boolean
   paymentId?: boolean
   paymentToken?: boolean
   conversationId?: boolean
@@ -1421,6 +1625,12 @@ export type OrderSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   trackingNo?: boolean
   note?: boolean
   reminderSentAt?: boolean
+  metaConsent?: boolean
+  metaFbp?: boolean
+  metaFbc?: boolean
+  clientIp?: boolean
+  userAgent?: boolean
+  metaPurchaseSentAt?: boolean
   paymentId?: boolean
   paymentToken?: boolean
   conversationId?: boolean
@@ -1453,6 +1663,12 @@ export type OrderSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   trackingNo?: boolean
   note?: boolean
   reminderSentAt?: boolean
+  metaConsent?: boolean
+  metaFbp?: boolean
+  metaFbc?: boolean
+  clientIp?: boolean
+  userAgent?: boolean
+  metaPurchaseSentAt?: boolean
   paymentId?: boolean
   paymentToken?: boolean
   conversationId?: boolean
@@ -1485,6 +1701,12 @@ export type OrderSelectScalar = {
   trackingNo?: boolean
   note?: boolean
   reminderSentAt?: boolean
+  metaConsent?: boolean
+  metaFbp?: boolean
+  metaFbc?: boolean
+  clientIp?: boolean
+  userAgent?: boolean
+  metaPurchaseSentAt?: boolean
   paymentId?: boolean
   paymentToken?: boolean
   conversationId?: boolean
@@ -1496,7 +1718,7 @@ export type OrderSelectScalar = {
   updatedAt?: boolean
 }
 
-export type OrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orderNo" | "status" | "userId" | "firstName" | "lastName" | "email" | "phone" | "address" | "city" | "district" | "postalCode" | "subtotal" | "shippingFee" | "total" | "cargoCompany" | "trackingNo" | "note" | "reminderSentAt" | "paymentId" | "paymentToken" | "conversationId" | "basketId" | "paymentTransactionId" | "fraudStatus" | "paymentStatus" | "createdAt" | "updatedAt", ExtArgs["result"]["order"]>
+export type OrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orderNo" | "status" | "userId" | "firstName" | "lastName" | "email" | "phone" | "address" | "city" | "district" | "postalCode" | "subtotal" | "shippingFee" | "total" | "cargoCompany" | "trackingNo" | "note" | "reminderSentAt" | "metaConsent" | "metaFbp" | "metaFbc" | "clientIp" | "userAgent" | "metaPurchaseSentAt" | "paymentId" | "paymentToken" | "conversationId" | "basketId" | "paymentTransactionId" | "fraudStatus" | "paymentStatus" | "createdAt" | "updatedAt", ExtArgs["result"]["order"]>
 export type OrderInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.Order$userArgs<ExtArgs>
   items?: boolean | Prisma.Order$itemsArgs<ExtArgs>
@@ -1535,6 +1757,12 @@ export type $OrderPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     trackingNo: string
     note: string
     reminderSentAt: Date | null
+    metaConsent: boolean
+    metaFbp: string
+    metaFbc: string
+    clientIp: string
+    userAgent: string
+    metaPurchaseSentAt: Date | null
     paymentId: string
     paymentToken: string
     conversationId: string
@@ -1988,6 +2216,12 @@ export interface OrderFieldRefs {
   readonly trackingNo: Prisma.FieldRef<"Order", 'String'>
   readonly note: Prisma.FieldRef<"Order", 'String'>
   readonly reminderSentAt: Prisma.FieldRef<"Order", 'DateTime'>
+  readonly metaConsent: Prisma.FieldRef<"Order", 'Boolean'>
+  readonly metaFbp: Prisma.FieldRef<"Order", 'String'>
+  readonly metaFbc: Prisma.FieldRef<"Order", 'String'>
+  readonly clientIp: Prisma.FieldRef<"Order", 'String'>
+  readonly userAgent: Prisma.FieldRef<"Order", 'String'>
+  readonly metaPurchaseSentAt: Prisma.FieldRef<"Order", 'DateTime'>
   readonly paymentId: Prisma.FieldRef<"Order", 'String'>
   readonly paymentToken: Prisma.FieldRef<"Order", 'String'>
   readonly conversationId: Prisma.FieldRef<"Order", 'String'>

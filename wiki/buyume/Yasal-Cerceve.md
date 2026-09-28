@@ -9,7 +9,7 @@ tags: [buyume, kritik]
 ## Çerezler ve Meta Pixel (KVKK)
 
 - Kişisel Verileri Koruma Kurumu'nun çerez rehberine göre **zorunlu olmayan** (analitik ve reklam) çerezler için **açık rıza** gerekir. "Siteyi kullanmaya devam ederek kabul etmiş olursunuz" yaklaşımı ve yalnızca "Kabul Et" butonu yeterli sayılmaz.
-- Bugünkü `src/components/layout/CookieBanner.tsx` tam olarak bu durumda: tek bir "Kabul Et" butonu var, reddetme seçeneği yok. Pixel eklenmeden önce **Kabul Et / Reddet / Tercihler** yapısına geçilmeli ve Pixel yalnızca reklam onayı verilince yüklenmeli.
+- 28.09.2026: `CookieBanner.tsx` **Kabul Et / Reddet** yapısına geçti (butonlar eşit görünümde); Pixel ve CAPI yalnızca onayla çalışır, onay `ebruca_consent` çerezinde. "Tercihler" (kategori bazlı) henüz yok. **`/cerez` ve `/kvkk` metinleri Meta Pixel'i ve yurt dışına aktarımı anlatacak şekilde güncellenmedi — hukuki metin, işletme/avukat onayıyla yazılmalı.**
 - `/cerez` sayfası kullanılmayan Google Analytics'ten bahsediyor. Metin, gerçekte kullanılan araçlara göre güncellenmeli (Meta eklenince Meta da yazılmalı).
 - Meta'ya veri göndermek **yurt dışına aktarım** sayılır. KVKK'nın güncel aktarım hükümleri (standart sözleşme vb.) ve aydınlatma metni (`/kvkk`, `/gizlilik`) buna göre güncellenmeli.
 

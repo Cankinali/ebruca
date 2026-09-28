@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -9,6 +9,12 @@ import { useCart } from '@/lib/cart-context';
 import { resolveStock } from '@/lib/stock';
 import ProductCard from '@/components/ui/ProductCard';
 import { COMPANY } from '@/lib/company';
+import { track, trackWithServer } from '@/lib/meta/pixel';
+import { metaContentId } from '@/lib/meta/shared';
+
+// ViewContent tekrar koruması: ProductDetail Suspense fallback'i ve asıl
+// bileşen olarak iki kez mount olabiliyor.
+let lastViewContent = { key: '', at: 0 };
 
 interface Props {
   product: Product;
@@ -68,10 +74,35 @@ export default function ProductDetail({ product, bestsellers, initialColor = pro
   const [sizeError, setSizeError] = useState(false);
   const [activeTab, setActiveTab] = useState<'aciklama' | 'olculer'>('aciklama');
 
+  // Meta: ürün görüntüleme (sayfa açılınca ve renk değişince). Yalnızca Pixel;
+  // CAPI'ye köprülenmez — her ürün görüntülemesinde fonksiyon çalışmasın.
+  useEffect(() => {
+    const id = metaContentId(product.id, selectedColor);
+    const now = Date.now();
+    if (lastViewContent.key === id && now - lastViewContent.at < 2000) return;
+    lastViewContent = { key: id, at: now };
+    track('ViewContent', {
+      content_ids: [id],
+      content_name: product.name,
+      content_type: 'product',
+      value: product.price,
+      currency: 'TRY',
+    });
+  }, [product.id, product.name, product.price, selectedColor]);
+
   const handleAddToCart = () => {
     if (!selectedSize) { setSizeError(true); return; }
     setSizeError(false);
     addItem(product, selectedSize, selectedColor);
+    const id = metaContentId(product.id, selectedColor);
+    trackWithServer('AddToCart', {
+      content_ids: [id],
+      contents: [{ id, quantity: 1, item_price: product.price }],
+      content_name: product.name,
+      content_type: 'product',
+      value: product.price,
+      currency: 'TRY',
+    });
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
   };

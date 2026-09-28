@@ -4,7 +4,9 @@ import './globals.css';
 import { CartProvider } from '@/lib/cart-context';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
+import { Suspense } from 'react';
 import CookieBanner from '@/components/layout/CookieBanner';
+import MetaPixel from '@/components/meta/MetaPixel';
 import { SITE } from '@/lib/seo';
 import { COMPANY } from '@/lib/company';
 
@@ -63,9 +65,13 @@ export const metadata: Metadata = {
     },
   },
 
-  verification: process.env.GOOGLE_SITE_VERIFICATION
-    ? { google: process.env.GOOGLE_SITE_VERIFICATION }
-    : undefined,
+  verification: {
+    google: process.env.GOOGLE_SITE_VERIFICATION || undefined,
+    // Meta alan adı doğrulaması: <meta name="facebook-domain-verification">
+    other: process.env.NEXT_PUBLIC_META_DOMAIN_VERIFICATION
+      ? { 'facebook-domain-verification': process.env.NEXT_PUBLIC_META_DOMAIN_VERIFICATION }
+      : undefined,
+  },
 };
 
 export const viewport: Viewport = {
@@ -139,6 +145,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <main className="flex-1 min-h-screen">{children}</main>
           <Footer />
           <CookieBanner />
+          {/* Pazarlama onayı yoksa hiçbir şey yüklemez; useSearchParams için Suspense */}
+          <Suspense fallback={null}>
+            <MetaPixel />
+          </Suspense>
         </CartProvider>
       </body>
     </html>

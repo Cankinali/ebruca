@@ -5,6 +5,9 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useCart } from '@/lib/cart-context';
 import { useSession } from '@/lib/use-session';
+import { trackWithServer } from '@/lib/meta/pixel';
+import { metaContentId, type MetaContent } from '@/lib/meta/shared';
+import { savePendingPurchase } from '@/lib/meta/purchase-client';
 
 type Step = 'adres' | 'kargo' | 'odeme';
 
@@ -25,6 +28,31 @@ export default function CheckoutPage() {
 
   const { user } = useSession();
   const prefilled = useRef(false);
+  const checkoutTracked = useRef(false);
+
+  const metaContents = (): MetaContent[] =>
+    items.map(i => ({
+      id: metaContentId(i.product.id, i.color),
+      quantity: i.quantity,
+      item_price: i.product.price,
+    }));
+
+  // Meta: ödeme sayfası açıldı (bir kez). Tutar burada sepetten; asıl tutar
+  // sunucuda hesaplanır ve Purchase'ta o kullanılır.
+  useEffect(() => {
+    if (checkoutTracked.current || items.length === 0) return;
+    checkoutTracked.current = true;
+    const contents = metaContents();
+    trackWithServer('InitiateCheckout', {
+      content_ids: contents.map(c => c.id),
+      contents,
+      num_items: contents.reduce((a, c) => a + c.quantity, 0),
+      value: totalPrice,
+      currency: 'TRY',
+      content_type: 'product',
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [items.length]);
 
   // Üye giriş yapmışsa kayıtlı bilgilerini forma doldur. Yalnızca bir kez
   // çalışır ve kullanıcının o ana kadar yazdıklarının üzerine yazmaz.
@@ -126,6 +154,10 @@ export default function CheckoutPage() {
       if (!res.ok || !data.paymentPageUrl) {
         throw new Error(data.error || 'Ödeme başlatılamadı');
       }
+
+      // Başarı sayfasındaki Pixel Purchase için: sunucunun hesapladığı toplam
+      // (kargo dahil) ve ürünler. CAPI Purchase da aynı değerleri gönderir.
+      savePendingPurchase({ orderNo: data.orderNo, value: data.total, contents: metaContents() });
 
       // Sepet burada temizlenmez: ödeme başarısız olursa müşteri /sepet'e
       // döner ve sepetini dolu bulmalı. Temizleme /siparis-tamamlandi'da.

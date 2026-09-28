@@ -4,6 +4,7 @@ import { Suspense, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useCart } from '@/lib/cart-context';
+import { firePendingPurchase } from '@/lib/meta/purchase-client';
 
 function OrderSuccess() {
   const params = useSearchParams();
@@ -15,6 +16,12 @@ function OrderSuccess() {
   useEffect(() => {
     if (orderNo) clearCart();
   }, [orderNo, clearCart]);
+
+  // Meta Pixel Purchase — fraud incelemesindeki (pending=1) sipariş sayılmaz
+  const pending = params.get('pending') === '1';
+  useEffect(() => {
+    if (orderNo && !pending) firePendingPurchase(orderNo);
+  }, [orderNo, pending]);
 
   return (
     <div className="max-w-lg mx-auto px-4 py-20 text-center">

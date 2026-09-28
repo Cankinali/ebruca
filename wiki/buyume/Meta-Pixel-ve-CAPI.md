@@ -4,7 +4,23 @@ tags: [buyume, plan]
 
 # Meta Pixel ve Conversions API
 
-Durum: **planlandı, kod yok.**
+Durum: **kod hazır (28.09.2026)**; `NEXT_PUBLIC_META_PIXEL_ID` + `META_CAPI_TOKEN` Vercel'e girilince çalışır. Env yoksa her şey sessizce no-op.
+
+## Dosyalar
+
+| Dosya | Görev |
+|---|---|
+| `src/lib/meta/shared.ts` | Onay çerezi adı, `metaContentId` (`id-renk`), `purchaseEventId` (`purchase_<orderNo>`) |
+| `src/lib/meta/consent-client.ts` | `ebruca_consent` çerezi (`granted`/`denied`) oku/yaz |
+| `src/lib/meta/pixel.ts` | fbq kurulumu (onay yoksa yüklenmez), `track`, `trackWithServer` |
+| `src/lib/meta/purchase-client.ts` | Ödeme başlatılırken sessionStorage'a özet; başarı sayfasında Purchase bir kez |
+| `src/lib/meta/capi.ts` | `server-only`; SHA-256 normalizasyon, 3 sn zaman aşımı, asla fırlatmaz; `metaContext(req)` |
+| `src/components/meta/MetaPixel.tsx` | Layout'ta (Suspense) — PageView, onay değişimini dinler |
+| `src/app/api/meta/event/route.ts` | AddToCart / InitiateCheckout köprüsü (onay + rate limit) |
+| `src/components/layout/CookieBanner.tsx` | **Kabul Et / Reddet** (eşit görünüm) |
+| `prisma/manual/2026-09-28-meta-capi.sql` | `Order`: metaConsent, metaFbp, metaFbc, clientIp, userAgent, metaPurchaseSentAt — canlıya 28.09'da uygulandı |
+
+Kararlar: `value` = `Order.total` (**kargo dahil**), Pixel ve CAPI aynı. ViewContent yalnızca Pixel (her görüntülemede fonksiyon çalışmasın — Vercel kotası). Purchase CAPI `after()` ile, `metaPurchaseSentAt` ile tek sefer; gönderim başarısızsa işaret geri alınır.
 
 ## Neden ikisi birden
 
@@ -23,7 +39,7 @@ Durum: **planlandı, kod yok.**
 | `Purchase` (tarayıcı) | `/siparis-tamamlandi`, **`pending=1` değilse** | |
 | `Purchase` (sunucu, CAPI) | `src/app/api/odeme/sonuc/route.ts`, `paymentStatus='success'` yapılan yerde | |
 
-- `event_id` = **`orderNo`** (tarayıcı ve sunucu aynı değeri kullanır)
+- Purchase `event_id` = **`purchase_<orderNo>`** (tarayıcı ve sunucu aynı değeri kullanır); diğer olaylarda tarayıcıda üretilen UUID köprüye aynen gider
 - `value` = `Order.total`, `currency` = `TRY`
 - `content_ids` biçimi katalogla **birebir aynı** olmalı → [[Katalog-ve-Dinamik-Reklam]]
 
@@ -37,9 +53,9 @@ Durum: **planlandı, kod yok.**
 6. CAPI çağrısı başarısız olursa ödeme akışı **bozulmamalı**: try/catch ile sarılmalı, sonuç loglanmalı. Resend'deki gibi sessiz başarısızlığa dikkat edin → [[E-posta]]
 7. Test: Events Manager → **Test Events** (`test_event_code`) ile canlıdan önce doğrulanır.
 
-## Ortam değişkenleri (planlı)
+## Ortam değişkenleri
 
-`NEXT_PUBLIC_META_PIXEL_ID`, `META_CAPI_TOKEN` (Events Manager'da üretilir, **gizli**), isteğe bağlı olarak `META_TEST_EVENT_CODE`.
+`NEXT_PUBLIC_META_PIXEL_ID`, `META_CAPI_TOKEN` (Events Manager'da üretilir, **gizli**), isteğe bağlı `META_TEST_EVENT_CODE` (doluysa CAPI olayları Test Events'e gider — canlıya geçerken SİLİN), `NEXT_PUBLIC_META_DOMAIN_VERIFICATION` (meta etiketi), `META_GRAPH_API_VERSION` (varsayılan v25.0).
 
 ## Hesap kurulumu (kod dışı)
 

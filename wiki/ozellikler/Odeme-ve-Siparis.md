@@ -55,4 +55,4 @@ Eskiden `paidPrice === total` aranıyordu. `baslat` 5.000 TL üstünde taksiti a
 
 Onay maili `after()` ile gönderilir. Await edilmeyen promise, Vercel'de cevap döndükten sonra yarıda kesilebilir.
 
-**Para çekildi ama sipariş başarısız görünüyorsa:** siparişin `paymentToken`'ı ile `retrieveCheckout` sorgula; `paymentStatus === 'SUCCESS'` ise dönüşü aynı token ile yeniden POST et (`/api/odeme/sonuc?orderId=…`, form alanı `token`). Route idempotent değil; başarılı bir siparişte tekrar çalıştırma (stok iki kez düşer).
+**Para çekildi ama sipariş başarısız görünüyorsa:** siparişin `paymentToken`'ı ile `retrieveCheckout` sorgula; `paymentStatus === 'SUCCESS'` ise dönüşü aynı token ile yeniden POST et (`/api/odeme/sonuc?orderId=…`, form alanı `token`). Route idempotenttir (koşullu `updateMany`): zaten `success` olan siparişte tekrar çalıştırmak stok düşümünü ve maili tekrarlamaz.

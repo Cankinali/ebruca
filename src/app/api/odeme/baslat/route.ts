@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma';
 import { getCurrentUser } from '@/lib/auth';
 import { hasEnoughStock } from '@/lib/stock';
 import { SITE } from '@/lib/seo';
+import { metaContext } from '@/lib/meta/capi';
 
 interface CartItem {
   productId: string;
@@ -94,9 +95,18 @@ export async function POST(req: NextRequest) {
     const conversationId = orderNo + '-' + Math.random().toString(36).slice(2, 8);
     const basketId = orderNo;
 
+    // Meta CAPI eşleştirme verisi — dönüş siteler arası POST olduğu için ancak
+    // burada okunabiliyor. Onay yoksa hepsi boş/false kalır.
+    const meta = metaContext(req);
+
     const order = await prisma.order.create({
       data: {
         orderNo,
+        metaConsent: meta.consent,
+        metaFbp: meta.fbp,
+        metaFbc: meta.fbc,
+        clientIp: meta.ip,
+        userAgent: meta.userAgent,
         status: 'pending',
         userId: sessionUser?.id ?? null,
         firstName: body.firstName,
@@ -221,6 +231,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       orderId: order.id,
       orderNo: order.orderNo,
+      // Pixel Purchase'ı sunucudaki CAPI Purchase ile aynı tutarı göndersin diye
+      total: serverTotal,
       paymentPageUrl: result.paymentPageUrl,
       token: result.token,
     });

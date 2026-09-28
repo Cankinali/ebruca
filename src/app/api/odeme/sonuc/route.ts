@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse, after } from 'next/server';
 import { retrieveCheckout } from '@/lib/iyzico';
 import { prisma } from '@/lib/prisma';
+import type { Prisma } from '@/generated/prisma/client';
 import { sendOrderConfirmation } from '@/lib/email';
 import { decrementStock, stockLevel, totalStock } from '@/lib/stock';
 import { revalidateVitrin } from '@/lib/revalidate';
+import { SITE } from '@/lib/seo';
+import { sendCapiEvent } from '@/lib/meta/capi';
+import { metaContentId, purchaseEventId } from '@/lib/meta/shared';
 
 /**
  * 303 See Other ile redirect — POST'tan GET'e dönüşür.
@@ -77,8 +81,14 @@ export async function POST(req: NextRequest) {
       result.paymentStatus === 'SUCCESS' &&
       result.fraudStatus !== -1
     ) {
-      await prisma.order.update({
-        where: { id: orderId },
+      /* TEK SEFERLİK İŞLEME — callback iki kez gelebilir: iyzico yeniden
+         dener, kullanıcı dönüş sayfasını yeniler ya da tarayıcı POST'u
+         tekrarlar. Koşullu update (updateMany + where paymentStatus) bunu
+         atomik olarak çözüyor: yarışan iki istekten yalnızca biri 1 satır
+         günceller. Koruma olmadan stok İKİ KEZ düşer ve ikinci bir onay
+         e-postası gider. (cicek'teki korumanın aynısı.) */
+      const { count } = await prisma.order.updateMany({
+        where: { id: orderId, paymentStatus: { not: 'success' } },
         data: {
           status: 'confirmed',
           paymentStatus: 'success',
@@ -87,6 +97,10 @@ export async function POST(req: NextRequest) {
           paymentTransactionId: result.paymentItems?.[0]?.paymentTransactionId ?? '',
         },
       });
+      if (count === 0) {
+        // Bu sipariş zaten işlendi: stok düşümü ve e-posta TEKRARLANMAZ.
+        return redirect303(new URL(`/siparis-tamamlandi?no=${order.orderNo}`, req.url));
+      }
 
       // Stok düş — kural @/lib/stock içinde; ödeme öncesi kontrolle aynı kaynak.
       const changedSlugs: string[] = [];
@@ -141,6 +155,13 @@ export async function POST(req: NextRequest) {
         }).catch(e => console.error('Email error:', e))
       );
 
+      // Meta CAPI Purchase — yalnızca müşteri pazarlama çerezine onay verdiyse.
+      // Tarayıcıdaki Pixel Purchase (/siparis-tamamlandi) AYNI event_id'yi
+      // kullanır; Meta ikisini tekilleştirir. Hata ödeme akışını bozmaz.
+      if (order.metaConsent) {
+        after(() => sendPurchaseOnce(order));
+      }
+
       return redirect303(new URL(`/siparis-tamamlandi?no=${order.orderNo}`, req.url));
     }
 
@@ -171,6 +192,58 @@ export async function POST(req: NextRequest) {
   } catch (err) {
     console.error('[POST /api/odeme/sonuc]', err);
     return redirect303(new URL('/sepet?error=server_error', req.url));
+  }
+}
+
+type OrderWithItems = Prisma.OrderGetPayload<{ include: { items: true } }>;
+
+/**
+ * CAPI Purchase'ı sipariş başına EN FAZLA BİR KEZ gönderir: metaPurchaseSentAt
+ * koşullu update ile atomik olarak "sahiplenilir". Gönderim başarısız olursa
+ * işaret geri alınır (elle yeniden denenebilsin).
+ * value = order.total (KARGO DAHİL) — Pixel tarafı da aynı değeri gönderir.
+ */
+async function sendPurchaseOnce(order: OrderWithItems) {
+  const { count } = await prisma.order.updateMany({
+    where: { id: order.id, metaPurchaseSentAt: null },
+    data: { metaPurchaseSentAt: new Date() },
+  });
+  if (count === 0) return;
+
+  const contents = order.items.map(i => ({
+    id: metaContentId(i.productId, i.color),
+    quantity: i.quantity,
+    item_price: i.price,
+  }));
+  const ok = await sendCapiEvent({
+    eventName: 'Purchase',
+    eventId: purchaseEventId(order.orderNo),
+    eventSourceUrl: `${SITE.url}/siparis-tamamlandi?no=${order.orderNo}`,
+    userData: {
+      email: order.email,
+      phone: order.phone,
+      firstName: order.firstName,
+      lastName: order.lastName,
+      city: order.city,
+      ip: order.clientIp,
+      userAgent: order.userAgent,
+      fbp: order.metaFbp,
+      fbc: order.metaFbc,
+    },
+    customData: {
+      currency: 'TRY',
+      value: order.total,
+      content_type: 'product',
+      content_ids: contents.map(c => c.id),
+      contents,
+      num_items: contents.reduce((a, c) => a + c.quantity, 0),
+      order_id: order.orderNo,
+    },
+  });
+  if (!ok) {
+    await prisma.order
+      .update({ where: { id: order.id }, data: { metaPurchaseSentAt: null } })
+      .catch(() => {});
   }
 }
 

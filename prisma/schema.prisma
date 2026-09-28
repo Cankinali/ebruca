@@ -128,6 +128,18 @@ model Order {
   // Tamamlanmamış sipariş hatırlatması gönderildiği an — bir kez gönderilir
   reminderSentAt DateTime?
 
+  // Meta Pixel / Conversions API (wiki/buyume/Meta-Pixel-ve-CAPI.md).
+  // Iyzico dönüşü siteler arası POST olduğu için _fbp/_fbc çerezleri ve
+  // istemci bilgisi o anda gelmez; ödeme BAŞLATILIRKEN burada saklanır.
+  // Hepsi yalnızca pazarlama çerezi onayı varsa doldurulur.
+  metaConsent        Boolean   @default(false)
+  metaFbp            String    @default("")
+  metaFbc            String    @default("")
+  clientIp           String    @default("")
+  userAgent          String    @default("")
+  // CAPI Purchase gönderildiği an — dönüş birden çok gelse de tek Purchase
+  metaPurchaseSentAt DateTime?
+
   // Iyzico ödeme bilgileri
   paymentId             String   @default("")
   paymentToken          String   @default("")
