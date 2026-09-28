@@ -43,3 +43,16 @@ Eşik değişirse **üç yer** birlikte güncellenmeli (bir de `/teslimat` ve `/
 ## Bilinen eksikler
 
 - `/siparis-tamamlandi` sayfası `pending=1` parametresine bakmıyor, fraud incelemesindeki siparişe de "Siparişiniz Alındı!" diyor.
+
+## Tutar kontrolü ve taksit (28.09.2026 olayı)
+
+Ödeme dönüşünde (`/api/odeme/sonuc`) Iyzico'nun iki tutarı ayrı kontrol edilir:
+
+- `price` = sepet tutarı → `order.subtotal` ile **birebir** eşleşmeli.
+- `paidPrice` = kart sahibinden çekilen → **taksitte vade farkı eklenir**, bu yüzden `order.total`'dan büyük olabilir; yalnızca **eksik** olması reddedilir.
+
+Eskiden `paidPrice === total` aranıyordu. `baslat` 5.000 TL üstünde taksiti açtığı için her taksitli ödeme para çekildiği hâlde `failure/cancelled` oluyordu. İlk gerçek vaka: EB98601892 (7.915 TL, 3 taksit, 8.370,66 TL). Düzeltildi; sipariş dönüş yeni kodla yeniden işletilerek kurtarıldı. O güne kadarki 34 başarısız sipariş Iyzico'da tek tek sorgulandı, başka etkilenen yok. Aynı hata cicek'te de düzeltildi.
+
+Onay maili `after()` ile gönderilir. Await edilmeyen promise, Vercel'de cevap döndükten sonra yarıda kesilebilir.
+
+**Para çekildi ama sipariş başarısız görünüyorsa:** siparişin `paymentToken`'ı ile `retrieveCheckout` sorgula; `paymentStatus === 'SUCCESS'` ise dönüşü aynı token ile yeniden POST et (`/api/odeme/sonuc?orderId=…`, form alanı `token`). Route idempotent değil; başarılı bir siparişte tekrar çalıştırma (stok iki kez düşer).
