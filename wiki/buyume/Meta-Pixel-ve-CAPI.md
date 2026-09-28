@@ -48,7 +48,7 @@ Durum: **kod hazır (28.09.2026)**; `NEXT_PUBLIC_META_PIXEL_ID` + `META_CAPI_TOK
 3. **`NEXT_PUBLIC_META_FORCE_ENABLE`** Vercel'de yok / `true` değil.
 4. Env değişikliğinden sonra **yeniden deploy** (NEXT_PUBLIC_ değerleri build'e gömülür).
 5. Alan adı doğrulaması (`NEXT_PUBLIC_META_DOMAIN_VERIFICATION` ya da DNS TXT — DNS artık Cloudflare'de).
-6. `/cerez` ve `/kvkk` metinleri Meta Pixel ve yurt dışı aktarımını anlatacak şekilde güncellendi (hukuki onayla) → [[Yasal-Cerceve]]
+6. ~~`/cerez` ve `/kvkk` metinleri~~ ✅ 28.09.2026 güncellendi; m.9 standart sözleşme/bildirim hukuki olarak teyit edilecek → [[Yasal-Cerceve]]
 7. Test sırasında sohbete yapıştırılan CAPI token'ı yenilenip Vercel'de değiştirildi (öneri).
 
 ## Neden ikisi birden

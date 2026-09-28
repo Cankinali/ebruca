@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { absoluteUrl } from '@/lib/seo';
 
 export const metadata: Metadata = {
@@ -21,13 +22,15 @@ export default function PrivacyPage() {
         <section>
           <h2 className="text-base font-bold uppercase tracking-wider mb-3">2. Verilerin Kullanımı</h2>
           <p className="leading-relaxed">
-            Toplanan kişisel veriler; sipariş işlemleri, kargo takibi, müşteri hizmetleri ve yasal yükümlülüklerin yerine getirilmesi amacıyla kullanılmaktadır. Verileriniz üçüncü taraflarla yasal zorunluluklar dışında paylaşılmamaktadır.
+            Toplanan kişisel veriler; sipariş işlemleri, kargo takibi, müşteri hizmetleri ve yasal yükümlülüklerin yerine getirilmesi amacıyla kullanılmaktadır. Verileriniz yalnızca bu amaçlar için gerektiği ölçüde kargo firmaları, ödeme kuruluşu (Iyzico) ve sitenin teknik altyapı sağlayıcılarıyla; pazarlama çerezlerine onay verdiyseniz reklam ölçümü için Meta ile paylaşılır. Alıcıların tam listesi ve yurt dışı aktarımı için{' '}
+            <Link prefetch={false} href="/kvkk" className="underline">KVKK Aydınlatma Metni</Link>&apos;ne bakınız.
           </p>
         </section>
         <section>
           <h2 className="text-base font-bold uppercase tracking-wider mb-3">3. Çerezler (Cookie)</h2>
           <p className="leading-relaxed">
-            Web sitemiz, kullanıcı deneyimini iyileştirmek amacıyla çerezler kullanmaktadır. Çerezleri tarayıcı ayarlarınızdan devre dışı bırakabilirsiniz; ancak bu durumda bazı özellikler çalışmayabilir.
+            Sitemiz, çalışması için zorunlu çerezleri ve yalnızca açık onayınızla pazarlama çerezlerini (Meta Pixel) kullanır. Kullanılan çerezlerin listesi ve tercihinizi değiştirmek için{' '}
+            <Link prefetch={false} href="/cerez" className="underline">Çerez Politikası</Link> sayfasını ziyaret edebilirsiniz.
           </p>
         </section>
         <section>
