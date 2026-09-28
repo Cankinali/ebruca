@@ -30,6 +30,15 @@ Durum: **kod hazır (28.09.2026)**; `NEXT_PUBLIC_META_PIXEL_ID` + `META_CAPI_TOK
 - ViewContent yalnızca Pixel (her görüntülemede fonksiyon çalışmasın — Vercel kotası → [[Mimari]]). Purchase CAPI `after()` ile, `metaPurchaseSentAt` ile tek sefer; gönderim başarısızsa işaret geri alınır.
 - Headless/otomasyon tarayıcılarında (`navigator.webdriver`) Pixel olay GÖNDERMEZ — Playwright testinde bunu gizlemek gerekir.
 
+## Loglar
+
+Her CAPI gönderimi Graph API cevabıyla loglanır (`src/lib/meta/capi.ts`):
+
+- Başarı (`console.info`): `[meta-capi] <olay> <event_id> 200 <events_received> <fbtrace_id>`
+- Hata (`console.error`): `[meta-capi] <olay> <event_id> <status> <error.message> <fbtrace_id>`
+
+Arama: `vercel logs -p ebruca --scope cankinalis-projects --environment production --since 1h --query "meta-capi" -x`. `fbtrace_id` Meta desteğine iletilecek kimliktir; `event_id` Test Events'teki olayla eşleştirmek için.
+
 ## Vercel env
 
 | Değişken | Değer | Not |

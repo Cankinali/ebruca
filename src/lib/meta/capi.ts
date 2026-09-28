@@ -102,13 +102,33 @@ export async function sendCapiEvent(ev: CapiEvent): Promise<boolean> {
         signal: ctrl.signal,
       }
     );
+    // Graph API cevabı her durumda loglanır: Vercel loglarında "[meta-capi]"
+    // ile aranır; fbtrace_id Meta desteğine iletilecek kimliktir.
+    const text = await res.text();
+    let json: {
+      events_received?: number;
+      fbtrace_id?: string;
+      error?: { message?: string; fbtrace_id?: string };
+    } = {};
+    try {
+      json = JSON.parse(text);
+    } catch { /* JSON değil — ham metin loglanır */ }
+
     if (!res.ok) {
-      console.error('[meta/capi]', ev.eventName, res.status, (await res.text()).slice(0, 500));
+      console.error(
+        '[meta-capi]',
+        ev.eventName,
+        ev.eventId,
+        res.status,
+        json.error?.message ?? text.slice(0, 500),
+        json.error?.fbtrace_id ?? json.fbtrace_id
+      );
       return false;
     }
+    console.info('[meta-capi]', ev.eventName, ev.eventId, res.status, json.events_received, json.fbtrace_id);
     return true;
   } catch (err) {
-    console.error('[meta/capi]', ev.eventName, 'gönderilemedi:', err);
+    console.error('[meta-capi]', ev.eventName, ev.eventId, 'gönderilemedi:', err);
     return false;
   } finally {
     clearTimeout(timer);
