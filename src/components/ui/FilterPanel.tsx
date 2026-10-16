@@ -21,7 +21,7 @@ const SIZES: { value: string; label: string; sub?: string }[] = [
   { value: '50/52', label: '50/52', sub: '4 BEDEN' },
   { value: '54/56', label: '54/56', sub: '5 BEDEN' },
 ];
-const COLORS = ['Siyah', 'Beyaz', 'Ekru', 'Camel', 'Lacivert', 'Bordo', 'Haki', 'Pudra', 'Gri', 'Pembe'];
+const COLORS = ['Siyah', 'Beyaz', 'Ekru', 'Camel', 'Lacivert', 'Bordo', 'Haki', 'Olive', 'Pudra', 'Gri', 'Pembe', 'Somon'];
 
 export default function FilterPanel({ onFilterChange, activeFilters }: FilterPanelProps) {
   const [expandedSections, setExpandedSections] = useState<Set<string>>(
