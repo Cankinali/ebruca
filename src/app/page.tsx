@@ -20,7 +20,6 @@ export default async function HomePage() {
         <div className="bg-white">
           <ProductSection
             title="Yeni Gelenler"
-            subtitle="2025 ilkbahar/yaz koleksiyonu"
             products={newArrivals}
             viewAllHref="/tumurunler"
           />
