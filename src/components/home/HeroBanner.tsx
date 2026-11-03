@@ -4,7 +4,22 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 
-const slides = [
+type Slide = {
+  image: string;
+  // Varsa masaüstünde (md+) bu görsel gösterilir, telefonda `image` kalır
+  desktopImage?: string;
+  desktopPosClass?: string;
+  // Masaüstünde yazı bloğu sağda dursun
+  desktopAlignRight?: boolean;
+  posClass: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  cta: string;
+  href: string;
+};
+
+const slides: Slide[] = [
   {
     image: 'https://cdn.ebruca.com/ebruca/hero/hero-1.jpg',
     posClass: '[object-position:center_40%] md:[object-position:center_65%]',
@@ -24,13 +39,16 @@ const slides = [
     href: '/kategori/elbise',
   },
   {
-    image: 'https://cdn.ebruca.com/ebruca/hero/hero-3.jpg',
-    posClass: '[object-position:58%_22%] md:[object-position:58%_35%]',
-    title: 'Sokak Stili',
+    image: 'https://cdn.ebruca.com/ebruca/hero/esarp-mobil.jpg',
+    posClass: '[object-position:center_45%]',
+    desktopImage: 'https://cdn.ebruca.com/ebruca/hero/esarp-masaustu.jpg',
+    desktopPosClass: '[object-position:center_35%]',
+    desktopAlignRight: true,
+    title: 'Şal & Eşarp',
     subtitle: 'Koleksiyonu',
-    description: 'Günlük şıklığın adresi Ebruca',
-    cta: 'İncele',
-    href: '/tumurunler',
+    description: 'Her kombine zarif bir dokunuş',
+    cta: 'Keşfet',
+    href: '/kategori/sal-esarp',
   },
 ];
 
@@ -50,6 +68,7 @@ export default function HeroBanner() {
   };
 
   const slide = slides[current];
+  const alignRight = slide.desktopAlignRight;
 
   return (
     <div className="relative h-[70vh] sm:h-[80vh] min-h-[500px] max-h-[850px] bg-[#1a1a1a] overflow-hidden group">
@@ -66,9 +85,19 @@ export default function HeroBanner() {
             alt={s.title}
             fill
             priority={i === 0}
-            className={`object-cover ${s.posClass}`}
+            className={`object-cover ${s.posClass} ${s.desktopImage ? 'md:hidden' : ''}`}
             sizes="100vw"
           />
+          {s.desktopImage && (
+            <Image
+              src={s.desktopImage}
+              alt={s.title}
+              fill
+              priority={i === 0}
+              className={`object-cover hidden md:block ${s.desktopPosClass ?? ''}`}
+              sizes="100vw"
+            />
+          )}
         </div>
       ))}
 
@@ -78,7 +107,7 @@ export default function HeroBanner() {
 
       {/* İçerik */}
       <div className="relative z-30 h-full flex flex-col justify-end pb-16 sm:pb-32 px-5 sm:px-12 lg:px-24">
-        <div className="max-w-2xl text-center sm:text-left mx-auto sm:mx-0 w-full overflow-hidden">
+        <div className={`max-w-2xl text-center sm:text-left mx-auto sm:mx-0 w-full overflow-hidden ${alignRight ? 'md:ml-auto md:mr-0 md:text-right' : ''}`}>
           <p className="text-white/70 text-[9px] sm:text-sm tracking-[0.3em] sm:tracking-[0.4em] uppercase mb-2 sm:mb-4 animate-fadeIn">
             Ebruca Butik
           </p>
@@ -101,7 +130,7 @@ export default function HeroBanner() {
           </div>
           <p 
             key={`desc-${current}`}
-            className="text-white/80 text-xs sm:text-lg mb-6 sm:mb-10 font-light max-w-xs sm:max-w-md mx-auto sm:mx-0 animate-fadeIn"
+            className={`text-white/80 text-xs sm:text-lg mb-6 sm:mb-10 font-light max-w-xs sm:max-w-md mx-auto sm:mx-0 animate-fadeIn ${alignRight ? 'md:ml-auto md:mr-0' : ''}`}
             style={{ animationDelay: '200ms', animationFillMode: 'both' }}
           >
             {slide.description}

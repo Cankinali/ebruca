@@ -27,6 +27,7 @@ type Fbq = ((...args: unknown[]) => void) & {
   push: Fbq;
   loaded: boolean;
   version: string;
+  disablePushState?: boolean;
 };
 
 declare global {
@@ -109,6 +110,10 @@ export function ensurePixel(): boolean {
   n.loaded = true;
   n.version = '2.0';
   n.queue = [];
+  // Pixel site içi geçişleri (history.pushState) kendisi algılayıp PageView
+  // atıyor; MetaPixel bileşeni de her rota değişiminde atıyor → PageView
+  // çift sayılıyordu. Otomatik olanı kapat, tek kaynak MetaPixel olsun.
+  n.disablePushState = true;
   window.fbq = n;
   if (!window._fbq) window._fbq = n;
 

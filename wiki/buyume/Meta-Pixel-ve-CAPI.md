@@ -79,7 +79,7 @@ Arama: `vercel logs -p ebruca --scope cankinalis-projects --environment producti
 
 | Olay | Nerede tetiklenir | content_ids |
 |---|---|---|
-| `PageView` | Kök layout'ta script (**rıza varsa**) | |
+| `PageView` | Kök layout'ta script (**rıza varsa**); ilk açılışta ve her rota değişiminde `MetaPixel` atar. Pixel'in kendi SPA algılaması `fbq.disablePushState = true` ile kapalı — açıkken her site içi geçişte PageView çift gidiyordu (04.11.2026) | |
 | `ViewContent` | `src/app/urun/[slug]/ProductDetail.tsx`, sayfa açılınca ve renk değişince | `Product.id` |
 | `AddToCart` | Aynı dosyada `addItem` çağrısı | `Product.id` |
 | `InitiateCheckout` | `src/app/odeme/page.tsx`, sayfa açılınca | sepetteki öğeler |
