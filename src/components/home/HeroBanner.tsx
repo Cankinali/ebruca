@@ -25,7 +25,7 @@ const slides: Slide[] = [
     posClass: '[object-position:center_40%] md:[object-position:center_65%]',
     title: 'Yeni Sezon',
     subtitle: 'Koleksiyonu',
-    description: '2025 İlkbahar/Yaz koleksiyonuyla şıklığı keşfedin',
+    description: 'Koleksiyonların şıklığını keşfedin',
     cta: 'Alışverişe Başla',
     href: '/kategori/elbise',
   },
