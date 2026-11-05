@@ -4,14 +4,19 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 
-type Slide = {
+/**
+ * Anasayfa banner'ı. Telefon ve masaüstü AYRI slayt listesi kullanır; hangisinin
+ * görüneceğine CSS (md kırılımı) karar verir — JS ile ekran ölçülmez, böylece
+ * sayfa açılırken yanlış slayt bir an bile görünmez. İki katman aynı sayacı
+ * paylaşır, her biri kendi slayt sayısına göre mod alır.
+ */
+
+type TextSlide = {
+  kind: 'text';
   image: string;
-  // Varsa masaüstünde (md+) bu görsel gösterilir, telefonda `image` kalır
-  desktopImage?: string;
-  desktopPosClass?: string;
-  // Masaüstünde yazı bloğu sağda dursun
-  desktopAlignRight?: boolean;
   posClass: string;
+  // Masaüstünde yazı bloğu sağda dursun
+  alignRight?: boolean;
   title: string;
   subtitle: string;
   description: string;
@@ -19,10 +24,32 @@ type Slide = {
   href: string;
 };
 
-const slides: Slide[] = [
+// Yazısı görselin içinde olan hazır kampanya görseli: üstüne yazı ve
+// karartma konmaz, görselin tamamı link olur.
+type ImageSlide = {
+  kind: 'image';
+  image: string;
+  posClass: string;
+  alt: string;
+  href: string;
+};
+
+type Slide = TextSlide | ImageSlide;
+
+const esarp = {
+  kind: 'text',
+  title: 'Şal & Eşarp',
+  subtitle: 'Koleksiyonu',
+  description: 'Her kombine zarif bir dokunuş',
+  cta: 'Keşfet',
+  href: '/kategori/sal-esarp',
+} as const;
+
+const desktopSlides: Slide[] = [
   {
+    kind: 'text',
     image: 'https://cdn.ebruca.com/ebruca/hero/hero-1.jpg',
-    posClass: '[object-position:center_40%] md:[object-position:center_65%]',
+    posClass: '[object-position:center_65%]',
     title: 'Yeni Sezon',
     subtitle: 'Koleksiyonu',
     description: 'Koleksiyonların şıklığını keşfedin',
@@ -30,8 +57,9 @@ const slides: Slide[] = [
     href: '/kategori/elbise',
   },
   {
+    kind: 'text',
     image: 'https://cdn.ebruca.com/ebruca/hero/hero-2.jpg',
-    posClass: '[object-position:center_18%] md:[object-position:center_12%]',
+    posClass: '[object-position:center_12%]',
     title: 'Özel Tasarım',
     subtitle: 'Elbiseler',
     description: 'Zarif kesimler, kaliteli kumaşlar',
@@ -39,130 +67,150 @@ const slides: Slide[] = [
     href: '/kategori/elbise',
   },
   {
-    image: 'https://cdn.ebruca.com/ebruca/hero/esarp-mobil.jpg',
-    posClass: '[object-position:center_45%]',
-    desktopImage: 'https://cdn.ebruca.com/ebruca/hero/esarp-masaustu.jpg',
-    desktopPosClass: '[object-position:center_35%]',
-    desktopAlignRight: true,
-    title: 'Şal & Eşarp',
-    subtitle: 'Koleksiyonu',
-    description: 'Her kombine zarif bir dokunuş',
-    cta: 'Keşfet',
-    href: '/kategori/sal-esarp',
+    ...esarp,
+    image: 'https://cdn.ebruca.com/ebruca/hero/esarp-masaustu.jpg',
+    posClass: '[object-position:center_35%]',
+    alignRight: true,
   },
 ];
 
-export default function HeroBanner() {
-  const [current, setCurrent] = useState(0);
+const mobileSlides: Slide[] = [
+  {
+    kind: 'image',
+    image: 'https://cdn.ebruca.com/ebruca/hero/sal-3-taksit-mobil.png',
+    posClass: '[object-position:center_top]',
+    alt: 'Zarafetin en güzel dokunuşu — şal koleksiyonu, 5.000 TL üzeri 3 taksit',
+    href: '/kategori/sal-esarp',
+  },
+  {
+    ...esarp,
+    image: 'https://cdn.ebruca.com/ebruca/hero/esarp-mobil.jpg',
+    posClass: '[object-position:center_45%]',
+  },
+];
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrent(c => (c + 1) % slides.length);
-    }, 6000);
-    return () => clearInterval(timer);
-  }, []);
-
-  const goTo = (i: number) => {
-    if (i === current) return;
-    setCurrent(i);
-  };
-
+function Carousel({
+  slides,
+  tick,
+  onSelect,
+  className,
+}: {
+  slides: Slide[];
+  tick: number;
+  onSelect: (i: number) => void;
+  className: string;
+}) {
+  const current = tick % slides.length;
   const slide = slides[current];
-  const alignRight = slide.desktopAlignRight;
 
   return (
-    <div className="relative h-[70vh] sm:h-[80vh] min-h-[500px] max-h-[850px] bg-[#1a1a1a] overflow-hidden group">
+    <div className={`absolute inset-0 ${className}`}>
       {/* Slaytlar */}
       {slides.map((s, i) => (
         <div
           key={s.image}
           className={`absolute inset-0 transition-all duration-1000 ease-out ${
-            i === current ? 'opacity-100 z-10 scale-100' : 'opacity-0 z-0 scale-105'
+            i === current ? 'opacity-100 z-10 scale-100' : 'opacity-0 z-0 scale-105 pointer-events-none'
           }`}
         >
           <Image
             src={s.image}
-            alt={s.title}
+            alt={s.kind === 'text' ? s.title : s.alt}
             fill
             priority={i === 0}
-            className={`object-cover ${s.posClass} ${s.desktopImage ? 'md:hidden' : ''}`}
+            className={`object-cover ${s.posClass}`}
             sizes="100vw"
           />
-          {s.desktopImage && (
-            <Image
-              src={s.desktopImage}
-              alt={s.title}
-              fill
-              priority={i === 0}
-              className={`object-cover hidden md:block ${s.desktopPosClass ?? ''}`}
-              sizes="100vw"
-            />
+          {s.kind === 'image' && (
+            <Link prefetch={false} href={s.href} aria-label={s.alt} className="absolute inset-0" />
           )}
         </div>
       ))}
 
-      {/* Modern Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 md:via-black/20 to-transparent z-20" />
-      <div className="absolute inset-0 bg-black/20 md:bg-black/10 z-20" /> {/* Mobil için hafif karanlıklaştır */}
+      {slide.kind === 'text' && (
+        <>
+          {/* Modern Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 md:via-black/20 to-transparent z-20 pointer-events-none" />
+          <div className="absolute inset-0 bg-black/20 md:bg-black/10 z-20 pointer-events-none" /> {/* Mobil için hafif karanlıklaştır */}
 
-      {/* İçerik */}
-      <div className="relative z-30 h-full flex flex-col justify-end pb-16 sm:pb-32 px-5 sm:px-12 lg:px-24">
-        <div className={`max-w-2xl text-center sm:text-left mx-auto sm:mx-0 w-full overflow-hidden ${alignRight ? 'md:ml-auto md:mr-0 md:text-right' : ''}`}>
-          <p className="text-white/70 text-[9px] sm:text-sm tracking-[0.3em] sm:tracking-[0.4em] uppercase mb-2 sm:mb-4 animate-fadeIn">
-            Ebruca Butik
-          </p>
-          <div className="overflow-hidden mb-0.5 sm:mb-1">
-            <h1
-              key={`title-${current}`}
-              className="text-4xl sm:text-6xl lg:text-7xl font-light text-white leading-tight tracking-tight animate-fadeIn"
-            >
-              {slide.title}
-            </h1>
+          {/* İçerik */}
+          <div className="relative z-30 h-full flex flex-col justify-end pb-16 sm:pb-32 px-5 sm:px-12 lg:px-24">
+            <div className={`max-w-2xl text-center sm:text-left mx-auto sm:mx-0 w-full overflow-hidden ${slide.alignRight ? 'md:ml-auto md:mr-0 md:text-right' : ''}`}>
+              <p className="text-white/70 text-[9px] sm:text-sm tracking-[0.3em] sm:tracking-[0.4em] uppercase mb-2 sm:mb-4 animate-fadeIn">
+                Ebruca Butik
+              </p>
+              <div className="overflow-hidden mb-0.5 sm:mb-1">
+                <h1
+                  key={`title-${current}`}
+                  className="text-4xl sm:text-6xl lg:text-7xl font-light text-white leading-tight tracking-tight animate-fadeIn"
+                >
+                  {slide.title}
+                </h1>
+              </div>
+              <div className="overflow-hidden mb-3 sm:mb-6">
+                <h2
+                  key={`sub-${current}`}
+                  className="text-3xl sm:text-5xl lg:text-6xl font-serif italic text-white/90 leading-tight animate-fadeIn"
+                  style={{ animationDelay: '100ms', animationFillMode: 'both' }}
+                >
+                  {slide.subtitle}
+                </h2>
+              </div>
+              <p
+                key={`desc-${current}`}
+                className={`text-white/80 text-xs sm:text-lg mb-6 sm:mb-10 font-light max-w-xs sm:max-w-md mx-auto sm:mx-0 animate-fadeIn ${slide.alignRight ? 'md:ml-auto md:mr-0' : ''}`}
+                style={{ animationDelay: '200ms', animationFillMode: 'both' }}
+              >
+                {slide.description}
+              </p>
+              <Link prefetch={false}
+                key={`cta-${current}`}
+                href={slide.href}
+                className="inline-flex items-center justify-center gap-2 bg-white/10 backdrop-blur-md border border-white/30 text-white px-6 sm:px-10 py-3 sm:py-4 text-[11px] sm:text-sm hover:cursor-pointer font-medium tracking-[0.15em] sm:tracking-[0.2em] uppercase hover:bg-white hover:text-black hover:border-white transition-all duration-300 animate-fadeIn"
+                style={{ animationDelay: '300ms', animationFillMode: 'both' }}
+              >
+                {slide.cta}
+                <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </Link>
+            </div>
           </div>
-          <div className="overflow-hidden mb-3 sm:mb-6">
-            <h2
-              key={`sub-${current}`}
-              className="text-3xl sm:text-5xl lg:text-6xl font-serif italic text-white/90 leading-tight animate-fadeIn"
-              style={{ animationDelay: '100ms', animationFillMode: 'both' }}
-            >
-              {slide.subtitle}
-            </h2>
-          </div>
-          <p 
-            key={`desc-${current}`}
-            className={`text-white/80 text-xs sm:text-lg mb-6 sm:mb-10 font-light max-w-xs sm:max-w-md mx-auto sm:mx-0 animate-fadeIn ${alignRight ? 'md:ml-auto md:mr-0' : ''}`}
-            style={{ animationDelay: '200ms', animationFillMode: 'both' }}
-          >
-            {slide.description}
-          </p>
-          <Link prefetch={false}
-            key={`cta-${current}`}
-            href={slide.href}
-            className="inline-flex items-center justify-center gap-2 bg-white/10 backdrop-blur-md border border-white/30 text-white px-6 sm:px-10 py-3 sm:py-4 text-[11px] sm:text-sm hover:cursor-pointer font-medium tracking-[0.15em] sm:tracking-[0.2em] uppercase hover:bg-white hover:text-black hover:border-white transition-all duration-300 animate-fadeIn"
-            style={{ animationDelay: '300ms', animationFillMode: 'both' }}
-          >
-            {slide.cta}
-            <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
-          </Link>
-        </div>
-      </div>
+        </>
+      )}
 
       {/* İndikatörler */}
-      <div className="absolute bottom-6 sm:bottom-12 left-0 right-0 flex justify-center sm:justify-start sm:left-12 lg:left-24 gap-2.5 z-30">
+      <div className="absolute bottom-6 sm:bottom-12 left-0 right-0 flex justify-center sm:justify-start sm:left-12 lg:left-24 gap-2.5 z-40">
         {slides.map((_, i) => (
           <button
             key={i}
-            onClick={() => goTo(i)}
-            className={`transition-all duration-500 rounded-full ${
-              i === current ? 'w-8 sm:w-10 h-1bg-white bg-white' : 'w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white/40 hover:bg-white/80'
+            onClick={() => onSelect(i)}
+            className={`transition-all duration-500 rounded-full shadow-sm ${
+              i === current ? 'w-8 sm:w-10 bg-white' : 'w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white/60 hover:bg-white/80'
             }`}
             style={i === current ? { height: '3px', borderRadius: '4px' } : {}}
             aria-label={`Slayt ${i + 1}`}
           />
         ))}
       </div>
+    </div>
+  );
+}
+
+export default function HeroBanner() {
+  // Sürekli artan sayaç; her katman kendi slayt sayısına göre mod alır
+  const [tick, setTick] = useState(0);
+
+  // tick değişince süre baştan başlar (elle seçimden hemen sonra kaymasın)
+  useEffect(() => {
+    const timer = setTimeout(() => setTick(t => t + 1), 6000);
+    return () => clearTimeout(timer);
+  }, [tick]);
+
+  return (
+    <div className="relative h-[70vh] sm:h-[80vh] min-h-[500px] max-h-[850px] bg-[#1a1a1a] overflow-hidden group">
+      <Carousel slides={mobileSlides} tick={tick} onSelect={setTick} className="md:hidden" />
+      <Carousel slides={desktopSlides} tick={tick} onSelect={setTick} className="hidden md:block" />
     </div>
   );
 }

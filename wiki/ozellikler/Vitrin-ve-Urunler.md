@@ -18,7 +18,7 @@ Akış: anasayfa → kategori / tüm ürünler → ürün detayı → [[Sepet]] 
 
 ## Anasayfa blokları
 
-`src/components/home/`: HeroBanner (3 sabit slayt; bir slayt `desktopImage` ile masaüstünde ayrı görsel, `desktopAlignRight` ile sağa hizalı yazı kullanabilir — 3. slayt Şal & Eşarp), CategoryCards, ProductSection (yeni gelenler / çok satanlar), TrustBadges. Üstte `AnnouncementBar` ("5.000 TL üzeri ücretsiz kargo" / "3 taksit").
+`src/components/home/`: HeroBanner (telefon ve masaüstü **ayrı slayt listeleri** — `mobileSlides` / `desktopSlides`, hangisinin görüneceğine CSS `md` kırılımı karar verir. Masaüstü: Yeni Sezon, Özel Tasarım, Şal & Eşarp (yazı sağda). Telefon: yazısı görselin içinde olan Şal 3 Taksit kampanya görseli (`kind: 'image'`, üstüne yazı/karartma yok, tamamı link) + Şal & Eşarp), CategoryCards, ProductSection (yeni gelenler / çok satanlar), TrustBadges. Üstte `AnnouncementBar` ("5.000 TL üzeri ücretsiz kargo" / "3 taksit").
 
 ## Ürün bayrakları
 
