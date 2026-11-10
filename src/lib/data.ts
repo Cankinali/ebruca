@@ -23,7 +23,7 @@ export const categories: Category[] = [
     id: '3',
     name: 'Alt Giyim',
     slug: 'alt-giyim',
-    image: 'https://cdn.ebruca.com/ebruca/categories/cat-alt-giyim-v2.jpg',
+    image: 'https://cdn.ebruca.com/ebruca/categories/cat-alt-giyim-v4.jpg',
     objectPosition: 'center 50%',
     subcategories: [
       { id: '3a', name: 'Etek', slug: 'etek' },
